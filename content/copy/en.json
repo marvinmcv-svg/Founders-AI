@@ -1,0 +1,447 @@
+{
+  "_meta": {
+    "status": "FIRST DRAFT by engineering — needs copy-team review (plan H4 / Section 17). Original wording; nothing copied from the reference site.",
+    "voice": "Confident, precise, low-hype, investor-literate. Short sentences. Numbers come from {stats.*} variables only."
+  },
+  "global": {
+    "announcement": { "text": "New: plain-English search across every dataset", "cta": "See how it works" },
+    "nav": {
+      "platform": "Platform",
+      "agents": "Agents",
+      "api": "API",
+      "integrations": "Integrations",
+      "resources": "Resources",
+      "pricing": "Pricing",
+      "login": "Log in",
+      "getStarted": "Get started",
+      "soon": "Soon",
+      "new": "New"
+    },
+    "menu": {
+      "platform": {
+        "overview": { "title": "Platform overview", "desc": "Everything in one workspace" },
+        "dataGroup": "Data",
+        "featuresGroup": "Features",
+        "companies": { "title": "Companies", "desc": "{stats.companies} live company profiles" },
+        "people": { "title": "People", "desc": "{stats.people} founders and operators" },
+        "investors": { "title": "Investors", "desc": "{stats.investors} funds, angels and CVCs" },
+        "transactions": { "title": "Transactions", "desc": "Rounds, acquisitions and IPOs" },
+        "talent": { "title": "Talent Signals", "desc": "Founder moves before the round" },
+        "interest": { "title": "Interest Signals", "desc": "Which investors are circling" },
+        "news": { "title": "News", "desc": "Headlines scored for relevance" },
+        "revenue": { "title": "Revenue", "desc": "Modeled revenue with honest ranges" },
+        "valuation": { "title": "Valuation", "desc": "A live estimate between rounds" },
+        "promo": { "title": "Revenue & valuation estimates", "desc": "A modeled number — and its range — for every company", "cta": "Explore estimates" }
+      },
+      "integrations": {
+        "connectGroup": "Connect",
+        "deliveryGroup": "Delivery",
+        "all": { "title": "All integrations", "desc": "Every way to plug us in" },
+        "crm": { "title": "CRM", "desc": "Two-way sync with your pipeline" },
+        "network": { "title": "Network tracking", "desc": "Who on your team knows whom" },
+        "chrome": { "title": "Chrome extension", "desc": "Our data on any website" },
+        "api": { "title": "API", "desc": "Build on the same data we use" },
+        "bulk": { "title": "Bulk data", "desc": "Snapshots into your warehouse" },
+        "mcp": { "title": "MCP", "desc": "Plug our data into your AI" }
+      },
+      "resources": {
+        "readGroup": "Read",
+        "blog": { "title": "Blog", "desc": "Notes from the team" },
+        "insights": { "title": "Insights", "desc": "Market research and the weekly letter" },
+        "academy": { "title": "Founders Academy", "desc": "For founders: shape your first pitch" }
+      }
+    },
+    "footer": {
+      "tagline": "Private-markets intelligence, built from Latin America out.",
+      "cols": {
+        "data": "Data",
+        "features": "Features",
+        "integrations": "Integrations",
+        "delivery": "Delivery",
+        "company": "Company",
+        "legal": "Legal"
+      },
+      "links": {
+        "careers": "Careers",
+        "partners": "Partners",
+        "caseStudies": "Case studies",
+        "blog": "Blog",
+        "insights": "Insights",
+        "contact": "Contact",
+        "privacy": "Privacy policy",
+        "privacyRights": "Privacy rights",
+        "terms": "Terms & conditions",
+        "dpa": "Data processing addendum",
+        "optOut": "Remove my profile",
+        "cookies": "Cookie settings"
+      },
+      "askAi": "Ask AI about {brand}",
+      "askAiPrompt": "Summarise what {brand} ({url}) does for venture, private equity and M&A teams, and how it compares to other private-market data platforms.",
+      "rights": "All rights reserved."
+    },
+    "demoPill": { "cta": "Book a demo", "bookedToday": "{n} booked today" },
+    "cookie": {
+      "text": "We use essential cookies to run this site. With your consent we also use analytics to improve it.",
+      "accept": "Accept analytics",
+      "reject": "Essential only",
+      "settings": "Settings"
+    },
+    "cta": {
+      "bookDemo": "Book a demo",
+      "explore": "Explore",
+      "learnMore": "Learn more",
+      "seeDocs": "Read the docs",
+      "talkToUs": "Talk to us"
+    },
+    "closing": {
+      "h2": "See your market before it moves.",
+      "body": "One workspace for sourcing, diligence and monitoring — with live data on {stats.companies} companies, {stats.people} people and {stats.investors} investors.",
+      "cta": "Book a demo"
+    },
+    "proof": {
+      "logosTitle": "Built for funds, corporates and deal teams",
+      "logosEmpty": "Your logo here — we're onboarding our first design partners.",
+      "testimonialsEmpty": "We publish customer stories only with written permission. Ours are on the way.",
+      "pressEmpty": ""
+    },
+    "demoData": "Product views show synthetic demo data."
+  },
+  "home": {
+    "hero": {
+      "eyebrow": "Private-markets intelligence",
+      "h1": "Find the next great company first.",
+      "sub": "Live data on every startup, founder, investor and deal — including the Latin American markets global databases overlook. Built for VC, PE, M&A and GTM teams.",
+      "cta": "Book a demo",
+      "secondary": "Explore the platform"
+    },
+    "split": {
+      "agentTitle": "Ask in plain English",
+      "agentBody": "Describe the companies you want. We turn it into filters you can edit, save and share.",
+      "agentPrompt": "Seed-stage fintech in Bolivia and Paraguay growing headcount fast",
+      "apiTitle": "Or build on the same data",
+      "apiBody": "Every dataset, signal and estimate is one API call away.",
+      "apiCta": "Explore the API"
+    },
+    "problem": {
+      "eyebrow": "Why now",
+      "h2": "By the time a deal is in the news, it's already crowded.",
+      "body": "Private markets reward whoever sees first. Most databases update quarterly and stop at the US and Europe. We track companies, people and capital continuously — with real depth in Bolivia, Brazil, Mexico, Colombia, Argentina, Chile and beyond — so you get there before the round does."
+    },
+    "pillars": {
+      "data": "Data",
+      "signals": "Signals",
+      "sourcing": "Sourcing",
+      "monitor": "Monitor"
+    },
+    "data": {
+      "eyebrow": "Data",
+      "h2": "The whole market in one workspace.",
+      "lede": "{stats.companies} companies, {stats.people} people, {stats.investors} investors and {stats.transactions} transactions — connected, deduplicated and refreshed continuously.",
+      "companies": { "title": "Companies", "body": "Firmographics, funding, headcount and web growth, plus modeled revenue and valuation." },
+      "people": { "title": "People", "body": "Career histories, education, founder highlights and every move they make next." },
+      "investors": { "title": "Investors", "body": "Check sizes, stages, portfolios, co-investors and follow-on behaviour." },
+      "transactions": { "title": "Transactions", "body": "Funding rounds, acquisitions and IPOs — {stats.rounds_30d} rounds added in the last 30 days." }
+    },
+    "signals": {
+      "eyebrow": "Signals",
+      "h2": "Meet founders on day zero.",
+      "lede": "Talent signals flag when a proven operator leaves to start something — often months before a domain, a deck or a round exists.",
+      "stat": "{stats.talent_signals_7d} talent signals in the last 7 days",
+      "cta": "More on talent signals"
+    },
+    "sourcing": {
+      "eyebrow": "Sourcing",
+      "h2": "Turn a thesis into a pipeline in minutes.",
+      "lede": "Nested filters, a sector taxonomy built for investors, and plain-English search — saved, shared and re-run automatically.",
+      "c1": { "title": "Search the way you think", "body": "Alumni networks, spinouts, accelerator cohorts and ecosystem maps — combined with AND / OR groups." },
+      "c2": { "title": "A taxonomy built for investors", "body": "Sector › industry › tech vertical, business model and customer focus on every profile." },
+      "c3": { "title": "Plain-English search", "body": "Type what you want. Review the filters we generate. Save it as a live search." }
+    },
+    "monitor": {
+      "eyebrow": "Monitor",
+      "h2": "Watchlists that tell you what changed.",
+      "lede": "Saved searches re-run as data lands and show only what's new since you last looked — in the app and in your morning digest.",
+      "trending": "{company} headcount is up {pct} this quarter"
+    },
+    "workflow": {
+      "eyebrow": "Workflow",
+      "h2": "Fits the tools your team already uses.",
+      "lede": "Lists, CSV export, a REST API and saved-search feeds today. CRM sync, network tracking and a browser extension are on the roadmap.",
+      "cta": "See integrations"
+    },
+    "latam": {
+      "eyebrow": "Built in Santa Cruz",
+      "h2": "Coverage where others go quiet.",
+      "body": "{stats.latam_companies} of our company profiles are headquartered in Latin America. We started with the ecosystems we know best — and hold them to the same standard as San Francisco or London."
+    }
+  },
+  "platform": {
+    "hero": {
+      "eyebrow": "Platform",
+      "h1": "One workspace for the whole market.",
+      "sub": "Discover, qualify and monitor private companies with data that stays current — and workflows your team can share."
+    },
+    "discovery": {
+      "eyebrow": "Discovery",
+      "h2": "Find the right deals top-down.",
+      "lede": "Start from a market, a thesis or a single company. Every filter is live and every result is one click from a full profile.",
+      "searches": { "title": "Searches that stay live", "body": "Save any view. We re-run it and flag new matches." },
+      "lists": { "title": "Lists your team works from", "body": "Shared or private lists for companies, people and investors." },
+      "ecosystem": { "title": "Ecosystem mapping", "body": "Nest groups of verticals and firm-level filters to map a whole space." },
+      "trends": { "title": "Momentum, ranked", "body": "Sort any market by headcount or web growth to see who is pulling ahead." }
+    },
+    "sourcing": {
+      "eyebrow": "Sourcing",
+      "h2": "Build pipeline with the right context.",
+      "lede": "Know the team, the money and the trajectory before the first call.",
+      "people": { "title": "People breakdowns", "body": "Founders, executives, tenure and education on every company." },
+      "team": { "title": "Team composition", "body": "Department and seniority mix, so you can see where a company is investing." },
+      "firmographics": { "title": "Firmographics", "body": "Stage, founding year, HQ, headcount, funding and business model." },
+      "contacts": { "title": "Verified contacts", "body": "Reveal work emails when you need them — costed in credits, shown before you confirm." }
+    },
+    "monitoring": {
+      "eyebrow": "Monitoring",
+      "h2": "Watchlists built on signal.",
+      "lede": "Follow companies and people, and get a digest of what actually changed.",
+      "growth": { "title": "Growth over time", "body": "Headcount, web traffic and followers, month by month." },
+      "estimates": { "title": "Revenue & valuation", "body": "Modeled ranges that tighten when real disclosures arrive." },
+      "digests": { "title": "Digests on your schedule", "body": "Daily or weekly summaries of new results across your saved searches." },
+      "news": { "title": "Scored news", "body": "Headlines tied to companies and scored for materiality." }
+    },
+    "data": {
+      "eyebrow": "Data",
+      "h2": "Four datasets, one ID system.",
+      "lede": "The same stable IDs across the app, the API and exports."
+    },
+    "comparison": {
+      "eyebrow": "Our edge",
+      "h2": "What you get that others don't.",
+      "rows": {
+        "latam": "Depth in Latin American markets",
+        "live": "Continuously refreshed company metrics",
+        "talent": "Talent signals on founder moves",
+        "estimates": "Revenue & valuation ranges with confidence",
+        "nl": "Plain-English search into editable filters",
+        "api": "Same data via a credit-metered API"
+      },
+      "footnote": "A dated, sourced comparison against named providers will be published once facts are verified (plan H7)."
+    }
+  },
+  "companies": {
+    "hero": {
+      "eyebrow": "Companies",
+      "h1": "Every private company, one search away.",
+      "sub": "{stats.companies} profiles with funding, team, growth and modeled financials — filterable on hundreds of data points."
+    },
+    "overview": {
+      "eyebrow": "Company data",
+      "h2": "Understand any company in minutes.",
+      "c1": { "title": "Firmographics to financials", "body": "HQ, stage, business model, funding history and investors." },
+      "c2": { "title": "Growth metrics", "body": "Headcount, web visits and followers with 3- and 12-month change." },
+      "c3": { "title": "Revenue & valuation", "body": "Modeled ranges with a confidence label — never a fake-precise number." },
+      "c4": { "title": "Signals & news", "body": "Team moves and scored headlines on every profile." }
+    },
+    "profile": {
+      "eyebrow": "Profiles",
+      "h2": "Eight tabs deep on every company.",
+      "lede": "Overview, Business, Financials, Team, News and Competitors — all from the same live record."
+    },
+    "competitors": {
+      "eyebrow": "Similar companies",
+      "h2": "See the competitive landscape instantly.",
+      "lede": "Every company comes with a ranked set of look-alikes and an overlap score from 0 to 10."
+    },
+    "api": { "eyebrow": "API", "h2": "Company data, programmatically.", "lede": "Resolve a domain to an ID for free, then pull the full record." }
+  },
+  "people": {
+    "hero": {
+      "eyebrow": "People",
+      "h1": "Find founders before they're famous.",
+      "sub": "{stats.people} profiles of founders, operators and executives — with career history, highlights and the signals that matter."
+    },
+    "overview": {
+      "eyebrow": "People data",
+      "h2": "The operators behind every company.",
+      "c1": { "title": "Career history", "body": "Every role, tenure and company, linked to company profiles." },
+      "c2": { "title": "Founder highlights", "body": "Serial founder, prior exit, top university, big-tech alumni and more." },
+      "c3": { "title": "Talent signals", "body": "New companies, new roles, promotions and departures — scored 1 to 10." },
+      "c4": { "title": "Verified emails", "body": "Reveal work emails on demand. Every reveal is logged and costed in credits." }
+    },
+    "highlights": {
+      "eyebrow": "Highlights",
+      "h2": "Filter by what investors actually look for.",
+      "lede": "Highlights are computed flags you can combine with any other filter."
+    },
+    "signals": {
+      "eyebrow": "Talent signals",
+      "h2": "Every move, typed and scored.",
+      "lede": "We classify each change — new company, new role, promotion, searching, departure — and score it on founder quality and context."
+    },
+    "privacy": "People data is processed under legitimate interest. Anyone can request access to, or removal of, their profile."
+  },
+  "investors": {
+    "hero": {
+      "eyebrow": "Investors",
+      "h1": "Know who writes the check.",
+      "sub": "{stats.investors} funds, angels, CVCs and family offices — with stages, check sizes, portfolios and co-investors."
+    },
+    "overview": {
+      "eyebrow": "Investor data",
+      "h2": "From fund details to follow-on behaviour.",
+      "c1": { "title": "Fund details", "body": "AUM, check size, target stages, sectors and geographies." },
+      "c2": { "title": "Track records", "body": "Investments, leads, exits, unicorns and follow-on rate." },
+      "c3": { "title": "Portfolios", "body": "Every company and round, with co-investors attached." },
+      "c4": { "title": "Fit scores", "body": "Rank the most relevant backers for any company." }
+    },
+    "backers": {
+      "eyebrow": "Fundraising",
+      "h2": "Find the most relevant backers.",
+      "lede": "For any company we score investors on stage, sector, geography and activity — and leave out the ones already on the cap table."
+    }
+  },
+  "transactions": {
+    "hero": {
+      "eyebrow": "Transactions",
+      "h1": "Every deal, seed to IPO.",
+      "sub": "{stats.transactions} funding rounds, acquisitions and IPOs — {stats.rounds_30d} rounds added in the last 30 days."
+    },
+    "overview": {
+      "eyebrow": "Deal data",
+      "h2": "Rounds, M&A and listings in one feed.",
+      "c1": { "title": "Funding rounds", "body": "Type, amount, date, post-money and every investor, with the lead flagged." },
+      "c2": { "title": "Acquisitions", "body": "Acquirer, target, date and disclosed value." },
+      "c3": { "title": "IPOs", "body": "Exchange, ticker, price, valuation and amount raised." },
+      "c4": { "title": "Sources on every deal", "body": "Filings, registries and press releases — linked on each record." }
+    },
+    "carries": {
+      "eyebrow": "Every deal carries",
+      "h2": "The fields you need to underwrite.",
+      "items": ["Round type, Pre-seed to Series E", "Amount in USD, converted at announcement date", "Pre- and post-money valuation where known", "Every investor, with the lead flagged"]
+    }
+  },
+  "pricing": {
+    "hero": { "eyebrow": "Pricing", "h1": "Plans that match how you work.", "sub": "Talk to us for pricing. Every plan starts with a working session on your thesis." },
+    "plans": {
+      "platform": {
+        "name": "Platform",
+        "desc": "For investment and deal teams.",
+        "features": ["All companies, people, investors and transactions", "Talent signals and scored news", "Revenue & valuation estimates", "Nested filters and plain-English search", "Saved searches, lists and digests", "CSV export", "Seats for your whole team"]
+      },
+      "api": {
+        "name": "API",
+        "desc": "For teams building on our data.",
+        "features": ["Every endpoint on one key", "{limits.trialCredits} free trial credits", "Misses never cost a credit", "Up to {limits.pageSize} records per page", "{limits.rps} requests per second", "Bulk lookups of {limits.bulk} records", "llms.txt docs for AI agents"]
+      },
+      "bulk": {
+        "name": "Bulk data",
+        "desc": "For warehouses and data science.",
+        "features": ["Full and modular snapshots", "Daily incrementals", "CSV or Parquet", "S3, GCS or Snowflake delivery", "Estimates with ranges and confidence", "One stable ID everywhere"]
+      },
+      "cta": "Get pricing"
+    },
+    "faq": {
+      "h2": "Questions, answered.",
+      "items": [
+        { "q": "What does a Platform seat include?", "a": "Full access to every dataset, signal and estimate in the app, plus saved searches, lists, digests and exports for one person." },
+        { "q": "Do I need a seat to use the API?", "a": "Yes. API access is added to a workspace with at least one Platform seat." },
+        { "q": "How do API credits work?", "a": "Lookups by ID or enrichment cost credits per matched record; misses are free. Feeds and searches cost per page of results. Resolving identifiers and managing lists and saved searches is free." },
+        { "q": "What does Bulk include?", "a": "Snapshots of the datasets you choose, delivered to your bucket or Snowflake, followed by daily incrementals." },
+        { "q": "How fresh is the data?", "a": "Signals land within a day of the source. Company metrics update continuously and estimates are re-rated monthly." },
+        { "q": "Is my data private?", "a": "Yes. Your lists, searches and notes are visible only inside your workspace. We never share what you look at." },
+        { "q": "Who do I talk to?", "a": "Book a demo and the Founders team will set up a session on your thesis." }
+      ]
+    }
+  },
+  "contact": {
+    "h1": "Book a demo",
+    "sub": "Tell us a bit about your firm. We'll show you the platform on your own thesis.",
+    "form": {
+      "firstName": "First name",
+      "lastName": "Last name",
+      "email": "Business email",
+      "company": "Company",
+      "firmType": "Firm type",
+      "aum": "AUM",
+      "phone": "Phone",
+      "optional": "optional",
+      "submit": "Request demo",
+      "submitting": "Sending…",
+      "freeMail": "Please use your work email.",
+      "required": "Required",
+      "success": "Thanks — we'll be in touch within one business day.",
+      "successBook": "Pick a time below to skip the back-and-forth.",
+      "error": "Something went wrong. Please try again or email us."
+    },
+    "firmTypes": ["VC", "PE", "Growth equity", "Corporate VC / Corp Dev", "M&A advisory / Investment bank", "Family office", "Angel", "Accelerator", "GTM / Sales team", "Other"],
+    "aum": ["Not applicable", "<$50M", "$50–250M", "$250M–1B", "$1–5B", "$5B+"],
+    "benefits": {
+      "h2": "What you'll see",
+      "items": [
+        "Company database — Filter {stats.companies} companies on stage, sector, growth and funding.",
+        "People database — Founders and operators with career history and highlights.",
+        "Investor database — Stages, check sizes, portfolios and co-investors.",
+        "Transactions — Rounds, acquisitions and IPOs with every investor.",
+        "Talent signals — Founder moves, scored, before the round exists.",
+        "Plain-English search — Describe a market; edit the filters we generate.",
+        "Nested filters — AND/OR groups across hundreds of fields.",
+        "Saved searches — Re-run automatically; see only what's new.",
+        "Digests — Daily or weekly summaries in your inbox.",
+        "Lists — Shared or private, for companies, people and investors.",
+        "Revenue estimates — Modeled ranges with confidence labels.",
+        "Valuation estimates — A live number between priced rounds.",
+        "Competitors — Ranked look-alikes with overlap scores.",
+        "Team breakdowns — Department and seniority mix.",
+        "API — The same data, metered in credits.",
+        "Exports — CSV with costs shown before you confirm.",
+        "LatAm depth — Coverage across Bolivia and the region."
+      ]
+    }
+  },
+  "partners": {
+    "hero": { "eyebrow": "Partners", "h1": "Build with Founders AI.", "sub": "We work with technology companies, consultancies and creators who serve investors and founders.", "cta": "Become a partner" },
+    "types": {
+      "h2": "Ways to partner",
+      "technology": { "title": "Technology partners", "body": "Integrate our data into your product or connect your product to ours." },
+      "solution": { "title": "Solution partners", "body": "Consultancies and advisors who deploy Founders AI for their clients." },
+      "creator": { "title": "Content creators", "body": "Researchers and writers who publish with our data, credited." }
+    },
+    "why": {
+      "h2": "Why partner with us",
+      "items": [
+        { "title": "LatAm-first data", "body": "Coverage your clients can't get elsewhere." },
+        { "title": "Co-marketing", "body": "Joint content, events and launches with the Founders community." },
+        { "title": "Technical support", "body": "A direct line to our engineering team." },
+        { "title": "Revenue share", "body": "Fair, simple terms for referred and resold business." },
+        { "title": "Early access", "body": "New datasets and features before general release." },
+        { "title": "Community", "body": "Access to the Founders network in Santa Cruz and beyond." }
+      ]
+    },
+    "form": {
+      "h2": "Apply to partner",
+      "type": "Partnership type",
+      "types": ["Technology partner", "Solution partner", "Consultant", "Content creator", "Other"],
+      "idea": "Your partnership idea",
+      "submit": "Submit application",
+      "success": "Thanks — our partnerships team will reply within a week."
+    }
+  },
+  "legal": {
+    "draftNotice": "Draft for legal review — not yet in force (plan H6).",
+    "privacyRights": {
+      "h1": "Your privacy rights",
+      "intro": "If we hold a profile about you, you can ask to see it, correct it or have it removed. We'll respond within 30 days.",
+      "type": "Request type",
+      "types": { "ACCESS": "Access my data", "DELETE": "Delete my profile", "OPT_OUT": "Opt out of processing" },
+      "name": "Full name",
+      "email": "Email",
+      "details": "Anything that helps us find your profile (e.g. company, profile URL)",
+      "submit": "Submit request",
+      "success": "Request received. We'll verify your identity by email and reply within 30 days."
+    }
+  },
+  "comingSoon": {
+    "h1": "Coming soon",
+    "body": "This part of Founders AI is on our roadmap. Book a demo and we'll show you what's live today."
+  },
+  "notFound": { "h1": "This page moved on.", "body": "The link may be old, or the page never existed.", "cta": "Back home" }
+}

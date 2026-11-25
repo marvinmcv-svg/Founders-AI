@@ -1,0 +1,3298 @@
+{
+ "companies": [
+  {
+   "id": "com_4e5721f6e49811e00f6b5f73",
+   "name": "Lumeo Agents",
+   "domain": "lumeoagents.com.br",
+   "tagline": "The operating system for families",
+   "growth_stage": "Pre-seed / Seed",
+   "hq_city": "São Paulo",
+   "hq_country": "Brazil",
+   "hq_region": "Latin America",
+   "operating_status": "Active",
+   "employee_count": 2,
+   "employee_range": "1-10",
+   "headcount_growth_3m": 1,
+   "headcount_growth_12m": 1,
+   "web_visits": 1366,
+   "web_visits_growth_3m": 0.676,
+   "linkedin_followers": 435,
+   "total_funding_usd": "220000",
+   "last_funding_usd": "220000",
+   "last_funding_date": "2025-09-10",
+   "last_funding_type": "Pre-seed",
+   "round_count": 1,
+   "investor_count": 3,
+   "business_models": [
+    "SaaS",
+    "Licensing"
+   ],
+   "customer_focus": "B2C",
+   "sector_id": "sec_artificial-intelligence",
+   "industry_ids": [
+    "ind_computer-vision"
+   ],
+   "tech_vertical_ids": [
+    "tv_sales-intelligence"
+   ],
+   "est_revenue_usd": "40000",
+   "est_valuation_usd": "1451743",
+   "rank": 1,
+   "highlights": [
+    "headcount_surge",
+    "strong_web_traffic_growth"
+   ],
+   "founded_year": 2025,
+   "founders": [
+    {
+     "id": "per_b202d8e9ce262565145b1e4c",
+     "name": "Thiago Costa"
+    },
+    {
+     "id": "per_8d022d53ea6f921ea5b078a7",
+     "name": "Gustavo Silva"
+    }
+   ]
+  },
+  {
+   "id": "com_8cdde771ef645af2ffc7fbb4",
+   "name": "Dorera Motion",
+   "domain": "doreramotion.cl",
+   "tagline": "Modern Drones for travelers",
+   "growth_stage": "Pre-seed / Seed",
+   "hq_city": "Santiago",
+   "hq_country": "Chile",
+   "hq_region": "Latin America",
+   "operating_status": "Active",
+   "employee_count": 2,
+   "employee_range": "1-10",
+   "headcount_growth_3m": 1,
+   "headcount_growth_12m": 1,
+   "web_visits": 98,
+   "web_visits_growth_3m": 0.42,
+   "linkedin_followers": 939,
+   "total_funding_usd": null,
+   "last_funding_usd": null,
+   "last_funding_date": null,
+   "last_funding_type": null,
+   "round_count": 0,
+   "investor_count": 0,
+   "business_models": [
+    "Transaction Fees",
+    "Services"
+   ],
+   "customer_focus": "B2C",
+   "sector_id": "sec_industrials-and-hardware",
+   "industry_ids": [
+    "ind_manufacturing-technology"
+   ],
+   "tech_vertical_ids": [
+    "tv_drones",
+    "tv_mining-technology"
+   ],
+   "est_revenue_usd": "37125",
+   "est_valuation_usd": "185625",
+   "rank": 2,
+   "highlights": [
+    "headcount_surge",
+    "strong_web_traffic_growth",
+    "no_recent_funding"
+   ],
+   "founded_year": 2025,
+   "founders": [
+    {
+     "id": "per_70b7acee6d21d70705787222",
+     "name": "Mariana Quiroga"
+    },
+    {
+     "id": "per_4a7e583ac612982e336c45c7",
+     "name": "Sebastián Villarroel"
+    }
+   ]
+  },
+  {
+   "id": "com_38d3beaface3e82253546b06",
+   "name": "Noro Market",
+   "domain": "noromarket.mx",
+   "tagline": "Modern B2B E-commerce for logistics operators",
+   "growth_stage": "Pre-seed / Seed",
+   "hq_city": "Monterrey",
+   "hq_country": "Mexico",
+   "hq_region": "Latin America",
+   "operating_status": "Active",
+   "employee_count": 2,
+   "employee_range": "1-10",
+   "headcount_growth_3m": 1,
+   "headcount_growth_12m": 1,
+   "web_visits": 4017,
+   "web_visits_growth_3m": 0.127,
+   "linkedin_followers": 134,
+   "total_funding_usd": "170000",
+   "last_funding_usd": "170000",
+   "last_funding_date": "2022-04-14",
+   "last_funding_type": "Pre-seed",
+   "round_count": 1,
+   "investor_count": 1,
+   "business_models": [
+    "Licensing",
+    "Marketplace"
+   ],
+   "customer_focus": "B2B",
+   "sector_id": "sec_commerce-and-consumer",
+   "industry_ids": [
+    "ind_marketplaces"
+   ],
+   "tech_vertical_ids": [
+    "tv_b2b-e-commerce"
+   ],
+   "est_revenue_usd": "49500",
+   "est_valuation_usd": "1242185",
+   "rank": 3,
+   "highlights": [
+    "headcount_surge",
+    "no_recent_funding"
+   ],
+   "founded_year": 2021,
+   "founders": [
+    {
+     "id": "per_ab16fa4d533985f03958c04b",
+     "name": "Julián Paz"
+    },
+    {
+     "id": "per_b8c65077e57dab15406e9211",
+     "name": "Esteban Herrera"
+    },
+    {
+     "id": "per_aab7254f1be4a63925db5e26",
+     "name": "Pablo Arce"
+    }
+   ]
+  },
+  {
+   "id": "com_7f48d6f696c6fc0c42cd7659",
+   "name": "Tierraon Store",
+   "domain": "tierraonstore.com.bo",
+   "tagline": "Buy Now Pay Later that pays for itself",
+   "growth_stage": "Pre-seed / Seed",
+   "hq_city": "Cochabamba",
+   "hq_country": "Bolivia",
+   "hq_region": "Latin America",
+   "operating_status": "Active",
+   "employee_count": 3,
+   "employee_range": "1-10",
+   "headcount_growth_3m": 0.5,
+   "headcount_growth_12m": 2,
+   "web_visits": 1592,
+   "web_visits_growth_3m": 0.828,
+   "linkedin_followers": 154,
+   "total_funding_usd": "1420000",
+   "last_funding_usd": "1420000",
+   "last_funding_date": "2023-01-21",
+   "last_funding_type": "Seed",
+   "round_count": 1,
+   "investor_count": 3,
+   "business_models": [
+    "Hardware"
+   ],
+   "customer_focus": "B2B",
+   "sector_id": "sec_commerce-and-consumer",
+   "industry_ids": [
+    "ind_marketplaces",
+    "ind_e-commerce"
+   ],
+   "tech_vertical_ids": [
+    "tv_buy-now-pay-later"
+   ],
+   "est_revenue_usd": "74250",
+   "est_valuation_usd": "10231288",
+   "rank": 6,
+   "highlights": [
+    "headcount_surge",
+    "strong_web_traffic_growth",
+    "strong_social_growth",
+    "no_recent_funding"
+   ],
+   "founded_year": 2021,
+   "founders": [
+    {
+     "id": "per_0598f503c19dcf67107e5fc2",
+     "name": "Diego Paredes"
+    },
+    {
+     "id": "per_34d2022cb297975b120bd802",
+     "name": "Chloe Turner"
+    }
+   ]
+  },
+  {
+   "id": "com_cd4bf346492dc72c0531f05d",
+   "name": "Vantify Learn",
+   "domain": "vantifylearn.co",
+   "tagline": "Talent Marketplaces that pays for itself",
+   "growth_stage": "Pre-seed / Seed",
+   "hq_city": "Bogotá",
+   "hq_country": "Colombia",
+   "hq_region": "Latin America",
+   "operating_status": "Active",
+   "employee_count": 3,
+   "employee_range": "1-10",
+   "headcount_growth_3m": 0.5,
+   "headcount_growth_12m": 2,
+   "web_visits": 1683,
+   "web_visits_growth_3m": 0.698,
+   "linkedin_followers": 39,
+   "total_funding_usd": "3010000",
+   "last_funding_usd": "2660000",
+   "last_funding_date": "2026-11-23",
+   "last_funding_type": "Seed",
+   "round_count": 2,
+   "investor_count": 2,
+   "business_models": [
+    "Product Sales"
+   ],
+   "customer_focus": "B2B",
+   "sector_id": "sec_education-and-work",
+   "industry_ids": [
+    "ind_edtech",
+    "ind_hr-and-recruiting-tech"
+   ],
+   "tech_vertical_ids": [
+    "tv_talent-marketplaces"
+   ],
+   "est_revenue_usd": "37125",
+   "est_valuation_usd": "2280657",
+   "rank": 7,
+   "highlights": [
+    "headcount_surge",
+    "strong_web_traffic_growth",
+    "recently_funded"
+   ],
+   "founded_year": 2025,
+   "founders": [
+    {
+     "id": "per_2f3ef288d4801f5b26c1b65e",
+     "name": "Mariana Paredes"
+    },
+    {
+     "id": "per_db2f42b51d747052c6002470",
+     "name": "Diego Salazar"
+    }
+   ]
+  },
+  {
+   "id": "com_8c023706d935701e741653fb",
+   "name": "Lumify Carbon",
+   "domain": "lumifycarbon.ec",
+   "tagline": "Modern Carbon Accounting for the unbanked",
+   "growth_stage": "Pre-seed / Seed",
+   "hq_city": "Guayaquil",
+   "hq_country": "Ecuador",
+   "hq_region": "Latin America",
+   "operating_status": "Active",
+   "employee_count": 2,
+   "employee_range": "1-10",
+   "headcount_growth_3m": 1,
+   "headcount_growth_12m": 1,
+   "web_visits": 1714,
+   "web_visits_growth_3m": -0.3,
+   "linkedin_followers": 147,
+   "total_funding_usd": "1710000",
+   "last_funding_usd": "1710000",
+   "last_funding_date": "2023-07-03",
+   "last_funding_type": "Seed",
+   "round_count": 1,
+   "investor_count": 5,
+   "business_models": [
+    "Hardware"
+   ],
+   "customer_focus": "B2C",
+   "sector_id": "sec_climate-and-energy",
+   "industry_ids": [
+    "ind_energy-storage",
+    "ind_carbon-and-climate-software"
+   ],
+   "tech_vertical_ids": [
+    "tv_carbon-accounting",
+    "tv_solar-developers"
+   ],
+   "est_revenue_usd": "38500",
+   "est_valuation_usd": "10213204",
+   "rank": 9,
+   "highlights": [
+    "headcount_surge",
+    "no_recent_funding"
+   ],
+   "founded_year": 2023,
+   "founders": [
+    {
+     "id": "per_5ae928879d695da878a868e3",
+     "name": "Sofía Antelo"
+    },
+    {
+     "id": "per_b0a8bff319cd41e97df2e5d5",
+     "name": "Fernanda Rodríguez"
+    }
+   ]
+  },
+  {
+   "id": "com_54f450cb1984c8453c6bef99",
+   "name": "Torar Play",
+   "domain": "torarplay.co",
+   "tagline": "AI-native Creator Tools built for enterprise operations",
+   "growth_stage": "Pre-seed / Seed",
+   "hq_city": "Bogotá",
+   "hq_country": "Colombia",
+   "hq_region": "Latin America",
+   "operating_status": "Active",
+   "employee_count": 4,
+   "employee_range": "1-10",
+   "headcount_growth_3m": 0.333,
+   "headcount_growth_12m": 1,
+   "web_visits": 776,
+   "web_visits_growth_3m": 1.15,
+   "linkedin_followers": 375,
+   "total_funding_usd": "1130000",
+   "last_funding_usd": "1130000",
+   "last_funding_date": "2021-10-14",
+   "last_funding_type": "Seed",
+   "round_count": 1,
+   "investor_count": 3,
+   "business_models": [
+    "Marketplace"
+   ],
+   "customer_focus": "B2B",
+   "sector_id": "sec_media-and-entertainment",
+   "industry_ids": [
+    "ind_gaming",
+    "ind_creator-economy"
+   ],
+   "tech_vertical_ids": [
+    "tv_creator-tools"
+   ],
+   "est_revenue_usd": "63250",
+   "est_valuation_usd": "12546230",
+   "rank": 10,
+   "highlights": [
+    "headcount_surge",
+    "strong_web_traffic_growth",
+    "no_recent_funding"
+   ],
+   "founded_year": 2021,
+   "founders": [
+    {
+     "id": "per_aaa5ddab318dce77f3047e92",
+     "name": "Paula Reyes"
+    },
+    {
+     "id": "per_be9b3c9f0f637c7594a66ff2",
+     "name": "Daniela Soria"
+    }
+   ]
+  },
+  {
+   "id": "com_3fe78befdaac662b6f925655",
+   "name": "Lumio OS",
+   "domain": "lumioos.cl",
+   "tagline": "Sales Intelligence for developers in Chile",
+   "growth_stage": "Pre-seed / Seed",
+   "hq_city": "Santiago",
+   "hq_country": "Chile",
+   "hq_region": "Latin America",
+   "operating_status": "Active",
+   "employee_count": 2,
+   "employee_range": "1-10",
+   "headcount_growth_3m": 1,
+   "headcount_growth_12m": 1,
+   "web_visits": 326,
+   "web_visits_growth_3m": 0.035,
+   "linkedin_followers": 130,
+   "total_funding_usd": null,
+   "last_funding_usd": null,
+   "last_funding_date": null,
+   "last_funding_type": null,
+   "round_count": 0,
+   "investor_count": 0,
+   "business_models": [
+    "Hardware"
+   ],
+   "customer_focus": "B2B",
+   "sector_id": "sec_software-and-internet",
+   "industry_ids": [
+    "ind_data-and-analytics"
+   ],
+   "tech_vertical_ids": [
+    "tv_sales-intelligence"
+   ],
+   "est_revenue_usd": "41250",
+   "est_valuation_usd": "412500",
+   "rank": 11,
+   "highlights": [
+    "headcount_surge",
+    "no_recent_funding"
+   ],
+   "founded_year": 2021,
+   "founders": [
+    {
+     "id": "per_44aba65c0479ebcd7167ab7d",
+     "name": "Diego Arce"
+    },
+    {
+     "id": "per_d60361c6fd98b642fbcbabdb",
+     "name": "Joaquín Chávez"
+    }
+   ]
+  },
+  {
+   "id": "com_71342ae4bfad3e8b20cf7cfe",
+   "name": "Selvaera Build",
+   "domain": "selvaerabuild.com.br",
+   "tagline": "Rental Marketplaces that pays for itself",
+   "growth_stage": "Pre-seed / Seed",
+   "hq_city": "Curitiba",
+   "hq_country": "Brazil",
+   "hq_region": "Latin America",
+   "operating_status": "Active",
+   "employee_count": 2,
+   "employee_range": "1-10",
+   "headcount_growth_3m": 1,
+   "headcount_growth_12m": 1,
+   "web_visits": 507,
+   "web_visits_growth_3m": -0.017,
+   "linkedin_followers": 47,
+   "total_funding_usd": null,
+   "last_funding_usd": null,
+   "last_funding_date": null,
+   "last_funding_type": null,
+   "round_count": 0,
+   "investor_count": 0,
+   "business_models": [
+    "Licensing",
+    "SaaS"
+   ],
+   "customer_focus": "B2B",
+   "sector_id": "sec_real-estate-and-construction",
+   "industry_ids": [
+    "ind_proptech"
+   ],
+   "tech_vertical_ids": [
+    "tv_rental-marketplaces",
+    "tv_construction-management-software"
+   ],
+   "est_revenue_usd": "34375",
+   "est_valuation_usd": "137500",
+   "rank": 12,
+   "highlights": [
+    "headcount_surge",
+    "no_recent_funding"
+   ],
+   "founded_year": 2022,
+   "founders": [
+    {
+     "id": "per_09a28bc584abaf62a725b7df",
+     "name": "Diego Salazar"
+    },
+    {
+     "id": "per_647b4c87c597e1a4e6fd0d34",
+     "name": "Gabriel Pereira"
+    }
+   ]
+  },
+  {
+   "id": "com_bd1a6b6870c81f2ccca718ae",
+   "name": "Violy Mind",
+   "domain": "violymind.uy",
+   "tagline": "AI Agents and Process Copilots for customs agencies in the Andes",
+   "growth_stage": "Pre-seed / Seed",
+   "hq_city": "Montevideo",
+   "hq_country": "Uruguay",
+   "hq_region": "Latin America",
+   "operating_status": "Active",
+   "employee_count": 3,
+   "employee_range": "1-10",
+   "headcount_growth_3m": 0.5,
+   "headcount_growth_12m": 0.5,
+   "web_visits": 6390,
+   "web_visits_growth_3m": 0.459,
+   "linkedin_followers": 502,
+   "total_funding_usd": "370000",
+   "last_funding_usd": "370000",
+   "last_funding_date": "2026-09-05",
+   "last_funding_type": "Pre-seed",
+   "round_count": 1,
+   "investor_count": 1,
+   "business_models": [
+    "Marketplace"
+   ],
+   "customer_focus": "B2G",
+   "sector_id": "sec_artificial-intelligence",
+   "industry_ids": [
+    "ind_computer-vision",
+    "ind_applied-ai"
+   ],
+   "tech_vertical_ids": [
+    "tv_ai-agents-and-process-copilots",
+    "tv_llm-ops-and-evaluation"
+   ],
+   "est_revenue_usd": "70125",
+   "est_valuation_usd": "3045616",
+   "rank": 15,
+   "highlights": [
+    "headcount_surge",
+    "strong_web_traffic_growth",
+    "recently_funded"
+   ],
+   "founded_year": 2025,
+   "founders": [
+    {
+     "id": "per_3fc040d1d7001e114dcf269c",
+     "name": "Valentina Velasco"
+    },
+    {
+     "id": "per_0f1bfc8e426af45ff2dbad74",
+     "name": "Valentina Ribera"
+    },
+    {
+     "id": "per_ed9579043eef3200dd95a8fa",
+     "name": "Nicolás Ortiz"
+    }
+   ]
+  },
+  {
+   "id": "com_a0167e52ca755f51fb73563c",
+   "name": "Quanly Industrial",
+   "domain": "quanlyindustrial.com.ar",
+   "tagline": "Hardware platform helping developers grow faster",
+   "growth_stage": "Pre-seed / Seed",
+   "hq_city": "Córdoba",
+   "hq_country": "Argentina",
+   "hq_region": "Latin America",
+   "operating_status": "Active",
+   "employee_count": 3,
+   "employee_range": "1-10",
+   "headcount_growth_3m": 0.5,
+   "headcount_growth_12m": 2,
+   "web_visits": 1660,
+   "web_visits_growth_3m": 0.373,
+   "linkedin_followers": 559,
+   "total_funding_usd": "280000",
+   "last_funding_usd": "280000",
+   "last_funding_date": "2026-08-10",
+   "last_funding_type": "Pre-seed",
+   "round_count": 1,
+   "investor_count": 2,
+   "business_models": [
+    "Hardware"
+   ],
+   "customer_focus": "B2B",
+   "sector_id": "sec_industrials-and-hardware",
+   "industry_ids": [
+    "ind_manufacturing-technology"
+   ],
+   "tech_vertical_ids": [
+    "tv_industrial-robotics",
+    "tv_battery-technology"
+   ],
+   "est_revenue_usd": "55688",
+   "est_valuation_usd": "1635548",
+   "rank": 16,
+   "highlights": [
+    "headcount_surge",
+    "strong_web_traffic_growth",
+    "recently_funded"
+   ],
+   "founded_year": 2025,
+   "founders": [
+    {
+     "id": "per_bc857923dfde49e0eaa59cbf",
+     "name": "Mateo Reyes"
+    },
+    {
+     "id": "per_694fdf83410714429e76e28c",
+     "name": "Santiago López"
+    }
+   ]
+  },
+  {
+   "id": "com_92759c1d741c27da0a80a277",
+   "name": "Chacoex Intelligence",
+   "domain": "chacoexintelligence.com.bo",
+   "tagline": "Infrastructure for LLM Ops & Evaluation across Latin America",
+   "growth_stage": "Pre-seed / Seed",
+   "hq_city": "La Paz",
+   "hq_country": "Bolivia",
+   "hq_region": "Latin America",
+   "operating_status": "Active",
+   "employee_count": 2,
+   "employee_range": "1-10",
+   "headcount_growth_3m": 1,
+   "headcount_growth_12m": 1,
+   "web_visits": 489,
+   "web_visits_growth_3m": -0.267,
+   "linkedin_followers": 122,
+   "total_funding_usd": null,
+   "last_funding_usd": null,
+   "last_funding_date": null,
+   "last_funding_type": null,
+   "round_count": 0,
+   "investor_count": 0,
+   "business_models": [
+    "Transaction Fees",
+    "SaaS"
+   ],
+   "customer_focus": "B2B",
+   "sector_id": "sec_artificial-intelligence",
+   "industry_ids": [
+    "ind_ai-infrastructure",
+    "ind_foundation-models"
+   ],
+   "tech_vertical_ids": [
+    "tv_llm-ops-and-evaluation"
+   ],
+   "est_revenue_usd": "46750",
+   "est_valuation_usd": "841500",
+   "rank": 17,
+   "highlights": [
+    "headcount_surge",
+    "strong_social_growth",
+    "no_recent_funding"
+   ],
+   "founded_year": 2024,
+   "founders": [
+    {
+     "id": "per_0c91119a0149948b80842890",
+     "name": "Felipe Gutiérrez"
+    },
+    {
+     "id": "per_4507c0ca2e652548b777e92f",
+     "name": "Mateo Saavedra"
+    }
+   ]
+  },
+  {
+   "id": "com_7f5ade5315e257b140d5fc1b",
+   "name": "Chacoera Cloud",
+   "domain": "chacoeracloud.com.br",
+   "tagline": "Build, Test, CI/CD and Release that pays for itself",
+   "growth_stage": "Pre-seed / Seed",
+   "hq_city": "São Paulo",
+   "hq_country": "Brazil",
+   "hq_region": "Latin America",
+   "operating_status": "Active",
+   "employee_count": 5,
+   "employee_range": "1-10",
+   "headcount_growth_3m": 0.25,
+   "headcount_growth_12m": 1.5,
+   "web_visits": 1588,
+   "web_visits_growth_3m": 1.106,
+   "linkedin_followers": 419,
+   "total_funding_usd": "1200000",
+   "last_funding_usd": "860000",
+   "last_funding_date": "2026-02-19",
+   "last_funding_type": "Seed",
+   "round_count": 2,
+   "investor_count": 3,
+   "business_models": [
+    "Licensing"
+   ],
+   "customer_focus": "B2B",
+   "sector_id": "sec_software-and-internet",
+   "industry_ids": [
+    "ind_collaboration-and-productivity"
+   ],
+   "tech_vertical_ids": [
+    "tv_build-test-ci-cd-and-release",
+    "tv_cloud-security"
+   ],
+   "est_revenue_usd": "103125",
+   "est_valuation_usd": "6633023",
+   "rank": 21,
+   "highlights": [
+    "strong_headcount_growth",
+    "strong_web_traffic_growth",
+    "accelerator_backed"
+   ],
+   "founded_year": 2024,
+   "founders": [
+    {
+     "id": "per_6773d3ec5086555568f5b8b0",
+     "name": "João Almeida"
+    }
+   ]
+  },
+  {
+   "id": "com_eda597b0ba27d53bbf58d74f",
+   "name": "Vanteo Neural",
+   "domain": "vanteoneural.cl",
+   "tagline": "Making LLM Ops & Evaluation simple for developers",
+   "growth_stage": "Pre-seed / Seed",
+   "hq_city": "Valparaíso",
+   "hq_country": "Chile",
+   "hq_region": "Latin America",
+   "operating_status": "Active",
+   "employee_count": 3,
+   "employee_range": "1-10",
+   "headcount_growth_3m": 0.5,
+   "headcount_growth_12m": 0.5,
+   "web_visits": 4863,
+   "web_visits_growth_3m": 0.48,
+   "linkedin_followers": 120,
+   "total_funding_usd": "1060000",
+   "last_funding_usd": "1060000",
+   "last_funding_date": "2025-09-24",
+   "last_funding_type": "Seed",
+   "round_count": 1,
+   "investor_count": 5,
+   "business_models": [
+    "Advertising",
+    "Licensing"
+   ],
+   "customer_focus": "B2B",
+   "sector_id": "sec_artificial-intelligence",
+   "industry_ids": [
+    "ind_computer-vision"
+   ],
+   "tech_vertical_ids": [
+    "tv_llm-ops-and-evaluation",
+    "tv_vector-databases-and-ai-data-stacks"
+   ],
+   "est_revenue_usd": "70125",
+   "est_valuation_usd": "10347127",
+   "rank": 22,
+   "highlights": [
+    "headcount_surge",
+    "strong_web_traffic_growth",
+    "strong_social_growth"
+   ],
+   "founded_year": 2024,
+   "founders": [
+    {
+     "id": "per_7b75f460fb85fb540e515036",
+     "name": "Gabriela Justiniano"
+    }
+   ]
+  }
+ ],
+ "growth": [
+  {
+   "id": "com_2616a8e58fdea196f3af808d",
+   "name": "Velora Motion",
+   "domain": "veloramotion.com",
+   "tagline": "The operating system for logistics operators",
+   "growth_stage": "Pre-seed / Seed",
+   "hq_city": "Miami",
+   "hq_country": "United States",
+   "hq_region": "North America",
+   "operating_status": "Active",
+   "employee_count": 2,
+   "employee_range": "1-10",
+   "headcount_growth_3m": 1,
+   "headcount_growth_12m": 1,
+   "web_visits": 800,
+   "web_visits_growth_3m": 0.065,
+   "linkedin_followers": 24,
+   "total_funding_usd": null,
+   "last_funding_usd": null,
+   "last_funding_date": null,
+   "last_funding_type": null,
+   "round_count": 0,
+   "investor_count": 0,
+   "business_models": [
+    "Product Sales"
+   ],
+   "customer_focus": "B2B",
+   "sector_id": "sec_industrials-and-hardware",
+   "industry_ids": [
+    "ind_manufacturing-technology",
+    "ind_robotics"
+   ],
+   "tech_vertical_ids": [
+    "tv_drones"
+   ],
+   "est_revenue_usd": "40000",
+   "est_valuation_usd": "200000",
+   "rank": 8,
+   "highlights": [
+    "headcount_surge",
+    "no_recent_funding"
+   ],
+   "founded_year": 2023,
+   "founders": [
+    {
+     "id": "per_05cde742a5eb2095c7ffae37",
+     "name": "Daniel Hughes"
+    },
+    {
+     "id": "per_717853b5872cedf320d9506e",
+     "name": "Grace Parker"
+    }
+   ]
+  },
+  {
+   "id": "com_38d3beaface3e82253546b06",
+   "name": "Noro Market",
+   "domain": "noromarket.mx",
+   "tagline": "Modern B2B E-commerce for logistics operators",
+   "growth_stage": "Pre-seed / Seed",
+   "hq_city": "Monterrey",
+   "hq_country": "Mexico",
+   "hq_region": "Latin America",
+   "operating_status": "Active",
+   "employee_count": 2,
+   "employee_range": "1-10",
+   "headcount_growth_3m": 1,
+   "headcount_growth_12m": 1,
+   "web_visits": 4017,
+   "web_visits_growth_3m": 0.127,
+   "linkedin_followers": 134,
+   "total_funding_usd": "170000",
+   "last_funding_usd": "170000",
+   "last_funding_date": "2022-04-14",
+   "last_funding_type": "Pre-seed",
+   "round_count": 1,
+   "investor_count": 1,
+   "business_models": [
+    "Licensing",
+    "Marketplace"
+   ],
+   "customer_focus": "B2B",
+   "sector_id": "sec_commerce-and-consumer",
+   "industry_ids": [
+    "ind_marketplaces"
+   ],
+   "tech_vertical_ids": [
+    "tv_b2b-e-commerce"
+   ],
+   "est_revenue_usd": "49500",
+   "est_valuation_usd": "1242185",
+   "rank": 3,
+   "highlights": [
+    "headcount_surge",
+    "no_recent_funding"
+   ],
+   "founded_year": 2021,
+   "founders": [
+    {
+     "id": "per_ab16fa4d533985f03958c04b",
+     "name": "Julián Paz"
+    },
+    {
+     "id": "per_b8c65077e57dab15406e9211",
+     "name": "Esteban Herrera"
+    },
+    {
+     "id": "per_aab7254f1be4a63925db5e26",
+     "name": "Pablo Arce"
+    }
+   ]
+  },
+  {
+   "id": "com_3fe78befdaac662b6f925655",
+   "name": "Lumio OS",
+   "domain": "lumioos.cl",
+   "tagline": "Sales Intelligence for developers in Chile",
+   "growth_stage": "Pre-seed / Seed",
+   "hq_city": "Santiago",
+   "hq_country": "Chile",
+   "hq_region": "Latin America",
+   "operating_status": "Active",
+   "employee_count": 2,
+   "employee_range": "1-10",
+   "headcount_growth_3m": 1,
+   "headcount_growth_12m": 1,
+   "web_visits": 326,
+   "web_visits_growth_3m": 0.035,
+   "linkedin_followers": 130,
+   "total_funding_usd": null,
+   "last_funding_usd": null,
+   "last_funding_date": null,
+   "last_funding_type": null,
+   "round_count": 0,
+   "investor_count": 0,
+   "business_models": [
+    "Hardware"
+   ],
+   "customer_focus": "B2B",
+   "sector_id": "sec_software-and-internet",
+   "industry_ids": [
+    "ind_data-and-analytics"
+   ],
+   "tech_vertical_ids": [
+    "tv_sales-intelligence"
+   ],
+   "est_revenue_usd": "41250",
+   "est_valuation_usd": "412500",
+   "rank": 11,
+   "highlights": [
+    "headcount_surge",
+    "no_recent_funding"
+   ],
+   "founded_year": 2021,
+   "founders": [
+    {
+     "id": "per_44aba65c0479ebcd7167ab7d",
+     "name": "Diego Arce"
+    },
+    {
+     "id": "per_d60361c6fd98b642fbcbabdb",
+     "name": "Joaquín Chávez"
+    }
+   ]
+  },
+  {
+   "id": "com_4e5721f6e49811e00f6b5f73",
+   "name": "Lumeo Agents",
+   "domain": "lumeoagents.com.br",
+   "tagline": "The operating system for families",
+   "growth_stage": "Pre-seed / Seed",
+   "hq_city": "São Paulo",
+   "hq_country": "Brazil",
+   "hq_region": "Latin America",
+   "operating_status": "Active",
+   "employee_count": 2,
+   "employee_range": "1-10",
+   "headcount_growth_3m": 1,
+   "headcount_growth_12m": 1,
+   "web_visits": 1366,
+   "web_visits_growth_3m": 0.676,
+   "linkedin_followers": 435,
+   "total_funding_usd": "220000",
+   "last_funding_usd": "220000",
+   "last_funding_date": "2025-09-10",
+   "last_funding_type": "Pre-seed",
+   "round_count": 1,
+   "investor_count": 3,
+   "business_models": [
+    "SaaS",
+    "Licensing"
+   ],
+   "customer_focus": "B2C",
+   "sector_id": "sec_artificial-intelligence",
+   "industry_ids": [
+    "ind_computer-vision"
+   ],
+   "tech_vertical_ids": [
+    "tv_sales-intelligence"
+   ],
+   "est_revenue_usd": "40000",
+   "est_valuation_usd": "1451743",
+   "rank": 1,
+   "highlights": [
+    "headcount_surge",
+    "strong_web_traffic_growth"
+   ],
+   "founded_year": 2025,
+   "founders": [
+    {
+     "id": "per_b202d8e9ce262565145b1e4c",
+     "name": "Thiago Costa"
+    },
+    {
+     "id": "per_8d022d53ea6f921ea5b078a7",
+     "name": "Gustavo Silva"
+    }
+   ]
+  },
+  {
+   "id": "com_52966f6de4cad4c146fb536e",
+   "name": "Liaera Med",
+   "domain": "liaeramed.es",
+   "tagline": "AI-native Clinical Workflow Software built for SMBs",
+   "growth_stage": "Pre-seed / Seed",
+   "hq_city": "Valencia",
+   "hq_country": "Spain",
+   "hq_region": "Europe",
+   "operating_status": "Active",
+   "employee_count": 2,
+   "employee_range": "1-10",
+   "headcount_growth_3m": 1,
+   "headcount_growth_12m": 1,
+   "web_visits": 392,
+   "web_visits_growth_3m": 0.01,
+   "linkedin_followers": 72,
+   "total_funding_usd": "110000",
+   "last_funding_usd": "110000",
+   "last_funding_date": "2024-03-01",
+   "last_funding_type": "Pre-seed",
+   "round_count": 1,
+   "investor_count": 3,
+   "business_models": [
+    "Transaction Fees"
+   ],
+   "customer_focus": "B2B",
+   "sector_id": "sec_health-and-life-sciences",
+   "industry_ids": [
+    "ind_medical-devices"
+   ],
+   "tech_vertical_ids": [
+    "tv_clinical-workflow-software"
+   ],
+   "est_revenue_usd": "51000",
+   "est_valuation_usd": "906157",
+   "rank": 4,
+   "highlights": [
+    "headcount_surge",
+    "no_recent_funding"
+   ],
+   "founded_year": 2022,
+   "founders": [
+    {
+     "id": "per_58856355bb73415aacac3730",
+     "name": "Julián Montaño"
+    }
+   ]
+  },
+  {
+   "id": "com_71342ae4bfad3e8b20cf7cfe",
+   "name": "Selvaera Build",
+   "domain": "selvaerabuild.com.br",
+   "tagline": "Rental Marketplaces that pays for itself",
+   "growth_stage": "Pre-seed / Seed",
+   "hq_city": "Curitiba",
+   "hq_country": "Brazil",
+   "hq_region": "Latin America",
+   "operating_status": "Active",
+   "employee_count": 2,
+   "employee_range": "1-10",
+   "headcount_growth_3m": 1,
+   "headcount_growth_12m": 1,
+   "web_visits": 507,
+   "web_visits_growth_3m": -0.017,
+   "linkedin_followers": 47,
+   "total_funding_usd": null,
+   "last_funding_usd": null,
+   "last_funding_date": null,
+   "last_funding_type": null,
+   "round_count": 0,
+   "investor_count": 0,
+   "business_models": [
+    "Licensing",
+    "SaaS"
+   ],
+   "customer_focus": "B2B",
+   "sector_id": "sec_real-estate-and-construction",
+   "industry_ids": [
+    "ind_proptech"
+   ],
+   "tech_vertical_ids": [
+    "tv_rental-marketplaces",
+    "tv_construction-management-software"
+   ],
+   "est_revenue_usd": "34375",
+   "est_valuation_usd": "137500",
+   "rank": 12,
+   "highlights": [
+    "headcount_surge",
+    "no_recent_funding"
+   ],
+   "founded_year": 2022,
+   "founders": [
+    {
+     "id": "per_09a28bc584abaf62a725b7df",
+     "name": "Diego Salazar"
+    },
+    {
+     "id": "per_647b4c87c597e1a4e6fd0d34",
+     "name": "Gabriel Pereira"
+    }
+   ]
+  },
+  {
+   "id": "com_8c023706d935701e741653fb",
+   "name": "Lumify Carbon",
+   "domain": "lumifycarbon.ec",
+   "tagline": "Modern Carbon Accounting for the unbanked",
+   "growth_stage": "Pre-seed / Seed",
+   "hq_city": "Guayaquil",
+   "hq_country": "Ecuador",
+   "hq_region": "Latin America",
+   "operating_status": "Active",
+   "employee_count": 2,
+   "employee_range": "1-10",
+   "headcount_growth_3m": 1,
+   "headcount_growth_12m": 1,
+   "web_visits": 1714,
+   "web_visits_growth_3m": -0.3,
+   "linkedin_followers": 147,
+   "total_funding_usd": "1710000",
+   "last_funding_usd": "1710000",
+   "last_funding_date": "2023-07-03",
+   "last_funding_type": "Seed",
+   "round_count": 1,
+   "investor_count": 5,
+   "business_models": [
+    "Hardware"
+   ],
+   "customer_focus": "B2C",
+   "sector_id": "sec_climate-and-energy",
+   "industry_ids": [
+    "ind_energy-storage",
+    "ind_carbon-and-climate-software"
+   ],
+   "tech_vertical_ids": [
+    "tv_carbon-accounting",
+    "tv_solar-developers"
+   ],
+   "est_revenue_usd": "38500",
+   "est_valuation_usd": "10213204",
+   "rank": 9,
+   "highlights": [
+    "headcount_surge",
+    "no_recent_funding"
+   ],
+   "founded_year": 2023,
+   "founders": [
+    {
+     "id": "per_5ae928879d695da878a868e3",
+     "name": "Sofía Antelo"
+    },
+    {
+     "id": "per_b0a8bff319cd41e97df2e5d5",
+     "name": "Fernanda Rodríguez"
+    }
+   ]
+  },
+  {
+   "id": "com_8cdde771ef645af2ffc7fbb4",
+   "name": "Dorera Motion",
+   "domain": "doreramotion.cl",
+   "tagline": "Modern Drones for travelers",
+   "growth_stage": "Pre-seed / Seed",
+   "hq_city": "Santiago",
+   "hq_country": "Chile",
+   "hq_region": "Latin America",
+   "operating_status": "Active",
+   "employee_count": 2,
+   "employee_range": "1-10",
+   "headcount_growth_3m": 1,
+   "headcount_growth_12m": 1,
+   "web_visits": 98,
+   "web_visits_growth_3m": 0.42,
+   "linkedin_followers": 939,
+   "total_funding_usd": null,
+   "last_funding_usd": null,
+   "last_funding_date": null,
+   "last_funding_type": null,
+   "round_count": 0,
+   "investor_count": 0,
+   "business_models": [
+    "Transaction Fees",
+    "Services"
+   ],
+   "customer_focus": "B2C",
+   "sector_id": "sec_industrials-and-hardware",
+   "industry_ids": [
+    "ind_manufacturing-technology"
+   ],
+   "tech_vertical_ids": [
+    "tv_drones",
+    "tv_mining-technology"
+   ],
+   "est_revenue_usd": "37125",
+   "est_valuation_usd": "185625",
+   "rank": 2,
+   "highlights": [
+    "headcount_surge",
+    "strong_web_traffic_growth",
+    "no_recent_funding"
+   ],
+   "founded_year": 2025,
+   "founders": [
+    {
+     "id": "per_70b7acee6d21d70705787222",
+     "name": "Mariana Quiroga"
+    },
+    {
+     "id": "per_4a7e583ac612982e336c45c7",
+     "name": "Sebastián Villarroel"
+    }
+   ]
+  },
+  {
+   "id": "com_92759c1d741c27da0a80a277",
+   "name": "Chacoex Intelligence",
+   "domain": "chacoexintelligence.com.bo",
+   "tagline": "Infrastructure for LLM Ops & Evaluation across Latin America",
+   "growth_stage": "Pre-seed / Seed",
+   "hq_city": "La Paz",
+   "hq_country": "Bolivia",
+   "hq_region": "Latin America",
+   "operating_status": "Active",
+   "employee_count": 2,
+   "employee_range": "1-10",
+   "headcount_growth_3m": 1,
+   "headcount_growth_12m": 1,
+   "web_visits": 489,
+   "web_visits_growth_3m": -0.267,
+   "linkedin_followers": 122,
+   "total_funding_usd": null,
+   "last_funding_usd": null,
+   "last_funding_date": null,
+   "last_funding_type": null,
+   "round_count": 0,
+   "investor_count": 0,
+   "business_models": [
+    "Transaction Fees",
+    "SaaS"
+   ],
+   "customer_focus": "B2B",
+   "sector_id": "sec_artificial-intelligence",
+   "industry_ids": [
+    "ind_ai-infrastructure",
+    "ind_foundation-models"
+   ],
+   "tech_vertical_ids": [
+    "tv_llm-ops-and-evaluation"
+   ],
+   "est_revenue_usd": "46750",
+   "est_valuation_usd": "841500",
+   "rank": 17,
+   "highlights": [
+    "headcount_surge",
+    "strong_social_growth",
+    "no_recent_funding"
+   ],
+   "founded_year": 2024,
+   "founders": [
+    {
+     "id": "per_0c91119a0149948b80842890",
+     "name": "Felipe Gutiérrez"
+    },
+    {
+     "id": "per_4507c0ca2e652548b777e92f",
+     "name": "Mateo Saavedra"
+    }
+   ]
+  },
+  {
+   "id": "com_f281847433fd809cbbee50b9",
+   "name": "Coro Capital",
+   "domain": "corocapital.com",
+   "tagline": "Fraud Detection for insurers and policyholders in United States",
+   "growth_stage": "Early",
+   "hq_city": "Austin",
+   "hq_country": "United States",
+   "hq_region": "North America",
+   "operating_status": "Active",
+   "employee_count": 7,
+   "employee_range": "1-10",
+   "headcount_growth_3m": 0.75,
+   "headcount_growth_12m": 6,
+   "web_visits": 1392,
+   "web_visits_growth_3m": 0.358,
+   "linkedin_followers": 3374,
+   "total_funding_usd": null,
+   "last_funding_usd": null,
+   "last_funding_date": null,
+   "last_funding_type": null,
+   "round_count": 0,
+   "investor_count": 0,
+   "business_models": [
+    "SaaS"
+   ],
+   "customer_focus": "B2B2C",
+   "sector_id": "sec_financial-services",
+   "industry_ids": [
+    "ind_payments",
+    "ind_banking-infrastructure"
+   ],
+   "tech_vertical_ids": [
+    "tv_fraud-detection"
+   ],
+   "est_revenue_usd": "616000",
+   "est_valuation_usd": "4928000",
+   "rank": 5,
+   "highlights": [
+    "headcount_surge",
+    "strong_web_traffic_growth",
+    "no_recent_funding"
+   ],
+   "founded_year": 2016,
+   "founders": [
+    {
+     "id": "per_f7ef0e1e5c4c57eb671e5595",
+     "name": "Nora Spencer"
+    }
+   ]
+  }
+ ],
+ "people": [
+  {
+   "id": "per_69a9d3b787e64e991e90f8cc",
+   "full_name": "Henry Wallace",
+   "headline": "Co-founder & CEO at Helix Energy",
+   "current_title": "Co-founder & CEO",
+   "current_company_id": "com_c5a8028f8d12bf83655b9e01",
+   "current_company_name": "Helix Energy",
+   "seniority": "Founder",
+   "department": "Sales",
+   "location": "New York, United States",
+   "country": "United States",
+   "years_experience": 4,
+   "highlights": [
+    "Top University",
+    "Influencer"
+   ],
+   "education_summary": "BA, Harvard University",
+   "followers": 687030,
+   "connections": 480,
+   "talent_signal_count": 0,
+   "linkedin_url": "https://demo.linkedin.invalid/in/henry-wallace-9f8495"
+  },
+  {
+   "id": "per_8b32394ddbdb8959047bf828",
+   "full_name": "Ella Wallace",
+   "headline": "Founder & CEO at Chacoera Finance",
+   "current_title": "Founder & CEO",
+   "current_company_id": "com_2e787d649440975db6f28e64",
+   "current_company_name": "Chacoera Finance",
+   "seniority": "Founder",
+   "department": "Product",
+   "location": "Seattle, United States",
+   "country": "United States",
+   "years_experience": 22,
+   "highlights": [
+    "Major Tech Experience",
+    "Top University",
+    "Influencer",
+    "Hyper Connector"
+   ],
+   "education_summary": "BSc, IE University",
+   "followers": 533729,
+   "connections": 15343,
+   "talent_signal_count": 0,
+   "linkedin_url": "https://demo.linkedin.invalid/in/ella-wallace-676146"
+  },
+  {
+   "id": "per_43fe8cc1919d889456db6529",
+   "full_name": "Fernanda Chávez",
+   "headline": "Co-founder & CEO at Celio Learn",
+   "current_title": "Co-founder & CEO",
+   "current_company_id": "com_8a3362e2ab3df954bd566f5b",
+   "current_company_name": "Celio Learn",
+   "seniority": "Founder",
+   "department": "Engineering",
+   "location": "Mexico City, Mexico",
+   "country": "Mexico",
+   "years_experience": 6,
+   "highlights": [
+    "Serial Founder",
+    "Top University",
+    "Influencer"
+   ],
+   "education_summary": "BEng, London School of Economics",
+   "followers": 511631,
+   "connections": 1286,
+   "talent_signal_count": 0,
+   "linkedin_url": "https://demo.linkedin.invalid/in/fernanda-chavez-6f6f79"
+  },
+  {
+   "id": "per_cbead313ca2a6fbe7d846a35",
+   "full_name": "Camila Chávez",
+   "headline": "Co-founder & CEO at Feneo Bank",
+   "current_title": "Co-founder & CEO",
+   "current_company_id": "com_0025284411893966e450472f",
+   "current_company_name": "Feneo Bank",
+   "seniority": "Founder",
+   "department": "Engineering",
+   "location": "Mexico City, Mexico",
+   "country": "Mexico",
+   "years_experience": 20,
+   "highlights": [
+    "Serial Founder",
+    "Top University",
+    "Influencer"
+   ],
+   "education_summary": "BEng, Universidad Nacional Autónoma de México",
+   "followers": 354519,
+   "connections": 1344,
+   "talent_signal_count": 0,
+   "linkedin_url": "https://demo.linkedin.invalid/in/camila-chavez-3589bd"
+  },
+  {
+   "id": "per_9b43921614ee21350a65d7ca",
+   "full_name": "Gonzalo Suárez",
+   "headline": "Founder & CEO at Verdeix Ledger",
+   "current_title": "Founder & CEO",
+   "current_company_id": "com_58a4291069279d1287e69ecf",
+   "current_company_name": "Verdeix Ledger",
+   "seniority": "Founder",
+   "department": "Sales",
+   "location": "Arequipa, Peru",
+   "country": "Peru",
+   "years_experience": 6,
+   "highlights": [
+    "Influencer"
+   ],
+   "education_summary": "PhD, Universidad del Pacífico",
+   "followers": 334378,
+   "connections": 1701,
+   "talent_signal_count": 0,
+   "linkedin_url": "https://demo.linkedin.invalid/in/gonzalo-suarez-2b514e"
+  },
+  {
+   "id": "per_cfe6d7fce7cf491eff807fa6",
+   "full_name": "Alejandro Reyes",
+   "headline": "Co-founder & COO at Nubix Mercado",
+   "current_title": "Co-founder & COO",
+   "current_company_id": "com_1f86fd3bc9b66d215ff9176d",
+   "current_company_name": "Nubix Mercado",
+   "seniority": "Founder",
+   "department": "Engineering",
+   "location": "Arequipa, Peru",
+   "country": "Peru",
+   "years_experience": 14,
+   "highlights": [
+    "Major Tech Experience",
+    "Influencer"
+   ],
+   "education_summary": "BSc, Universidad Privada de Santa Cruz",
+   "followers": 322044,
+   "connections": 450,
+   "talent_signal_count": 0,
+   "linkedin_url": "https://demo.linkedin.invalid/in/alejandro-reyes-31e8a7"
+  },
+  {
+   "id": "per_d547f460c5e2c68cdf291ad0",
+   "full_name": "Ethan Sullivan",
+   "headline": "Co-founder & COO at Mona Soy",
+   "current_title": "Co-founder & COO",
+   "current_company_id": "com_724680cc941d0bfdad944353",
+   "current_company_name": "Mona Soy",
+   "seniority": "Founder",
+   "department": "Sales",
+   "location": "Miami, United States",
+   "country": "United States",
+   "years_experience": 11,
+   "highlights": [
+    "Top University",
+    "Fortune 500 Experience",
+    "Influencer"
+   ],
+   "education_summary": "BA, Harvard University",
+   "followers": 292075,
+   "connections": 503,
+   "talent_signal_count": 0,
+   "linkedin_url": "https://demo.linkedin.invalid/in/ethan-sullivan-3ae86d"
+  },
+  {
+   "id": "per_3340d509e1e6b0b1d29b0238",
+   "full_name": "Mia Turner",
+   "headline": "Co-founder & CEO at Nubeo Casa",
+   "current_title": "Co-founder & CEO",
+   "current_company_id": "com_c610fb388a8b8441d3b161d5",
+   "current_company_name": "Nubeo Casa",
+   "seniority": "Founder",
+   "department": "Sales",
+   "location": "San Francisco, United States",
+   "country": "United States",
+   "years_experience": 19,
+   "highlights": [
+    "Top University",
+    "Repeat Co-founders",
+    "Influencer",
+    "Hyper Connector"
+   ],
+   "education_summary": "BEng, Carnegie Mellon University",
+   "followers": 284735,
+   "connections": 8352,
+   "talent_signal_count": 0,
+   "linkedin_url": "https://demo.linkedin.invalid/in/mia-turner-6b95dc"
+  },
+  {
+   "id": "per_92155861ec0c93111ea9a17d",
+   "full_name": "Liam Wallace",
+   "headline": "Co-founder & COO at Xanex Cloud",
+   "current_title": "Co-founder & COO",
+   "current_company_id": "com_aac9edb6ed205559e74df8c9",
+   "current_company_name": "Xanex Cloud",
+   "seniority": "Founder",
+   "department": "Sales",
+   "location": "New York, United States",
+   "country": "United States",
+   "years_experience": 20,
+   "highlights": [
+    "Top University",
+    "Influencer",
+    "Hyper Connector",
+    "Stealth"
+   ],
+   "education_summary": "BA, Universidade Estadual de Campinas",
+   "followers": 282035,
+   "connections": 9498,
+   "talent_signal_count": 2,
+   "linkedin_url": "https://demo.linkedin.invalid/in/liam-wallace-28a23c"
+  },
+  {
+   "id": "per_71902cc85cc88d3b7d7691b0",
+   "full_name": "Raúl Ibáñez",
+   "headline": "Co-founder & COO at Doron Clinic",
+   "current_title": "Co-founder & COO",
+   "current_company_id": "com_8b18d59dbbdf7acdd43d44c8",
+   "current_company_name": "Doron Clinic",
+   "seniority": "Founder",
+   "department": "Product",
+   "location": "Guadalajara, Mexico",
+   "country": "Mexico",
+   "years_experience": 25,
+   "highlights": [
+    "Serial Founder",
+    "Prior Exit",
+    "Major Tech Experience",
+    "Top University",
+    "Influencer"
+   ],
+   "education_summary": "MSc, Tecnológico de Monterrey",
+   "followers": 259271,
+   "connections": 193,
+   "talent_signal_count": 0,
+   "linkedin_url": "https://demo.linkedin.invalid/in/raul-ibanez-0798ca"
+  }
+ ],
+ "investors": [
+  {
+   "id": "inv_598336a62098f76ce7260853",
+   "name": "Rio Payments S.A. Ventures Opportunity",
+   "type": "CVC",
+   "domain": "riopaymentssaventuresopportunity.capital",
+   "hq_city": "New York",
+   "hq_country": "United States",
+   "aum_usd": "458000000",
+   "check_min": "500000",
+   "check_max": "7500000",
+   "target_stages": [
+    "Early",
+    "Pre-seed / Seed",
+    "Growth"
+   ],
+   "geographies": [
+    "Latin America",
+    "North America"
+   ],
+   "sectors": [
+    "sec_media-and-entertainment",
+    "sec_artificial-intelligence",
+    "sec_software-and-internet",
+    "sec_education-and-work"
+   ],
+   "investments_count": 137,
+   "exits_count": 7,
+   "leads_count": 49,
+   "follow_on_rate": 0.007,
+   "unicorn_count": 10,
+   "highlights": [
+    "Lead investor",
+    "Active",
+    "Unicorn backer"
+   ]
+  },
+  {
+   "id": "inv_36e9b2f71486af631bc95e1b",
+   "name": "Ibáñez Holdings",
+   "type": "Family office",
+   "domain": "ibanezholdings.capital",
+   "hq_city": "Florianópolis",
+   "hq_country": "Brazil",
+   "aum_usd": "159000000",
+   "check_min": "200000",
+   "check_max": "1400000",
+   "target_stages": [
+    "Early",
+    "Growth",
+    "Pre-seed / Seed"
+   ],
+   "geographies": [
+    "North America",
+    "Latin America"
+   ],
+   "sectors": [
+    "sec_education-and-work",
+    "sec_financial-services",
+    "sec_commerce-and-consumer",
+    "sec_climate-and-energy"
+   ],
+   "investments_count": 129,
+   "exits_count": 13,
+   "leads_count": 45,
+   "follow_on_rate": 0,
+   "unicorn_count": 4,
+   "highlights": [
+    "Lead investor",
+    "Active",
+    "Unicorn backer"
+   ]
+  },
+  {
+   "id": "inv_bb3d3baa4a93c3d434e60b3e",
+   "name": "Patagonia Frontier Holdings III",
+   "type": "VC",
+   "domain": "patagoniafrontierholdingsiii.vc",
+   "hq_city": "Mexico City",
+   "hq_country": "Mexico",
+   "aum_usd": "92000000",
+   "check_min": "400000",
+   "check_max": "3200000",
+   "target_stages": [
+    "Pre-seed / Seed",
+    "Growth",
+    "Early"
+   ],
+   "geographies": [
+    "Europe",
+    "Latin America"
+   ],
+   "sectors": [
+    "sec_mobility-and-logistics",
+    "sec_commerce-and-consumer",
+    "sec_education-and-work",
+    "sec_agriculture-and-food-systems"
+   ],
+   "investments_count": 123,
+   "exits_count": 9,
+   "leads_count": 45,
+   "follow_on_rate": 0,
+   "unicorn_count": 7,
+   "highlights": [
+    "Lead investor",
+    "Active",
+    "Unicorn backer"
+   ]
+  },
+  {
+   "id": "inv_695f93cb82d33048cfab0a7b",
+   "name": "Ceibo Seed Growth Global",
+   "type": "VC",
+   "domain": "ceiboseedgrowthglobal.com",
+   "hq_city": "La Paz",
+   "hq_country": "Bolivia",
+   "aum_usd": "173000000",
+   "check_min": "100000",
+   "check_max": "300000",
+   "target_stages": [
+    "Pre-seed / Seed",
+    "Growth",
+    "Early"
+   ],
+   "geographies": [
+    "North America",
+    "Latin America"
+   ],
+   "sectors": [
+    "sec_agriculture-and-food-systems",
+    "sec_industrials-and-hardware",
+    "sec_software-and-internet"
+   ],
+   "investments_count": 122,
+   "exits_count": 7,
+   "leads_count": 41,
+   "follow_on_rate": 0,
+   "unicorn_count": 1,
+   "highlights": [
+    "Lead investor",
+    "Active",
+    "Unicorn backer"
+   ]
+  },
+  {
+   "id": "inv_804fe78731160bf3fef02be1",
+   "name": "Andes Frontier Investments III",
+   "type": "VC",
+   "domain": "andesfrontierinvestmentsiii.com",
+   "hq_city": "Boston",
+   "hq_country": "United States",
+   "aum_usd": "95000000",
+   "check_min": "700000",
+   "check_max": "10500000",
+   "target_stages": [
+    "Pre-seed / Seed",
+    "Early",
+    "Growth"
+   ],
+   "geographies": [
+    "Latin America",
+    "North America"
+   ],
+   "sectors": [
+    "sec_artificial-intelligence"
+   ],
+   "investments_count": 121,
+   "exits_count": 5,
+   "leads_count": 41,
+   "follow_on_rate": 0,
+   "unicorn_count": 4,
+   "highlights": [
+    "Lead investor",
+    "Active",
+    "Unicorn backer"
+   ]
+  },
+  {
+   "id": "inv_9f28984743ff0008f49741e7",
+   "name": "Lapacho Digital Investments Global",
+   "type": "VC",
+   "domain": "lapachodigitalinvestmentsglobal.com",
+   "hq_city": "London",
+   "hq_country": "United Kingdom",
+   "aum_usd": "768000000",
+   "check_min": "1700000",
+   "check_max": "10200000",
+   "target_stages": [
+    "Pre-seed / Seed",
+    "Growth",
+    "Early"
+   ],
+   "geographies": [
+    "Latin America",
+    "North America"
+   ],
+   "sectors": [
+    "sec_agriculture-and-food-systems",
+    "sec_health-and-life-sciences",
+    "sec_artificial-intelligence"
+   ],
+   "investments_count": 121,
+   "exits_count": 14,
+   "leads_count": 43,
+   "follow_on_rate": 0.008,
+   "unicorn_count": 5,
+   "highlights": [
+    "Lead investor",
+    "Active",
+    "Unicorn backer"
+   ]
+  },
+  {
+   "id": "inv_769f4f468d0d45ffa82ee987",
+   "name": "Sierra Digital Growth",
+   "type": "VC",
+   "domain": "sierradigitalgrowth.capital",
+   "hq_city": "Lisbon",
+   "hq_country": "Portugal",
+   "aum_usd": "4037000000",
+   "check_min": "1900000",
+   "check_max": "19000000",
+   "target_stages": [
+    "Late",
+    "Pre-seed / Seed",
+    "Growth"
+   ],
+   "geographies": [
+    "Europe",
+    "Latin America"
+   ],
+   "sectors": [
+    "sec_media-and-entertainment"
+   ],
+   "investments_count": 120,
+   "exits_count": 12,
+   "leads_count": 56,
+   "follow_on_rate": 0.008,
+   "unicorn_count": 9,
+   "highlights": [
+    "Tier-1",
+    "Lead investor",
+    "Active",
+    "Unicorn backer"
+   ]
+  },
+  {
+   "id": "inv_3ac32b4373d66fa3d86643fa",
+   "name": "Ibáñez Family Office",
+   "type": "Family office",
+   "domain": "ibanezfamilyoffice.com",
+   "hq_city": "Mexico City",
+   "hq_country": "Mexico",
+   "aum_usd": "126000000",
+   "check_min": "400000",
+   "check_max": "4400000",
+   "target_stages": [
+    "Early",
+    "Growth",
+    "Pre-seed / Seed"
+   ],
+   "geographies": [
+    "North America",
+    "Latin America"
+   ],
+   "sectors": [
+    "sec_artificial-intelligence",
+    "sec_real-estate-and-construction",
+    "sec_industrials-and-hardware"
+   ],
+   "investments_count": 119,
+   "exits_count": 9,
+   "leads_count": 42,
+   "follow_on_rate": 0,
+   "unicorn_count": 2,
+   "highlights": [
+    "Lead investor",
+    "Active",
+    "Unicorn backer"
+   ]
+  },
+  {
+   "id": "inv_43956d62c5feb11c80d21d9e",
+   "name": "Horizon Impact Equity II",
+   "type": "VC",
+   "domain": "horizonimpactequityii.com",
+   "hq_city": "Lima",
+   "hq_country": "Peru",
+   "aum_usd": "118000000",
+   "check_min": "1200000",
+   "check_max": "4800000",
+   "target_stages": [
+    "Pre-seed / Seed",
+    "Early",
+    "Growth"
+   ],
+   "geographies": [
+    "North America",
+    "Latin America"
+   ],
+   "sectors": [
+    "sec_industrials-and-hardware",
+    "sec_artificial-intelligence",
+    "sec_climate-and-energy"
+   ],
+   "investments_count": 118,
+   "exits_count": 5,
+   "leads_count": 36,
+   "follow_on_rate": 0,
+   "unicorn_count": 8,
+   "highlights": [
+    "Lead investor",
+    "Active",
+    "Unicorn backer"
+   ]
+  },
+  {
+   "id": "inv_9f5592d831a253d6b886a563",
+   "name": "Titicaca Equity",
+   "type": "VC",
+   "domain": "titicacaequity.fund",
+   "hq_city": "São Paulo",
+   "hq_country": "Brazil",
+   "aum_usd": "260000000",
+   "check_min": "1200000",
+   "check_max": "3600000",
+   "target_stages": [
+    "Pre-seed / Seed",
+    "Early",
+    "Growth"
+   ],
+   "geographies": [
+    "Latin America",
+    "North America"
+   ],
+   "sectors": [
+    "sec_agriculture-and-food-systems",
+    "sec_software-and-internet"
+   ],
+   "investments_count": 118,
+   "exits_count": 11,
+   "leads_count": 38,
+   "follow_on_rate": 0,
+   "unicorn_count": 5,
+   "highlights": [
+    "Lead investor",
+    "Active",
+    "Unicorn backer"
+   ]
+  }
+ ],
+ "rounds": [
+  {
+   "id": "trx_259faf4685cafe077f7e0b74",
+   "company_id": "com_c6ed9c325ab02a95f951e71d",
+   "company_name": "Lumora Mercado",
+   "company_domain": "lumoramercado.mx",
+   "company_country": "Mexico",
+   "type": "Series A",
+   "amount_usd": "5510000",
+   "announced_date": "2026-11-25",
+   "pre_money_usd": "28590000",
+   "post_money_usd": "34100000",
+   "investors": [
+    {
+     "id": "inv_b32e3ddc69be39acb80d2570",
+     "name": "Guaraní Partners",
+     "is_lead": true
+    }
+   ]
+  },
+  {
+   "id": "trx_43b4b22d11852118c36e5570",
+   "company_id": "com_1c841adda8b1c811230b3328",
+   "company_name": "Verdeeo Systems",
+   "company_domain": "verdeeosystems.com.br",
+   "company_country": "Brazil",
+   "type": "Pre-seed",
+   "amount_usd": "50000",
+   "announced_date": "2026-11-25",
+   "pre_money_usd": "350000",
+   "post_money_usd": "400000",
+   "investors": [
+    {
+     "id": "inv_3ac32b4373d66fa3d86643fa",
+     "name": "Ibáñez Family Office",
+     "is_lead": true
+    },
+    {
+     "id": "inv_abd958681ecfe018f44183c1",
+     "name": "Cordillera Seed VC",
+     "is_lead": false
+    },
+    {
+     "id": "inv_2ff52812277dc51d286d4a63",
+     "name": "Adriana Molina",
+     "is_lead": false
+    }
+   ]
+  },
+  {
+   "id": "trx_4f0cafec197f6e62a6d57509",
+   "company_id": "com_45cf1193eee80f3cdab9d257",
+   "company_name": "Chacoar Finance",
+   "company_domain": "chacoarfinance.mx",
+   "company_country": "Mexico",
+   "type": "Seed",
+   "amount_usd": "700000",
+   "announced_date": "2026-11-25",
+   "pre_money_usd": "4500000",
+   "post_money_usd": "5200000",
+   "investors": [
+    {
+     "id": "inv_f2de54e4e2114ebc8ac2e68b",
+     "name": "Harbor Frontier Partners",
+     "is_lead": true
+    },
+    {
+     "id": "inv_6cdbb5f85686e72e35eac7e6",
+     "name": "Northstar Fund Opportunity",
+     "is_lead": false
+    },
+    {
+     "id": "inv_a18c6bdff253b53955ff4dfc",
+     "name": "Daniel Brooks",
+     "is_lead": false
+    }
+   ]
+  },
+  {
+   "id": "trx_7596ea70b618f4ff1da1d9a5",
+   "company_id": "com_3e25dd424447e858ffd4c600",
+   "company_name": "Verdeis Cash",
+   "company_domain": "verdeiscash.co.uk",
+   "company_country": "United Kingdom",
+   "type": "Pre-seed",
+   "amount_usd": "140000",
+   "announced_date": "2026-11-25",
+   "pre_money_usd": "1060000",
+   "post_money_usd": "1200000",
+   "investors": [
+    {
+     "id": "inv_59881142a468fb9ce681bcfd",
+     "name": "Northstar Impact Labs Global",
+     "is_lead": true
+    },
+    {
+     "id": "inv_0098978b0b858193ea9a262d",
+     "name": "Ortiz Family Office Global",
+     "is_lead": false
+    }
+   ]
+  },
+  {
+   "id": "trx_8991f70c1102da11557d5ea2",
+   "company_id": "com_59bae5cab6b27899f99a0d31",
+   "company_name": "Pirly Mercado",
+   "company_domain": "pirlymercado.mx",
+   "company_country": "Mexico",
+   "type": "Pre-seed",
+   "amount_usd": "170000",
+   "announced_date": "2026-11-25",
+   "pre_money_usd": "930000",
+   "post_money_usd": "1100000",
+   "investors": [
+    {
+     "id": "inv_1e6cef270e7ec7f62354ec48",
+     "name": "Rodrigo Ribera",
+     "is_lead": true
+    },
+    {
+     "id": "inv_7ac63f4528806ced90c21f16",
+     "name": "Isabella Peña",
+     "is_lead": false
+    },
+    {
+     "id": "inv_597fbd051f98b790c4be3020",
+     "name": "Daniela Aguilar",
+     "is_lead": false
+    }
+   ]
+  },
+  {
+   "id": "trx_daab11abf692e546e6061945",
+   "company_id": "com_3554184746360aea2da9f67a",
+   "company_name": "Lumly Systems",
+   "company_domain": "lumlysystems.co",
+   "company_country": "Colombia",
+   "type": "Seed",
+   "amount_usd": "830000",
+   "announced_date": "2026-11-25",
+   "pre_money_usd": "2670000",
+   "post_money_usd": "3500000",
+   "investors": [
+    {
+     "id": "inv_0116eeec90b9fce437da71bd",
+     "name": "Henry Brooks",
+     "is_lead": true
+    },
+    {
+     "id": "inv_c11eae1ec409f52207a5f950",
+     "name": "Valentina Peña",
+     "is_lead": false
+    }
+   ]
+  },
+  {
+   "id": "trx_05d3441e9c290658fcde5142",
+   "company_id": "com_38b565c64ee494c30cdc170f",
+   "company_name": "Liaify Edu",
+   "company_domain": "liaifyedu.co",
+   "company_country": "Colombia",
+   "type": "Seed",
+   "amount_usd": "490000",
+   "announced_date": "2026-11-24",
+   "pre_money_usd": "1610000",
+   "post_money_usd": "2100000",
+   "investors": [
+    {
+     "id": "inv_8fb48df2465b7f7f318a0f35",
+     "name": "Southern Cross Tech Holdings",
+     "is_lead": true
+    },
+    {
+     "id": "inv_f9cb5c2e6fed4ef4c8bc7df3",
+     "name": "Titicaca Impact Labs",
+     "is_lead": false
+    }
+   ]
+  },
+  {
+   "id": "trx_0ad32e324df8265311cbe1ca",
+   "company_id": "com_6939cce67d0ac3a2e302a31b",
+   "company_name": "Iraio Farm",
+   "company_domain": "iraiofarm.com",
+   "company_country": "United States",
+   "type": "Pre-seed",
+   "amount_usd": "220000",
+   "announced_date": "2026-11-24",
+   "pre_money_usd": "1280000",
+   "post_money_usd": "1500000",
+   "investors": [
+    {
+     "id": "inv_f06e5a7f9a043b8dffbc9e89",
+     "name": "João Rocha",
+     "is_lead": true
+    },
+    {
+     "id": "inv_e0ec33c84df6c6809d14d8c8",
+     "name": "Ava Bennett III",
+     "is_lead": false
+    },
+    {
+     "id": "inv_c7c72d1eacb5ccc8744b4f7f",
+     "name": "Condor Frontier Equity",
+     "is_lead": false
+    }
+   ]
+  },
+  {
+   "id": "trx_0b43d770fff52fe092d19bbb",
+   "company_id": "com_1fdd3cedc4777842c0c9e9a2",
+   "company_name": "Piedraera Stack",
+   "company_domain": "piedraerastack.com",
+   "company_country": "United States",
+   "type": "Pre-seed",
+   "amount_usd": "110000",
+   "announced_date": "2026-11-24",
+   "pre_money_usd": "690000",
+   "post_money_usd": "800000",
+   "investors": [
+    {
+     "id": "inv_e030ce089b05d6d8b39afb56",
+     "name": "Chloe Walker",
+     "is_lead": true
+    },
+    {
+     "id": "inv_84faee03edb9b9f2869273a3",
+     "name": "Lapacho Investments",
+     "is_lead": false
+    }
+   ]
+  },
+  {
+   "id": "trx_0bbba7b2c3cd1be638fe70cc",
+   "company_id": "com_e5a8d38f8375c18de8ba2ebf",
+   "company_name": "Piedraix Stack",
+   "company_domain": "piedraixstack.co.uk",
+   "company_country": "United Kingdom",
+   "type": "Seed",
+   "amount_usd": "740000",
+   "announced_date": "2026-11-24",
+   "pre_money_usd": "3060000",
+   "post_money_usd": "3800000",
+   "investors": [
+    {
+     "id": "inv_24d38481507e05081af88d12",
+     "name": "Adriana Paredes",
+     "is_lead": true
+    }
+   ]
+  }
+ ],
+ "talent": [
+  {
+   "id": "sig_00b7c2fb368391c1498c341b",
+   "person_id": "per_5b6e596fb49c3b07a5cf8462",
+   "person_name": "Nicolás Velasco",
+   "current_title": "Co-founder",
+   "current_company_id": "com_d455eaddc0efbb0fd884d8c7",
+   "current_company_name": "Zareo Box",
+   "person_highlights": [
+    "Serial Founder",
+    "Prior Exit",
+    "Stealth"
+   ],
+   "type": "NEW_COMPANY",
+   "status": "STEALTH",
+   "score": 10,
+   "summary": "Nicolás Velasco is co-founding a stealth company in social commerce, previously Co-founder at Veris Agri.",
+   "signal_date": "2026-11-25",
+   "new_company_id": null
+  },
+  {
+   "id": "sig_00ef22585a1e7dfb621a31d5",
+   "person_id": "per_3b1668e43373169186619469",
+   "person_name": "Jack Graham",
+   "current_title": "Co-founder",
+   "current_company_id": "com_c38ae7c335a74fa46fbfc292",
+   "current_company_name": "Toreo Motion",
+   "person_highlights": [
+    "Serial Founder",
+    "Prior Exit",
+    "Top University",
+    "Influencer"
+   ],
+   "type": "NEW_ROLE",
+   "status": "LIVE",
+   "score": 9,
+   "summary": "Jack Graham joined Toreo Motion as Co-founder, moving from Celeo Stack.",
+   "signal_date": "2026-11-25",
+   "new_company_id": null
+  },
+  {
+   "id": "sig_00fb7121e41112f9247c31aa",
+   "person_id": "per_f77a4e333b14f64cd3039e27",
+   "person_name": "Gabriel Nogueira",
+   "current_title": "Co-founder",
+   "current_company_id": "com_0391735fcc212522b90b1676",
+   "current_company_name": "Paxix Games",
+   "person_highlights": [
+    "Serial Founder",
+    "Prior Exit",
+    "Major Tech Experience",
+    "Top University"
+   ],
+   "type": "NEW_ROLE",
+   "status": "LIVE",
+   "score": 8,
+   "summary": "Gabriel Nogueira joined Paxix Games as Co-founder, moving from Piedraora Credit.",
+   "signal_date": "2026-11-25",
+   "new_company_id": null
+  },
+  {
+   "id": "sig_018182769989a8b44a0da27c",
+   "person_id": "per_8338aba2f2969c37dda4a37a",
+   "person_name": "Mateo Ribera",
+   "current_title": "Founder & CEO",
+   "current_company_id": "com_48bffa41f22516fb0bf28a3e",
+   "current_company_name": "Silly Andina",
+   "person_highlights": [
+    "Major Tech Experience",
+    "Serial Founder",
+    "Top University",
+    "Stealth"
+   ],
+   "type": "NEW_COMPANY",
+   "status": "LIVE",
+   "score": 9,
+   "summary": "Mateo Ribera co-founded Silly Andina (Vertical SaaS for SMBs) after Co-founder at Umbrella Logistics.",
+   "signal_date": "2026-11-25",
+   "new_company_id": "com_48bffa41f22516fb0bf28a3e"
+  },
+  {
+   "id": "sig_01a7884afb37cac95c55d11d",
+   "person_id": "per_fc89fa35a7fe069b146a66c2",
+   "person_name": "Esteban Ribera",
+   "current_title": "VP Engineering",
+   "current_company_id": "com_2e2301e8b7cf975395360181",
+   "current_company_name": "Cora Neural",
+   "person_highlights": [
+    "Major Tech Experience",
+    "Top University"
+   ],
+   "type": "NEW_ROLE",
+   "status": "LIVE",
+   "score": 7,
+   "summary": "Esteban Ribera joined Cora Neural as VP Engineering, moving from Lialy Energy.",
+   "signal_date": "2026-11-25",
+   "new_company_id": null
+  },
+  {
+   "id": "sig_035c14484b194b69f3f068bf",
+   "person_id": "per_1a8933f0110c66c1160712c5",
+   "person_name": "Isabella Cuéllar",
+   "current_title": "Engineering Manager",
+   "current_company_id": "com_f4f2ef331c4f7e367a212bdc",
+   "current_company_name": "Helify Ruta",
+   "person_highlights": [
+    "Major Tech Experience",
+    "Top University"
+   ],
+   "type": "NEW_ROLE",
+   "status": "LIVE",
+   "score": 7,
+   "summary": "Isabella Cuéllar joined Helify Ruta as Engineering Manager, moving from Mercantil Pagos.",
+   "signal_date": "2026-11-25",
+   "new_company_id": null
+  },
+  {
+   "id": "sig_03a7c9f54444b13074eff80c",
+   "person_id": "per_56486b3a332cc918c73314b9",
+   "person_name": "Pablo Suárez",
+   "current_title": "Founder & CEO",
+   "current_company_id": "com_e0792fe97422a3248173a88e",
+   "current_company_name": "Xanana Agro",
+   "person_highlights": [
+    "Serial Founder",
+    "Prior Exit",
+    "Top University",
+    "Stealth"
+   ],
+   "type": "NEW_COMPANY",
+   "status": "STEALTH",
+   "score": 8,
+   "summary": "Pablo Suárez is co-founding a stealth company in precision agriculture, previously Co-founder at Silo Ledger.",
+   "signal_date": "2026-11-25",
+   "new_company_id": null
+  },
+  {
+   "id": "sig_05477037372ce24ba5f3afe7",
+   "person_id": "per_f87153356e81d6442b175ff7",
+   "person_name": "Jack Spencer",
+   "current_title": "Co-founder & CEO",
+   "current_company_id": "com_2453b667002432774693d3a5",
+   "current_company_name": "Ostex Mercado",
+   "person_highlights": [
+    "Major Tech Experience",
+    "Top University"
+   ],
+   "type": "NEW_COMPANY",
+   "status": "LIVE",
+   "score": 7,
+   "summary": "Jack Spencer co-founded Ostex Mercado (Buy Now Pay Later) after Head of Sales at Silera Academy.",
+   "signal_date": "2026-11-25",
+   "new_company_id": "com_2453b667002432774693d3a5"
+  },
+  {
+   "id": "sig_0556a604b4803c197d05d9d0",
+   "person_id": "per_0fa04cade49cea5e41f32561",
+   "person_name": "Ignacio Aguilar",
+   "current_title": "Co-founder",
+   "current_company_id": "com_39b90f9d46d3d9c2962b8c9d",
+   "current_company_name": "Quanar Ledger",
+   "person_highlights": [
+    "Top University"
+   ],
+   "type": "PROMOTION",
+   "status": "LIVE",
+   "score": 7,
+   "summary": "Ignacio Aguilar was promoted to Co-founder at Quanar Ledger.",
+   "signal_date": "2026-11-25",
+   "new_company_id": null
+  },
+  {
+   "id": "sig_05718c8b7afe82a0cc5c8c0d",
+   "person_id": "per_1ed0d362366558046ad02d32",
+   "person_name": "James Wallace",
+   "current_title": "Co-founder & COO",
+   "current_company_id": "com_1608530d108fc59b8bda6211",
+   "current_company_name": "Celify Ledger",
+   "person_highlights": [
+    "Serial Founder",
+    "Top University",
+    "Influencer"
+   ],
+   "type": "SEARCHING",
+   "status": "HR",
+   "score": 8,
+   "summary": "James Wallace left Nexia Ledger and is exploring what's next.",
+   "signal_date": "2026-11-25",
+   "new_company_id": null
+  },
+  {
+   "id": "sig_0584b3a39ddfc56ee7302676",
+   "person_id": "per_0781710bc476f9ae46226e73",
+   "person_name": "Larissa Duarte",
+   "current_title": "Co-founder & CEO",
+   "current_company_id": "com_d649135ee14353e401e95c2b",
+   "current_company_name": "Dorix Agents",
+   "person_highlights": [
+    "Major Tech Experience",
+    "Top University"
+   ],
+   "type": "DEPARTURE",
+   "status": "HR",
+   "score": 7,
+   "summary": "Larissa Duarte departed Dorix Agents after 5 years.",
+   "signal_date": "2026-11-25",
+   "new_company_id": null
+  },
+  {
+   "id": "sig_05d777ddc38e45315300579f",
+   "person_id": "per_2a731e1a35b46462c5106b1a",
+   "person_name": "Lucía Toledo",
+   "current_title": "Founder & CEO",
+   "current_company_id": "com_fd8aa0176c67e99f735a5ef8",
+   "current_company_name": "Kavly Obra",
+   "person_highlights": [
+    "Major Tech Experience",
+    "Top University",
+    "Stealth"
+   ],
+   "type": "NEW_COMPANY",
+   "status": "STEALTH",
+   "score": 8,
+   "summary": "Lucía Toledo is co-founding a stealth company in construction management software, previously CFO at Nubana Mercado.",
+   "signal_date": "2026-11-25",
+   "new_company_id": null
+  }
+ ],
+ "profile": {
+  "company": {
+   "id": "com_037801f53ade453a1b392f39",
+   "name": "Paxo Go",
+   "aliases": [],
+   "domain": "paxogo.uy",
+   "domain_aliases": [],
+   "tagline": "The operating system for travelers",
+   "description": "Paxo Go builds quick commerce for travelers. Founded in 2019 and headquartered in Montevideo, Uruguay, the company sells through a marketplace model and focuses on e-commerce.",
+   "founded_year": 2019,
+   "hq_city": "Montevideo",
+   "hq_state": null,
+   "hq_country": "Uruguay",
+   "hq_region": "Latin America",
+   "operating_status": "Acquired",
+   "growth_stage": "Growth",
+   "customer_focus": "B2C",
+   "business_models": [
+    "Marketplace",
+    "Licensing"
+   ],
+   "sector_id": "sec_commerce-and-consumer",
+   "industry_ids": [
+    "ind_e-commerce"
+   ],
+   "tech_vertical_ids": [
+    "tv_quick-commerce",
+    "tv_buy-now-pay-later"
+   ],
+   "ecosystem_ids": [
+    "eco_digital-commerce-latam"
+   ],
+   "employee_count": 191,
+   "employee_range": "51-200",
+   "rank": 308,
+   "rank_score": 1.227,
+   "highlights": [
+    "strong_headcount_growth",
+    "strong_web_traffic_growth",
+    "no_recent_funding"
+   ],
+   "new_highlights": [],
+   "tags": [],
+   "bootstrapped": false,
+   "total_funding_usd": "60650000",
+   "last_funding_usd": "50990000",
+   "last_funding_date": "2022-04-01",
+   "last_funding_type": "Series C",
+   "round_count": 3,
+   "post_money_valuation_usd": "384100000",
+   "investor_count": 10,
+   "web_visits": 46535,
+   "web_visits_growth_3m": 0.447,
+   "headcount_growth_3m": 0.224,
+   "headcount_growth_12m": 1.032,
+   "linkedin_followers": 31256,
+   "social_growth_3m": 0.153,
+   "est_revenue_usd": "24434438",
+   "est_valuation_usd": "897133449",
+   "patent_count": 0,
+   "trademark_count": 4,
+   "technologies": [
+    "Salesforce",
+    "Kubernetes",
+    "Rust",
+    "Twilio",
+    "Node.js",
+    "Python"
+   ],
+   "certifications": [
+    "ISO 27001"
+   ],
+   "customer_profile": "Consumers",
+   "traction_highlights": null,
+   "contact_email": "hello@paxogo.uy",
+   "socials": {
+    "website": "https://paxogo.uy"
+   },
+   "reviews": {
+    "g2": {
+     "count": 158,
+     "rating": 3.6
+    }
+   },
+   "deleted_at": null,
+   "created_at": "2026-11-25 23:03:47.967478+00",
+   "updated_at": "2026-11-25 23:03:47.967478+00"
+  },
+  "estimates": [
+   {
+    "company_id": "com_037801f53ade453a1b392f39",
+    "month": "2025-12-01",
+    "revenue_p10": "4187700",
+    "revenue_p50": "8375400",
+    "revenue_p90": "15075720",
+    "revenue_type": "ARR",
+    "valuation_p10": "454282232",
+    "valuation_p50": "757137054",
+    "valuation_p90": "1211419286",
+    "confidence": "LOW",
+    "drivers": [
+     {
+      "label": "Last priced round",
+      "impact": 0.55
+     },
+     {
+      "label": "Time since round",
+      "impact": 0.97
+     },
+     {
+      "label": "Est. revenue",
+      "impact": 0.25
+     },
+     {
+      "label": "HQ region",
+      "impact": -0.25
+     }
+    ],
+    "model_version": "v0-heuristic"
+   },
+   {
+    "company_id": "com_037801f53ade453a1b392f39",
+    "month": "2026-01-01",
+    "revenue_p10": "4588650",
+    "revenue_p50": "9177300",
+    "revenue_p90": "16519140",
+    "revenue_type": "ARR",
+    "valuation_p10": "461470705",
+    "valuation_p50": "769117841",
+    "valuation_p90": "1230588546",
+    "confidence": "LOW",
+    "drivers": [
+     {
+      "label": "Last priced round",
+      "impact": 0.55
+     },
+     {
+      "label": "Time since round",
+      "impact": 1
+     },
+     {
+      "label": "Est. revenue",
+      "impact": 0.25
+     },
+     {
+      "label": "HQ region",
+      "impact": -0.25
+     }
+    ],
+    "model_version": "v0-heuristic"
+   },
+   {
+    "company_id": "com_037801f53ade453a1b392f39",
+    "month": "2026-02-01",
+    "revenue_p10": "4811400",
+    "revenue_p50": "9622800",
+    "revenue_p90": "17321040",
+    "revenue_type": "ARR",
+    "valuation_p10": "468772926",
+    "valuation_p50": "781288211",
+    "valuation_p90": "1250061137",
+    "confidence": "LOW",
+    "drivers": [
+     {
+      "label": "Last priced round",
+      "impact": 0.55
+     },
+     {
+      "label": "Time since round",
+      "impact": 1.03
+     },
+     {
+      "label": "Est. revenue",
+      "impact": 0.25
+     },
+     {
+      "label": "HQ region",
+      "impact": -0.25
+     }
+    ],
+    "model_version": "v0-heuristic"
+   },
+   {
+    "company_id": "com_037801f53ade453a1b392f39",
+    "month": "2026-03-01",
+    "revenue_p10": "5123250",
+    "revenue_p50": "10246500",
+    "revenue_p90": "18443700",
+    "revenue_type": "ARR",
+    "valuation_p10": "475467747",
+    "valuation_p50": "792446246",
+    "valuation_p90": "1267913993",
+    "confidence": "LOW",
+    "drivers": [
+     {
+      "label": "Last priced round",
+      "impact": 0.55
+     },
+     {
+      "label": "Time since round",
+      "impact": 1.06
+     },
+     {
+      "label": "Est. revenue",
+      "impact": 0.25
+     },
+     {
+      "label": "HQ region",
+      "impact": -0.25
+     }
+    ],
+    "model_version": "v0-heuristic"
+   },
+   {
+    "company_id": "com_037801f53ade453a1b392f39",
+    "month": "2026-04-01",
+    "revenue_p10": "5479650",
+    "revenue_p50": "10959300",
+    "revenue_p90": "19726740",
+    "revenue_type": "ARR",
+    "valuation_p10": "482991455",
+    "valuation_p50": "804985759",
+    "valuation_p90": "1287977215",
+    "confidence": "LOW",
+    "drivers": [
+     {
+      "label": "Last priced round",
+      "impact": 0.55
+     },
+     {
+      "label": "Time since round",
+      "impact": 1.1
+     },
+     {
+      "label": "Est. revenue",
+      "impact": 0.25
+     },
+     {
+      "label": "HQ region",
+      "impact": -0.25
+     }
+    ],
+    "model_version": "v0-heuristic"
+   },
+   {
+    "company_id": "com_037801f53ade453a1b392f39",
+    "month": "2026-05-01",
+    "revenue_p10": "5836050",
+    "revenue_p50": "11672100",
+    "revenue_p90": "21009780",
+    "revenue_type": "ARR",
+    "valuation_p10": "490385799",
+    "valuation_p50": "817309665",
+    "valuation_p90": "1307695464",
+    "confidence": "LOW",
+    "drivers": [
+     {
+      "label": "Last priced round",
+      "impact": 0.55
+     },
+     {
+      "label": "Time since round",
+      "impact": 1.13
+     },
+     {
+      "label": "Est. revenue",
+      "impact": 0.25
+     },
+     {
+      "label": "HQ region",
+      "impact": -0.25
+     }
+    ],
+    "model_version": "v0-heuristic"
+   },
+   {
+    "company_id": "com_037801f53ade453a1b392f39",
+    "month": "2026-06-01",
+    "revenue_p10": "6237000",
+    "revenue_p50": "12474000",
+    "revenue_p90": "22453200",
+    "revenue_type": "ARR",
+    "valuation_p10": "498145567",
+    "valuation_p50": "830242612",
+    "valuation_p90": "1328388179",
+    "confidence": "LOW",
+    "drivers": [
+     {
+      "label": "Last priced round",
+      "impact": 0.55
+     },
+     {
+      "label": "Time since round",
+      "impact": 1.16
+     },
+     {
+      "label": "Est. revenue",
+      "impact": 0.25
+     },
+     {
+      "label": "HQ region",
+      "impact": -0.25
+     }
+    ],
+    "model_version": "v0-heuristic"
+   },
+   {
+    "company_id": "com_037801f53ade453a1b392f39",
+    "month": "2026-07-01",
+    "revenue_p10": "6593400",
+    "revenue_p50": "13186800",
+    "revenue_p90": "23736240",
+    "revenue_type": "ARR",
+    "valuation_p10": "505771912",
+    "valuation_p50": "842953187",
+    "valuation_p90": "1348725099",
+    "confidence": "LOW",
+    "drivers": [
+     {
+      "label": "Last priced round",
+      "impact": 0.55
+     },
+     {
+      "label": "Time since round",
+      "impact": 1.19
+     },
+     {
+      "label": "Est. revenue",
+      "impact": 0.25
+     },
+     {
+      "label": "HQ region",
+      "impact": -0.25
+     }
+    ],
+    "model_version": "v0-heuristic"
+   },
+   {
+    "company_id": "com_037801f53ade453a1b392f39",
+    "month": "2026-08-01",
+    "revenue_p10": "6949800",
+    "revenue_p50": "13899600",
+    "revenue_p90": "25019280",
+    "revenue_type": "ARR",
+    "valuation_p10": "513775147",
+    "valuation_p50": "856291912",
+    "valuation_p90": "1370067059",
+    "confidence": "LOW",
+    "drivers": [
+     {
+      "label": "Last priced round",
+      "impact": 0.55
+     },
+     {
+      "label": "Time since round",
+      "impact": 1.23
+     },
+     {
+      "label": "Est. revenue",
+      "impact": 0.25
+     },
+     {
+      "label": "HQ region",
+      "impact": -0.25
+     }
+    ],
+    "model_version": "v0-heuristic"
+   },
+   {
+    "company_id": "com_037801f53ade453a1b392f39",
+    "month": "2026-09-01",
+    "revenue_p10": "17296000",
+    "revenue_p50": "21620000",
+    "revenue_p90": "27025000",
+    "revenue_type": "ARR",
+    "valuation_p10": "521905024",
+    "valuation_p50": "869841706",
+    "valuation_p90": "1391746730",
+    "confidence": "MEDIUM",
+    "drivers": [
+     {
+      "label": "Last priced round",
+      "impact": 0.55
+     },
+     {
+      "label": "Time since round",
+      "impact": 1.26
+     },
+     {
+      "label": "Est. revenue",
+      "impact": 0.25
+     },
+     {
+      "label": "HQ region",
+      "impact": -0.25
+     }
+    ],
+    "model_version": "v0-heuristic"
+   },
+   {
+    "company_id": "com_037801f53ade453a1b392f39",
+    "month": "2026-10-01",
+    "revenue_p10": "18217089",
+    "revenue_p50": "22771361",
+    "revenue_p90": "28464201",
+    "revenue_type": "ARR",
+    "valuation_p10": "529895113",
+    "valuation_p50": "883158522",
+    "valuation_p90": "1413053636",
+    "confidence": "MEDIUM",
+    "drivers": [
+     {
+      "label": "Last priced round",
+      "impact": 0.55
+     },
+     {
+      "label": "Time since round",
+      "impact": 1.3
+     },
+     {
+      "label": "Est. revenue",
+      "impact": 0.25
+     },
+     {
+      "label": "HQ region",
+      "impact": -0.25
+     }
+    ],
+    "model_version": "v0-heuristic"
+   },
+   {
+    "company_id": "com_037801f53ade453a1b392f39",
+    "month": "2026-11-01",
+    "revenue_p10": "19547550",
+    "revenue_p50": "24434438",
+    "revenue_p90": "30543047",
+    "revenue_type": "ARR",
+    "valuation_p10": "538280069",
+    "valuation_p50": "897133449",
+    "valuation_p90": "1435413518",
+    "confidence": "MEDIUM",
+    "drivers": [
+     {
+      "label": "Last priced round",
+      "impact": 0.55
+     },
+     {
+      "label": "Time since round",
+      "impact": 1.34
+     },
+     {
+      "label": "Est. revenue",
+      "impact": 0.25
+     },
+     {
+      "label": "HQ region",
+      "impact": -0.25
+     }
+    ],
+    "model_version": "v0-heuristic"
+   }
+  ],
+  "competitors": [
+   {
+    "id": "com_a4e43db9ff0f3fff36de4ddd",
+    "name": "Bruar Store",
+    "domain": "bruarstore.cl",
+    "tagline": "AI-native B2B E-commerce built for young professionals",
+    "growth_stage": "Pre-seed / Seed",
+    "hq_country": "Chile",
+    "employee_count": 6,
+    "headcount_growth_3m": 0,
+    "total_funding_usd": null,
+    "est_revenue_usd": "148500",
+    "overlap_score": 9.4,
+    "reason": "Both build quick commerce; same industry, same business model"
+   },
+   {
+    "id": "com_f68ccf508eb76044b047a979",
+    "name": "Monia Mercado",
+    "domain": "moniamercado.com.ar",
+    "tagline": "AI-native Quick Commerce built for gig workers",
+    "growth_stage": "Pre-seed / Seed",
+    "hq_country": "Argentina",
+    "employee_count": 3,
+    "headcount_growth_3m": 0,
+    "total_funding_usd": "960000",
+    "est_revenue_usd": "74250",
+    "overlap_score": 8.6,
+    "reason": "Both build quick commerce; same industry, same business model"
+   },
+   {
+    "id": "com_84ba548f12913c168d7ae7c5",
+    "name": "Cieloix Logistics",
+    "domain": "cieloixlogistics.pe",
+    "tagline": "Marketplace platform helping travelers grow faster",
+    "growth_stage": "Early",
+    "hq_country": "Peru",
+    "employee_count": 17,
+    "headcount_growth_3m": 0.063,
+    "total_funding_usd": "500000",
+    "est_revenue_usd": "668525",
+    "overlap_score": 8.1,
+    "reason": "Both build quick commerce; same business model, B2C focus"
+   },
+   {
+    "id": "com_a54d4cfa99e8b93468c9d1a9",
+    "name": "Chacoo Freight",
+    "domain": "chacoofreight.cl",
+    "tagline": "Making Freight Marketplaces simple for travelers",
+    "growth_stage": "Pre-seed / Seed",
+    "hq_country": "Chile",
+    "employee_count": 2,
+    "headcount_growth_3m": 0,
+    "total_funding_usd": "60000",
+    "est_revenue_usd": "35750",
+    "overlap_score": 8,
+    "reason": "Both build quick commerce; same business model, B2C focus"
+   },
+   {
+    "id": "com_5c394aa6efac372fb65858f6",
+    "name": "Silis Freight",
+    "domain": "silisfreight.pe",
+    "tagline": "Modern Quick Commerce for families",
+    "growth_stage": "Late",
+    "hq_country": "Peru",
+    "employee_count": 3003,
+    "headcount_growth_3m": -0.02,
+    "total_funding_usd": null,
+    "est_revenue_usd": "246921675",
+    "overlap_score": 7.7,
+    "reason": "Both build quick commerce; same business model, B2C focus"
+   },
+   {
+    "id": "com_0e5fde206d8e2c844f3dd9fb",
+    "name": "Savix Cargo",
+    "domain": "savixcargo.com.py",
+    "tagline": "Quick Commerce for clinics in the Andes",
+    "growth_stage": "Late",
+    "hq_country": "Paraguay",
+    "employee_count": 851,
+    "headcount_growth_3m": -0.18,
+    "total_funding_usd": "166350000",
+    "est_revenue_usd": "69973475",
+    "overlap_score": 7.5,
+    "reason": "Both build quick commerce; same business model, both in Latin America"
+   },
+   {
+    "id": "com_531d90f7a2b97579e9a5f380",
+    "name": "Noria Market",
+    "domain": "noriamarket.cl",
+    "tagline": "Modern Quick Commerce for clinics",
+    "growth_stage": "Pre-seed / Seed",
+    "hq_country": "Chile",
+    "employee_count": 13,
+    "headcount_growth_3m": 0.083,
+    "total_funding_usd": "1190000",
+    "est_revenue_usd": "321750",
+    "overlap_score": 7.1,
+    "reason": "Both build quick commerce; both in Latin America"
+   },
+   {
+    "id": "com_1b544bc4b9f8847cac150917",
+    "name": "Rioly Store",
+    "domain": "riolystore.co.uk",
+    "tagline": "Making Quick Commerce simple for SMBs",
+    "growth_stage": "Early",
+    "hq_country": "United Kingdom",
+    "employee_count": 26,
+    "headcount_growth_3m": 0.13,
+    "total_funding_usd": "7250000",
+    "est_revenue_usd": "2187900",
+    "overlap_score": 6.8,
+    "reason": "Both build quick commerce; same industry, same business model"
+   }
+  ],
+  "news": [],
+  "rounds": [
+   {
+    "id": "trx_4ae03726e1b7da48515820a0",
+    "company_id": "com_037801f53ade453a1b392f39",
+    "type": "Series C",
+    "amount_usd": "50990000",
+    "currency": "USD",
+    "announced_date": "2022-04-01",
+    "pre_money_usd": "333110000",
+    "post_money_usd": "384100000",
+    "source_urls": [
+     "https://example.com/filings/trx_4ae03726e1b7da48515820a0"
+    ],
+    "investors": [
+     {
+      "id": "inv_522a53faee2ee8cfcc18f6f6",
+      "name": "Northstar Frontier Capital III",
+      "is_lead": true
+     },
+     {
+      "id": "inv_bb2c032d472b3903e4f05c19",
+      "name": "Sierra Digital Fund",
+      "is_lead": false
+     },
+     {
+      "id": "inv_21b66b1c80ae7cd88ecd5207",
+      "name": "Soylent Foods International Ventures III 2234",
+      "is_lead": false
+     },
+     {
+      "id": "inv_fc87f9de8606fc466014de10",
+      "name": "Patagonia Tech Investments",
+      "is_lead": false
+     }
+    ]
+   },
+   {
+    "id": "trx_aaf232877da4a09addc5c390",
+    "company_id": "com_037801f53ade453a1b392f39",
+    "type": "Series B",
+    "amount_usd": "8090000",
+    "currency": "USD",
+    "announced_date": "2021-02-01",
+    "pre_money_usd": "50210000",
+    "post_money_usd": "58300000",
+    "source_urls": [
+     "https://example.com/filings/trx_aaf232877da4a09addc5c390"
+    ],
+    "investors": [
+     {
+      "id": "inv_af8522fadfc80389105a6e26",
+      "name": "Patagonia Tech Fund",
+      "is_lead": true
+     },
+     {
+      "id": "inv_5617090141833fa3ad8552f6",
+      "name": "Sajama Equity",
+      "is_lead": false
+     },
+     {
+      "id": "inv_6c9c1862699e52947e327257",
+      "name": "Titicaca Tech Labs III",
+      "is_lead": false
+     },
+     {
+      "id": "inv_623cfca57652365e305d6f01",
+      "name": "Lapacho Frontier Investments Global",
+      "is_lead": false
+     }
+    ]
+   },
+   {
+    "id": "trx_c7347ec565bd4aff27dbea24",
+    "company_id": "com_037801f53ade453a1b392f39",
+    "type": "Seed",
+    "amount_usd": "1570000",
+    "currency": "USD",
+    "announced_date": "2020-04-01",
+    "pre_money_usd": "8630000",
+    "post_money_usd": "10200000",
+    "source_urls": [
+     "https://example.com/filings/trx_c7347ec565bd4aff27dbea24"
+    ],
+    "investors": [
+     {
+      "id": "inv_df2b93a3019b188efc9230e0",
+      "name": "Patagonia Seed Labs",
+      "is_lead": true
+     },
+     {
+      "id": "inv_ba55f3958df63dc97fb41ee6",
+      "name": "Gabriela Cabrera",
+      "is_lead": false
+     }
+    ]
+   }
+  ],
+  "metrics": [
+   {
+    "metric": "employee_count",
+    "date": "2025-12-01",
+    "value": 94
+   },
+   {
+    "metric": "web_visits",
+    "date": "2025-12-01",
+    "value": 19935
+   },
+   {
+    "metric": "linkedin_followers",
+    "date": "2025-12-01",
+    "value": 18520
+   },
+   {
+    "metric": "employee_count",
+    "date": "2026-01-01",
+    "value": 103
+   },
+   {
+    "metric": "web_visits",
+    "date": "2026-01-01",
+    "value": 19637
+   },
+   {
+    "metric": "linkedin_followers",
+    "date": "2026-01-01",
+    "value": 19423
+   },
+   {
+    "metric": "employee_count",
+    "date": "2026-02-01",
+    "value": 108
+   },
+   {
+    "metric": "web_visits",
+    "date": "2026-02-01",
+    "value": 24662
+   },
+   {
+    "metric": "linkedin_followers",
+    "date": "2026-02-01",
+    "value": 20369
+   },
+   {
+    "metric": "employee_count",
+    "date": "2026-03-01",
+    "value": 115
+   },
+   {
+    "metric": "web_visits",
+    "date": "2026-03-01",
+    "value": 26302
+   },
+   {
+    "metric": "linkedin_followers",
+    "date": "2026-03-01",
+    "value": 21362
+   },
+   {
+    "metric": "employee_count",
+    "date": "2026-04-01",
+    "value": 123
+   },
+   {
+    "metric": "web_visits",
+    "date": "2026-04-01",
+    "value": 27527
+   },
+   {
+    "metric": "linkedin_followers",
+    "date": "2026-04-01",
+    "value": 22402
+   },
+   {
+    "metric": "employee_count",
+    "date": "2026-05-01",
+    "value": 131
+   },
+   {
+    "metric": "web_visits",
+    "date": "2026-05-01",
+    "value": 28375
+   },
+   {
+    "metric": "linkedin_followers",
+    "date": "2026-05-01",
+    "value": 23494
+   },
+   {
+    "metric": "employee_count",
+    "date": "2026-06-01",
+    "value": 140
+   },
+   {
+    "metric": "web_visits",
+    "date": "2026-06-01",
+    "value": 29009
+   },
+   {
+    "metric": "linkedin_followers",
+    "date": "2026-06-01",
+    "value": 24639
+   },
+   {
+    "metric": "employee_count",
+    "date": "2026-07-01",
+    "value": 148
+   },
+   {
+    "metric": "web_visits",
+    "date": "2026-07-01",
+    "value": 35182
+   },
+   {
+    "metric": "linkedin_followers",
+    "date": "2026-07-01",
+    "value": 25840
+   },
+   {
+    "metric": "employee_count",
+    "date": "2026-08-01",
+    "value": 156
+   },
+   {
+    "metric": "web_visits",
+    "date": "2026-08-01",
+    "value": 32158
+   },
+   {
+    "metric": "linkedin_followers",
+    "date": "2026-08-01",
+    "value": 27099
+   },
+   {
+    "metric": "employee_count",
+    "date": "2026-09-01",
+    "value": 169
+   },
+   {
+    "metric": "web_visits",
+    "date": "2026-09-01",
+    "value": 39077
+   },
+   {
+    "metric": "linkedin_followers",
+    "date": "2026-09-01",
+    "value": 28419
+   },
+   {
+    "metric": "employee_count",
+    "date": "2026-10-01",
+    "value": 178
+   },
+   {
+    "metric": "web_visits",
+    "date": "2026-10-01",
+    "value": 40882
+   },
+   {
+    "metric": "linkedin_followers",
+    "date": "2026-10-01",
+    "value": 29804
+   },
+   {
+    "metric": "employee_count",
+    "date": "2026-11-01",
+    "value": 191
+   },
+   {
+    "metric": "web_visits",
+    "date": "2026-11-01",
+    "value": 46535
+   },
+   {
+    "metric": "linkedin_followers",
+    "date": "2026-11-01",
+    "value": 31256
+   }
+  ]
+ },
+ "person": {
+  "person": {
+   "id": "per_69a9d3b787e64e991e90f8cc",
+   "full_name": "Henry Wallace",
+   "first": "Henry",
+   "last": "Wallace",
+   "headline": "Co-founder & CEO at Helix Energy",
+   "bio": "Henry is Co-founder & CEO at Helix Energy, working on solar developers. 4 years of experience across 2 companies; studied at Harvard University.",
+   "location": "New York, United States",
+   "country": "United States",
+   "linkedin_url": "https://demo.linkedin.invalid/in/henry-wallace-9f8495",
+   "x_url": null,
+   "github_url": null,
+   "avatar_url": null,
+   "current_title": "Co-founder & CEO",
+   "current_company_id": "com_c5a8028f8d12bf83655b9e01",
+   "current_company_name": "Helix Energy",
+   "department": "Sales",
+   "seniority": "Founder",
+   "years_experience": 4,
+   "highlights": [
+    "Top University",
+    "Influencer"
+   ],
+   "education_summary": "BA, Harvard University",
+   "followers": 687030,
+   "connections": 480,
+   "talent_signal_count": 0,
+   "deleted_at": null,
+   "created_at": "2026-11-25 23:03:50.145739+00"
+  },
+  "experience": [
+   {
+    "id": "exp_961dff194296c894c56214c4",
+    "person_id": "per_69a9d3b787e64e991e90f8cc",
+    "company_id": "com_c5a8028f8d12bf83655b9e01",
+    "company_name": "Helix Energy",
+    "title": "Co-founder & CEO",
+    "department": "Sales",
+    "start": "2014-02-01",
+    "end": null,
+    "is_current": true,
+    "is_founder": true
+   },
+   {
+    "id": "exp_25c8d8b3c37e594f6615a2e9",
+    "person_id": "per_69a9d3b787e64e991e90f8cc",
+    "company_id": "com_59183c8ecbea0042ad4897f2",
+    "company_name": "Fuegoeo Campo",
+    "title": "Chief Revenue Officer",
+    "department": "Sales",
+    "start": "2011-08-01",
+    "end": "2014-02-01",
+    "is_current": false,
+    "is_founder": false
+   }
+  ],
+  "signals": []
+ }
+}

@@ -1,0 +1,22 @@
+{
+  "name": "@founders/ui",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./tokens.css": "./src/tokens.css",
+    "./*": "./src/*.tsx"
+  },
+  "scripts": { "typecheck": "tsc -p tsconfig.json", "lint": "eslint src" },
+  "dependencies": {
+    "@founders/config": "workspace:*",
+    "@founders/core": "workspace:*",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.548.0",
+    "motion": "^12.23.0",
+    "tailwind-merge": "^3.3.1"
+  },
+  "peerDependencies": { "react": "^19.0.0", "react-dom": "^19.0.0" },
+  "devDependencies": { "@types/react": "^19.2.2", "@types/react-dom": "^19.2.2", "react": "^19.2.0", "react-dom": "^19.2.0" }
+}

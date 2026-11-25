@@ -1,0 +1,15 @@
+## 0. GROUND RULES (READ FIRST)
+
+These keep the project shippable and legally safe. They change *how* we clone, not *what* we clone — every feature still gets built.
+
+1. **Clone the features, structure, layout, interactions and UX — not the brand.** Use our own name, logo, icon set and illustrations. Do not copy their logo files, OG images, avatars or `specter-*` assets.
+2. **Copy: same structure and message intent, our own words.** Section 6 gives the *intent* of every headline and paragraph. The copy team rewrites each one (Section 17). Do not paste their marketing text verbatim — it's copyrighted, and Google penalises duplicate content anyway.
+3. **No borrowed social proof.** Their customer logos (Index, Bessemer, NVIDIA, Goldman…), testimonials and case studies belong to *their* customers. We build the **components** (logo marquee, testimonial carousel, case-study cards) and fill them with our own real customers, or hide them until we have some. Same for "400+ teams", "97% of firms…": only publish numbers we can prove.
+4. **No fake live counters.** The floating "Book a demo · 7 demos this hour" pill must read a real count from our booking system (or show no number).
+5. **REA scope:** use REA only on the **public marketing site** and on our own builds. Do **not** reverse-engineer their logged-in app (`app.tryspecter.com`), their private API or their Chrome extension — that breaks their Terms. We rebuild the product from the public descriptions in this doc.
+6. **Data must be licensed or public.** No scraping LinkedIn or other sites whose terms forbid it. Section 9 lists legitimate sources.
+7. **Comparison pages** ("{{BRAND}} vs PitchBook") must be factual, dated, sourced and reviewed by a human before publishing.
+8. **Every quoted phrase in Sections 5 and 6 is a reference label, not copy.** Quotes, headings and micro-copy there paraphrase the reference site so you can tell sections apart. They must never ship. All UI text comes from copy keys (`t("home.hero.h1")`) in `/content/copy/en.json`. Until the copy team fills a key, its value is the visible placeholder `[TODO-COPY home.hero.h1]`. A CI check fails the production build if any `TODO-COPY` value remains.
+9. **Recon artifacts stay out of the repo.** REA captures and exported scripts contain the reference site's code. Store them in `~/recon-raw/` (outside git). Commit only our own notes (`/recon/*.md`, `tokens.json`, our screenshots for internal reference in a private bucket). Never copy their JS, CSS, SVGs or images into our code.
+10. **Redistribution rights decide what we can resell.** Licensed data often may be shown in-app but not resold through an API or bulk files. Every field carries `provenance.source` and `provenance.redistributable` (Section 8). API, MCP, exports and bulk delivery filter out non-redistributable fields automatically.
+11. **Stop and ask, don't guess, for anything in Section 0C.** Mock it behind an interface, mark it `BLOCKED-HUMAN` in `/docs/progress/blocked.md`, and move to the next unblocked task.

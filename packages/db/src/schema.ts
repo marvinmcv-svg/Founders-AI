@@ -1,0 +1,827 @@
+/**
+ * Postgres schema (plan Section 8). R1 subset + the tables R1 features depend on.
+ * IDs are public, stable and prefixed (com_, per_, inv_, trx_, sig_, ...).
+ * Money: integer USD (whole dollars for entity data, cents are not needed for seed data;
+ * the API exposes `*_usd` integers). Timestamps are UTC timestamptz.
+ */
+import { sql } from "drizzle-orm";
+import {
+  bigint,
+  boolean,
+  date,
+  index,
+  integer,
+  jsonb,
+  pgTable,
+  primaryKey,
+  real,
+  text,
+  timestamp,
+  uniqueIndex,
+  vector,
+} from "drizzle-orm/pg-core";
+
+const ts = (name: string) => timestamp(name, { withTimezone: true, mode: "date" });
+const createdAt = () => ts("created_at").notNull().defaultNow();
+const usd = (name: string) => bigint(name, { mode: "number" });
+
+export type Provenance = Record<string, { source: string; fetched_at: string; redistributable: boolean }>;
+
+/* ------------------------------------------------------------------ */
+/* Auth & tenancy (Better Auth tables, extended)                        */
+/* ------------------------------------------------------------------ */
+
+export const user = pgTable("user", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  email: text("email").notNull().unique(),
+  emailVerified: boolean("email_verified").notNull().default(false),
+  image: text("image"),
+  timezone: text("timezone").notNull().default("America/La_Paz"),
+  createdAt: createdAt(),
+  updatedAt: ts("updated_at").notNull().defaultNow(),
+});
+
+export const session = pgTable("session", {
+  id: text("id").primaryKey(),
+  expiresAt: ts("expires_at").notNull(),
+  token: text("token").notNull().unique(),
+  createdAt: createdAt(),
+  updatedAt: ts("updated_at").notNull().defaultNow(),
+  ipAddress: text("ip_address"),
+  userAgent: text("user_agent"),
+  userId: text("user_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+  activeOrganizationId: text("active_organization_id"),
+});
+
+export const account = pgTable("account", {
+  id: text("id").primaryKey(),
+  accountId: text("account_id").notNull(),
+  providerId: text("provider_id").notNull(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+  accessToken: text("access_token"),
+  refreshToken: text("refresh_token"),
+  idToken: text("id_token"),
+  accessTokenExpiresAt: ts("access_token_expires_at"),
+  refreshTokenExpiresAt: ts("refresh_token_expires_at"),
+  scope: text("scope"),
+  password: text("password"),
+  createdAt: createdAt(),
+  updatedAt: ts("updated_at").notNull().defaultNow(),
+});
+
+export const verification = pgTable("verification", {
+  id: text("id").primaryKey(),
+  identifier: text("identifier").notNull(),
+  value: text("value").notNull(),
+  expiresAt: ts("expires_at").notNull(),
+  createdAt: createdAt(),
+  updatedAt: ts("updated_at").notNull().defaultNow(),
+});
+
+/** = plan `organizations` */
+export const organization = pgTable("organization", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  slug: text("slug").notNull().unique(),
+  logo: text("logo"),
+  metadata: text("metadata"),
+  plan: text("plan").notNull().default("trial"),
+  seats: integer("seats").notNull().default(5),
+  mcpOverageEnabled: boolean("mcp_overage_enabled").notNull().default(false),
+  thesis: jsonb("thesis").$type<Thesis>(),
+  createdAt: createdAt(),
+});
+
+export type Thesis = {
+  role?: string;
+  firmType?: string;
+  sectors?: string[];
+  stages?: string[];
+  geographies?: string[];
+  checkSize?: string;
+};
+
+/** = plan `memberships` (role lives on membership; a user may belong to many orgs) */
+export const member = pgTable(
+  "member",
+  {
+    id: text("id").primaryKey(),
+    organizationId: text("organization_id")
+      .notNull()
+      .references(() => organization.id, { onDelete: "cascade" }),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    role: text("role").notNull().default("member"), // admin | member | viewer (+ better-auth "owner")
+    agentInstructions: text("agent_instructions"),
+    createdAt: createdAt(),
+  },
+  (t) => [uniqueIndex("member_org_user_uq").on(t.organizationId, t.userId)],
+);
+
+export const invitation = pgTable("invitation", {
+  id: text("id").primaryKey(),
+  organizationId: text("organization_id")
+    .notNull()
+    .references(() => organization.id, { onDelete: "cascade" }),
+  email: text("email").notNull(),
+  role: text("role"),
+  status: text("status").notNull().default("pending"),
+  expiresAt: ts("expires_at").notNull(),
+  inviterId: text("inviter_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+  createdAt: createdAt(),
+});
+
+/* ------------------------------------------------------------------ */
+/* Taxonomy                                                            */
+/* ------------------------------------------------------------------ */
+
+export const taxonomyNodes = pgTable(
+  "taxonomy_nodes",
+  {
+    id: text("id").primaryKey(),
+    kind: text("kind").notNull(), // SECTOR | INDUSTRY | SUB_INDUSTRY | TECH_VERTICAL | ECOSYSTEM | BUSINESS_MODEL
+    name: text("name").notNull(),
+    slug: text("slug").notNull(),
+    parentId: text("parent_id"),
+    path: text("path").notNull(), // dotted path of ancestor ids (ltree-compatible)
+  },
+  (t) => [index("taxonomy_kind_idx").on(t.kind), index("taxonomy_parent_idx").on(t.parentId)],
+);
+
+/* ------------------------------------------------------------------ */
+/* Companies                                                           */
+/* ------------------------------------------------------------------ */
+
+export const companies = pgTable(
+  "companies",
+  {
+    id: text("id").primaryKey(),
+    name: text("name").notNull(),
+    aliases: text("aliases").array().notNull().default(sql`'{}'::text[]`),
+    domain: text("domain").notNull(),
+    domainAliases: text("domain_aliases").array().notNull().default(sql`'{}'::text[]`),
+    tagline: text("tagline"),
+    description: text("description"),
+    foundedYear: integer("founded_year"),
+    hqCity: text("hq_city"),
+    hqState: text("hq_state"),
+    hqCountry: text("hq_country"),
+    hqRegion: text("hq_region"),
+    operatingStatus: text("operating_status").notNull().default("Active"),
+    growthStage: text("growth_stage").notNull(),
+    customerFocus: text("customer_focus"),
+    businessModels: text("business_models").array().notNull().default(sql`'{}'::text[]`),
+    sectorId: text("sector_id"),
+    industryIds: text("industry_ids").array().notNull().default(sql`'{}'::text[]`),
+    techVerticalIds: text("tech_vertical_ids").array().notNull().default(sql`'{}'::text[]`),
+    ecosystemIds: text("ecosystem_ids").array().notNull().default(sql`'{}'::text[]`),
+    employeeCount: integer("employee_count"),
+    employeeRange: text("employee_range"),
+    rank: integer("rank"),
+    rankScore: real("rank_score"),
+    highlights: text("highlights").array().notNull().default(sql`'{}'::text[]`),
+    newHighlights: text("new_highlights").array().notNull().default(sql`'{}'::text[]`),
+    tags: text("tags").array().notNull().default(sql`'{}'::text[]`),
+    bootstrapped: boolean("bootstrapped").notNull().default(false),
+    totalFundingUsd: usd("total_funding_usd"),
+    lastFundingUsd: usd("last_funding_usd"),
+    lastFundingDate: date("last_funding_date"),
+    lastFundingType: text("last_funding_type"),
+    roundCount: integer("round_count").notNull().default(0),
+    postMoneyValuationUsd: usd("post_money_valuation_usd"),
+    investorCount: integer("investor_count").notNull().default(0),
+    // Denormalised growth metrics (latest values) — filterable without the metrics table.
+    webVisits: integer("web_visits"),
+    webVisitsGrowth3m: real("web_visits_growth_3m"),
+    headcountGrowth3m: real("headcount_growth_3m"),
+    headcountGrowth12m: real("headcount_growth_12m"),
+    linkedinFollowers: integer("linkedin_followers"),
+    socialGrowth3m: real("social_growth_3m"),
+    estRevenueUsd: usd("est_revenue_usd"),
+    estValuationUsd: usd("est_valuation_usd"),
+    patentCount: integer("patent_count").notNull().default(0),
+    trademarkCount: integer("trademark_count").notNull().default(0),
+    technologies: text("technologies").array().notNull().default(sql`'{}'::text[]`),
+    certifications: text("certifications").array().notNull().default(sql`'{}'::text[]`),
+    customerProfile: text("customer_profile"),
+    tractionHighlights: text("traction_highlights"),
+    contactEmail: text("contact_email"),
+    socials: jsonb("socials").$type<Record<string, string>>(),
+    reviews: jsonb("reviews").$type<Record<string, { rating: number; count: number }>>(),
+    embedding: vector("embedding", { dimensions: 256 }),
+    provenance: jsonb("provenance").$type<Provenance>(),
+    deletedAt: ts("deleted_at"),
+    createdAt: createdAt(),
+    updatedAt: ts("updated_at").notNull().defaultNow(),
+  },
+  (t) => [
+    uniqueIndex("companies_domain_uq").on(t.domain),
+    index("companies_rank_idx").on(t.rank),
+    index("companies_stage_idx").on(t.growthStage),
+    index("companies_country_idx").on(t.hqCountry),
+    index("companies_sector_idx").on(t.sectorId),
+    index("companies_funding_idx").on(t.totalFundingUsd),
+    index("companies_last_funding_idx").on(t.lastFundingDate),
+    index("companies_name_trgm").using("gin", sql`${t.name} gin_trgm_ops`),
+    index("companies_industry_gin").using("gin", t.industryIds),
+    index("companies_vertical_gin").using("gin", t.techVerticalIds),
+    index("companies_highlights_gin").using("gin", t.highlights),
+  ],
+);
+
+export const companyPeople = pgTable(
+  "company_people",
+  {
+    companyId: text("company_id").notNull(),
+    personId: text("person_id").notNull(),
+    title: text("title"),
+    department: text("department"),
+    seniority: text("seniority"),
+    isFounder: boolean("is_founder").notNull().default(false),
+    start: date("start"),
+    end: date("end"),
+    isCurrent: boolean("is_current").notNull().default(true),
+  },
+  (t) => [
+    primaryKey({ columns: [t.companyId, t.personId] }),
+    index("company_people_person_idx").on(t.personId),
+  ],
+);
+
+export const companyCompetitors = pgTable(
+  "company_competitors",
+  {
+    companyId: text("company_id").notNull(),
+    competitorId: text("competitor_id").notNull(),
+    overlapScore: real("overlap_score").notNull(),
+    reason: text("reason"),
+    computedAt: ts("computed_at").notNull().defaultNow(),
+  },
+  (t) => [primaryKey({ columns: [t.companyId, t.competitorId] })],
+);
+
+export const companyEstimates = pgTable(
+  "company_estimates",
+  {
+    companyId: text("company_id").notNull(),
+    month: date("month").notNull(),
+    revenueP10: usd("revenue_p10"),
+    revenueP50: usd("revenue_p50"),
+    revenueP90: usd("revenue_p90"),
+    revenueType: text("revenue_type").notNull().default("ARR"),
+    valuationP10: usd("valuation_p10"),
+    valuationP50: usd("valuation_p50"),
+    valuationP90: usd("valuation_p90"),
+    confidence: text("confidence").notNull(), // LOW | MEDIUM | HIGH
+    drivers: jsonb("drivers").$type<{ label: string; impact: number }[]>(),
+    modelVersion: text("model_version").notNull(),
+  },
+  (t) => [primaryKey({ columns: [t.companyId, t.month] })],
+);
+
+export const revenueDisclosures = pgTable(
+  "revenue_disclosures",
+  {
+    id: text("id").primaryKey(),
+    companyId: text("company_id").notNull(),
+    amountUsd: usd("amount_usd").notNull(),
+    type: text("type").notNull(),
+    period: date("period").notNull(),
+    sourceUrl: text("source_url"),
+    publisher: text("publisher"),
+    publishedAt: ts("published_at"),
+    verifiedBy: text("verified_by"),
+    status: text("status").notNull().default("verified"),
+  },
+  (t) => [index("revenue_disclosures_company_idx").on(t.companyId)],
+);
+
+export const newsItems = pgTable("news_items", {
+  id: text("id").primaryKey(),
+  url: text("url").notNull(),
+  publisher: text("publisher").notNull(),
+  title: text("title").notNull(),
+  publishedAt: ts("published_at").notNull(),
+  bodyHash: text("body_hash"),
+});
+
+export const newsSignals = pgTable(
+  "news_signals",
+  {
+    id: text("id").primaryKey(),
+    companyId: text("company_id").notNull(),
+    newsItemId: text("news_item_id").notNull(),
+    category: text("category").notNull(), // revenue | profitability | traction | funding | deals | other
+    summary: text("summary").notNull(),
+    score: real("score").notNull(), // 0-5
+    isMajor: boolean("is_major").notNull().default(false),
+    figures: jsonb("figures"),
+    publishedAt: ts("published_at").notNull(),
+  },
+  (t) => [index("news_signals_company_idx").on(t.companyId, t.publishedAt)],
+);
+
+/* ------------------------------------------------------------------ */
+/* People                                                              */
+/* ------------------------------------------------------------------ */
+
+export const people = pgTable(
+  "people",
+  {
+    id: text("id").primaryKey(),
+    fullName: text("full_name").notNull(),
+    first: text("first").notNull(),
+    last: text("last").notNull(),
+    headline: text("headline"),
+    bio: text("bio"),
+    location: text("location"),
+    country: text("country"),
+    linkedinUrl: text("linkedin_url"),
+    xUrl: text("x_url"),
+    githubUrl: text("github_url"),
+    avatarUrl: text("avatar_url"),
+    currentTitle: text("current_title"),
+    currentCompanyId: text("current_company_id"),
+    currentCompanyName: text("current_company_name"),
+    department: text("department"),
+    seniority: text("seniority"),
+    yearsExperience: integer("years_experience"),
+    highlights: text("highlights").array().notNull().default(sql`'{}'::text[]`),
+    educationSummary: text("education_summary"),
+    followers: integer("followers"),
+    connections: integer("connections"),
+    talentSignalCount: integer("talent_signal_count").notNull().default(0),
+    embedding: vector("embedding", { dimensions: 256 }),
+    provenance: jsonb("provenance").$type<Provenance>(),
+    deletedAt: ts("deleted_at"),
+    createdAt: createdAt(),
+  },
+  (t) => [
+    uniqueIndex("people_linkedin_uq").on(t.linkedinUrl),
+    index("people_company_idx").on(t.currentCompanyId),
+    index("people_country_idx").on(t.country),
+    index("people_seniority_idx").on(t.seniority),
+    index("people_name_trgm").using("gin", sql`${t.fullName} gin_trgm_ops`),
+    index("people_highlights_gin").using("gin", t.highlights),
+  ],
+);
+
+export const personExperience = pgTable(
+  "person_experience",
+  {
+    id: text("id").primaryKey(),
+    personId: text("person_id").notNull(),
+    companyId: text("company_id"),
+    companyName: text("company_name").notNull(),
+    title: text("title").notNull(),
+    department: text("department"),
+    start: date("start"),
+    end: date("end"),
+    isCurrent: boolean("is_current").notNull().default(false),
+    isFounder: boolean("is_founder").notNull().default(false),
+  },
+  (t) => [index("person_experience_person_idx").on(t.personId)],
+);
+
+export const schools = pgTable("schools", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  domain: text("domain"),
+  country: text("country"),
+  tier: integer("tier").notNull().default(2),
+});
+
+export const personEducation = pgTable(
+  "person_education",
+  {
+    personId: text("person_id").notNull(),
+    schoolId: text("school_id").notNull(),
+    degree: text("degree"),
+    field: text("field"),
+    start: integer("start"),
+    end: integer("end"),
+  },
+  (t) => [primaryKey({ columns: [t.personId, t.schoolId] })],
+);
+
+export const personEmails = pgTable(
+  "person_emails",
+  {
+    personId: text("person_id").notNull(),
+    email: text("email").notNull(),
+    type: text("type").notNull(), // work | personal
+    status: text("status").notNull(), // verified | catch_all | unknown
+    source: text("source").notNull(),
+    checkedAt: ts("checked_at").notNull().defaultNow(),
+  },
+  (t) => [primaryKey({ columns: [t.personId, t.email] }), index("person_emails_email_idx").on(t.email)],
+);
+
+/* ------------------------------------------------------------------ */
+/* Investors & transactions                                            */
+/* ------------------------------------------------------------------ */
+
+export const investors = pgTable(
+  "investors",
+  {
+    id: text("id").primaryKey(),
+    name: text("name").notNull(),
+    type: text("type").notNull(), // VC | PE | CVC | Angel | Family office | Accelerator | Strategic
+    domain: text("domain"),
+    description: text("description"),
+    hqCity: text("hq_city"),
+    hqCountry: text("hq_country"),
+    foundedYear: integer("founded_year"),
+    aumUsd: usd("aum_usd"),
+    checkMin: usd("check_min"),
+    checkMax: usd("check_max"),
+    targetStages: text("target_stages").array().notNull().default(sql`'{}'::text[]`),
+    geographies: text("geographies").array().notNull().default(sql`'{}'::text[]`),
+    sectors: text("sectors").array().notNull().default(sql`'{}'::text[]`),
+    investmentsCount: integer("investments_count").notNull().default(0),
+    exitsCount: integer("exits_count").notNull().default(0),
+    leadsCount: integer("leads_count").notNull().default(0),
+    followOnRate: real("follow_on_rate"),
+    unicornCount: integer("unicorn_count").notNull().default(0),
+    highlights: text("highlights").array().notNull().default(sql`'{}'::text[]`),
+    personId: text("person_id"),
+    provenance: jsonb("provenance").$type<Provenance>(),
+    deletedAt: ts("deleted_at"),
+    createdAt: createdAt(),
+  },
+  (t) => [
+    index("investors_type_idx").on(t.type),
+    index("investors_name_trgm").using("gin", sql`${t.name} gin_trgm_ops`),
+  ],
+);
+
+export const fundingRounds = pgTable(
+  "funding_rounds",
+  {
+    id: text("id").primaryKey(),
+    companyId: text("company_id").notNull(),
+    type: text("type").notNull(),
+    amountUsd: usd("amount_usd"),
+    currency: text("currency").notNull().default("USD"),
+    announcedDate: date("announced_date").notNull(),
+    preMoneyUsd: usd("pre_money_usd"),
+    postMoneyUsd: usd("post_money_usd"),
+    sourceUrls: text("source_urls").array().notNull().default(sql`'{}'::text[]`),
+    provenance: jsonb("provenance").$type<Provenance>(),
+  },
+  (t) => [
+    index("funding_rounds_company_idx").on(t.companyId),
+    index("funding_rounds_date_idx").on(t.announcedDate),
+    index("funding_rounds_type_idx").on(t.type),
+  ],
+);
+
+export const roundInvestors = pgTable(
+  "round_investors",
+  {
+    roundId: text("round_id").notNull(),
+    investorId: text("investor_id").notNull(),
+    isLead: boolean("is_lead").notNull().default(false),
+  },
+  (t) => [
+    primaryKey({ columns: [t.roundId, t.investorId] }),
+    index("round_investors_investor_idx").on(t.investorId),
+  ],
+);
+
+export const acquisitions = pgTable(
+  "acquisitions",
+  {
+    id: text("id").primaryKey(),
+    acquirerId: text("acquirer_id"),
+    acquirerName: text("acquirer_name").notNull(),
+    targetId: text("target_id").notNull(),
+    date: date("date").notNull(),
+    amountUsd: usd("amount_usd"),
+    status: text("status").notNull().default("Completed"),
+    sourceUrls: text("source_urls").array().notNull().default(sql`'{}'::text[]`),
+  },
+  (t) => [index("acquisitions_target_idx").on(t.targetId), index("acquisitions_date_idx").on(t.date)],
+);
+
+export const ipos = pgTable(
+  "ipos",
+  {
+    id: text("id").primaryKey(),
+    companyId: text("company_id").notNull(),
+    date: date("date").notNull(),
+    exchange: text("exchange").notNull(),
+    ticker: text("ticker").notNull(),
+    sharePrice: real("share_price"),
+    valuationUsd: usd("valuation_usd"),
+    raisedUsd: usd("raised_usd"),
+  },
+  (t) => [index("ipos_company_idx").on(t.companyId)],
+);
+
+/* ------------------------------------------------------------------ */
+/* Signals                                                             */
+/* ------------------------------------------------------------------ */
+
+export const talentSignals = pgTable(
+  "talent_signals",
+  {
+    id: text("id").primaryKey(),
+    personId: text("person_id").notNull(),
+    type: text("type").notNull(), // NEW_COMPANY | NEW_ROLE | PROMOTION | SEARCHING | OUT_OF_STEALTH | DEPARTURE
+    status: text("status").notNull(), // STEALTH | HR | LIVE
+    score: integer("score").notNull(),
+    summary: text("summary").notNull(),
+    signalDate: date("signal_date").notNull(),
+    newCompanyId: text("new_company_id"),
+    prevCompanyIds: text("prev_company_ids").array().notNull().default(sql`'{}'::text[]`),
+    sources: jsonb("sources").$type<{ kind: string; url?: string }[]>(),
+  },
+  (t) => [
+    index("talent_signals_person_idx").on(t.personId),
+    index("talent_signals_date_idx").on(t.signalDate),
+  ],
+);
+
+/* ------------------------------------------------------------------ */
+/* Workspace objects (org-scoped — access only via packages/core repo)  */
+/* ------------------------------------------------------------------ */
+
+export const lists = pgTable(
+  "lists",
+  {
+    id: text("id").primaryKey(),
+    orgId: text("org_id").notNull(),
+    ownerId: text("owner_id").notNull(),
+    name: text("name").notNull(),
+    entityType: text("entity_type").notNull(), // COMPANY | PERSON | INVESTOR
+    visibility: text("visibility").notNull().default("TEAM"), // PRIVATE | TEAM
+    system: text("system"), // MY_CRM | MY_NETWORK | LIKED | null
+    deletedAt: ts("deleted_at"),
+    createdAt: createdAt(),
+  },
+  (t) => [index("lists_org_idx").on(t.orgId)],
+);
+
+export const listItems = pgTable(
+  "list_items",
+  {
+    listId: text("list_id").notNull(),
+    entityType: text("entity_type").notNull(),
+    entityId: text("entity_id").notNull(),
+    addedBy: text("added_by").notNull(),
+    status: text("status"),
+    customFields: jsonb("custom_fields"),
+    note: text("note"),
+    addedAt: createdAt(),
+  },
+  (t) => [primaryKey({ columns: [t.listId, t.entityId] })],
+);
+
+export const savedSearches = pgTable(
+  "saved_searches",
+  {
+    id: text("id").primaryKey(),
+    orgId: text("org_id").notNull(),
+    ownerId: text("owner_id").notNull(),
+    name: text("name").notNull(),
+    product: text("product").notNull(),
+    filterAst: jsonb("filter_ast").notNull(),
+    nlQuery: text("nl_query"),
+    sort: jsonb("sort"),
+    visibility: text("visibility").notNull().default("TEAM"),
+    alertCadence: text("alert_cadence").notNull().default("OFF"), // OFF | REALTIME | DAILY | WEEKLY
+    channels: jsonb("channels").$type<string[]>(),
+    lastRunAt: ts("last_run_at"),
+    deletedAt: ts("deleted_at"),
+    createdAt: createdAt(),
+  },
+  (t) => [index("saved_searches_org_idx").on(t.orgId)],
+);
+
+export const searchResultSnapshots = pgTable(
+  "search_result_snapshots",
+  {
+    searchId: text("search_id").notNull(),
+    entityId: text("entity_id").notNull(),
+    firstSeenAt: ts("first_seen_at").notNull().defaultNow(),
+  },
+  (t) => [primaryKey({ columns: [t.searchId, t.entityId] })],
+);
+
+export const searchReads = pgTable(
+  "search_reads",
+  {
+    searchId: text("search_id").notNull(),
+    readerId: text("reader_id").notNull(), // user id | api key id | mcp client id
+    lastReadAt: ts("last_read_at").notNull().defaultNow(),
+  },
+  (t) => [primaryKey({ columns: [t.searchId, t.readerId] })],
+);
+
+export const orgStatuses = pgTable("org_statuses", {
+  id: text("id").primaryKey(),
+  orgId: text("org_id").notNull(),
+  label: text("label").notNull(),
+  color: text("color").notNull(),
+  order: integer("order").notNull(),
+});
+
+export const entityStatus = pgTable(
+  "entity_status",
+  {
+    orgId: text("org_id").notNull(),
+    entityType: text("entity_type").notNull(),
+    entityId: text("entity_id").notNull(),
+    statusId: text("status_id").notNull(),
+    updatedBy: text("updated_by").notNull(),
+    updatedAt: ts("updated_at").notNull().defaultNow(),
+  },
+  (t) => [primaryKey({ columns: [t.orgId, t.entityId] })],
+);
+
+export const likes = pgTable(
+  "likes",
+  {
+    orgId: text("org_id").notNull(),
+    userId: text("user_id").notNull(),
+    entityType: text("entity_type").notNull(),
+    entityId: text("entity_id").notNull(),
+  },
+  (t) => [primaryKey({ columns: [t.orgId, t.userId, t.entityId] })],
+);
+
+export const hides = pgTable(
+  "hides",
+  {
+    orgId: text("org_id").notNull(),
+    userId: text("user_id").notNull(),
+    entityType: text("entity_type").notNull(),
+    entityId: text("entity_id").notNull(),
+  },
+  (t) => [primaryKey({ columns: [t.orgId, t.userId, t.entityId] })],
+);
+
+export const notes = pgTable(
+  "notes",
+  {
+    id: text("id").primaryKey(),
+    orgId: text("org_id").notNull(),
+    entityType: text("entity_type").notNull(),
+    entityId: text("entity_id").notNull(),
+    authorId: text("author_id").notNull(),
+    body: text("body").notNull(),
+    deletedAt: ts("deleted_at"),
+    createdAt: createdAt(),
+  },
+  (t) => [index("notes_entity_idx").on(t.orgId, t.entityId)],
+);
+
+export const notifications = pgTable(
+  "notifications",
+  {
+    id: text("id").primaryKey(),
+    orgId: text("org_id").notNull(),
+    userId: text("user_id").notNull(),
+    kind: text("kind").notNull(),
+    payload: jsonb("payload").notNull(),
+    readAt: ts("read_at"),
+    createdAt: createdAt(),
+  },
+  (t) => [index("notifications_user_idx").on(t.orgId, t.userId)],
+);
+
+export const digestRuns = pgTable("digest_runs", {
+  id: text("id").primaryKey(),
+  orgId: text("org_id").notNull(),
+  userId: text("user_id").notNull(),
+  cadence: text("cadence").notNull(),
+  sentAt: ts("sent_at").notNull().defaultNow(),
+  itemCount: integer("item_count").notNull(),
+  html: text("html"),
+});
+
+/* ------------------------------------------------------------------ */
+/* API, credits, usage                                                 */
+/* ------------------------------------------------------------------ */
+
+export const apiKeys = pgTable(
+  "api_keys",
+  {
+    id: text("id").primaryKey(),
+    orgId: text("org_id").notNull(),
+    userId: text("user_id").notNull(),
+    name: text("name").notNull(),
+    prefix: text("prefix").notNull(),
+    hash: text("hash").notNull(),
+    scopes: text("scopes").array().notNull().default(sql`'{}'::text[]`),
+    status: text("status").notNull().default("PENDING"), // PENDING | ACTIVE | REVOKED
+    lastUsedAt: ts("last_used_at"),
+    createdAt: createdAt(),
+  },
+  (t) => [uniqueIndex("api_keys_hash_uq").on(t.hash), index("api_keys_org_idx").on(t.orgId)],
+);
+
+export const creditBalances = pgTable("credit_balances", {
+  orgId: text("org_id").primaryKey(),
+  balance: integer("balance").notNull(),
+  periodStart: ts("period_start").notNull().defaultNow(),
+  periodEnd: ts("period_end"),
+});
+
+export const creditLedger = pgTable(
+  "credit_ledger",
+  {
+    id: text("id").primaryKey(),
+    orgId: text("org_id").notNull(),
+    delta: integer("delta").notNull(),
+    reason: text("reason").notNull(),
+    operation: text("operation"),
+    requestId: text("request_id"),
+    at: ts("at").notNull().defaultNow(),
+  },
+  (t) => [index("credit_ledger_org_idx").on(t.orgId, t.at)],
+);
+
+export const usageEvents = pgTable(
+  "usage_events",
+  {
+    id: text("id").primaryKey(),
+    orgId: text("org_id").notNull(),
+    actorType: text("actor_type").notNull(),
+    actorId: text("actor_id").notNull(),
+    surface: text("surface").notNull(), // API | MCP | APP | EXT | AGENT
+    operation: text("operation").notNull(),
+    matched: boolean("matched").notNull(),
+    credits: integer("credits").notNull(),
+    latencyMs: integer("latency_ms"),
+    requestId: text("request_id"),
+    at: ts("at").notNull().defaultNow(),
+  },
+  (t) => [index("usage_events_org_idx").on(t.orgId, t.at)],
+);
+
+export const auditLog = pgTable("audit_log", {
+  id: text("id").primaryKey(),
+  orgId: text("org_id").notNull(),
+  actor: text("actor").notNull(),
+  action: text("action").notNull(),
+  target: text("target"),
+  at: ts("at").notNull().defaultNow(),
+});
+
+/* ------------------------------------------------------------------ */
+/* Public forms                                                        */
+/* ------------------------------------------------------------------ */
+
+/** Mock CRM sink for the demo form until HubSpot is connected (H3). */
+export const leads = pgTable("leads", {
+  id: text("id").primaryKey(),
+  kind: text("kind").notNull(), // DEMO | PARTNER | NEWSLETTER
+  firstName: text("first_name"),
+  lastName: text("last_name"),
+  email: text("email").notNull(),
+  company: text("company"),
+  firmType: text("firm_type"),
+  aum: text("aum"),
+  phone: text("phone"),
+  partnershipType: text("partnership_type"),
+  message: text("message"),
+  locale: text("locale"),
+  route: text("route"),
+  createdAt: createdAt(),
+});
+
+export const dsarRequests = pgTable("dsar_requests", {
+  id: text("id").primaryKey(),
+  email: text("email").notNull(),
+  fullName: text("full_name"),
+  type: text("type").notNull(), // ACCESS | DELETE | OPT_OUT
+  entityId: text("entity_id"),
+  details: text("details"),
+  status: text("status").notNull().default("RECEIVED"),
+  createdAt: createdAt(),
+});
+
+/* ------------------------------------------------------------------ */
+/* Partitioned metrics table (created by custom migration 0001)        */
+/* ------------------------------------------------------------------ */
+
+export const companyMetricsDaily = pgTable(
+  "company_metrics_daily",
+  {
+    companyId: text("company_id").notNull(),
+    metric: text("metric").notNull(), // employee_count | web_visits | linkedin_followers
+    date: date("date").notNull(),
+    value: real("value").notNull(),
+  },
+  (t) => [primaryKey({ columns: [t.companyId, t.metric, t.date] })],
+);

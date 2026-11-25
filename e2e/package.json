@@ -1,0 +1,8 @@
+{
+  "name": "@founders/e2e",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": { "test": "playwright test --trace off" },
+  "devDependencies": { "@playwright/test": "1.65.1", "@types/node": "^22.18.0" }
+}

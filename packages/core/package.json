@@ -1,0 +1,35 @@
+{
+  "name": "@founders/core",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./taxonomy": "./src/taxonomy.ts",
+    "./filters": "./src/filters/index.ts",
+    "./format": "./src/format.ts",
+    "./limits": "./src/limits.ts",
+    "./pricing": "./src/pricing.ts",
+    "./nl": "./src/nl.ts",
+    "./repo": "./src/repo/index.ts",
+    "./ids": "./src/ids.ts",
+    "./estimates": "./src/estimates.ts",
+    "./filters/compile": "./src/filters/compile.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "lint": "eslint src",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@founders/config": "workspace:*",
+    "@founders/db": "workspace:*",
+    "drizzle-orm": "^0.45.4",
+    "zod": "^4.1.12",
+    "@anthropic-ai/sdk": "latest"
+  },
+  "devDependencies": {
+    "@types/node": "^22.18.0",
+    "vitest": "^3.2.4"
+  }
+}

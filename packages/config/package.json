@@ -1,0 +1,16 @@
+{
+  "name": "@founders/config",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "lint": "eslint src"
+  },
+  "devDependencies": {
+    "@types/node": "^22.18.0"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "name": "@founders/seed",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/generate.ts"
+  },
+  "scripts": {
+    "seed": "tsx src/run.ts",
+    "typecheck": "tsc -p tsconfig.json",
+    "lint": "eslint src",
+    "test": "vitest run",
+    "fixtures": "tsx src/export-fixtures.ts"
+  },
+  "dependencies": {
+    "@founders/core": "workspace:*",
+    "@founders/db": "workspace:*",
+    "better-auth": "^1.3.0",
+    "postgres": "^3.4.7",
+    "drizzle-orm": "^0.45.4"
+  },
+  "devDependencies": {
+    "@types/node": "^22.18.0",
+    "tsx": "^4.23.15",
+    "vitest": "^3.2.4"
+  }
+}

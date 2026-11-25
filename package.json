@@ -1,0 +1,32 @@
+{
+  "name": "founders-ai",
+  "private": true,
+  "packageManager": "pnpm@10.28.0",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "dev": "turbo run dev --parallel",
+    "dev:www": "pnpm --filter @founders/www dev",
+    "dev:app": "pnpm --filter @founders/app dev",
+    "dev:api": "pnpm --filter @founders/api dev",
+    "dev:up": "docker compose up -d && pnpm db:migrate && pnpm db:seed",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "verify": "pnpm lint && pnpm typecheck && pnpm test && pnpm copy:check && pnpm build",
+    "copy:check": "node scripts/copy-check.mjs",
+    "db:generate": "pnpm --filter @founders/db generate",
+    "db:migrate": "pnpm --filter @founders/db migrate",
+    "db:seed": "pnpm --filter @founders/db seed",
+    "db:reset": "pnpm --filter @founders/db reset",
+    "test:e2e": "pnpm --filter @founders/e2e test"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.0",
+    "eslint": "^9.39.0",
+    "prettier": "^3.6.2",
+    "turbo": "^2.11.13",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.46.0"
+  }
+}
