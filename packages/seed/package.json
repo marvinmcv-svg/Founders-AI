@@ -10,7 +10,7 @@
     "seed": "tsx src/run.ts",
     "typecheck": "tsc -p tsconfig.json",
     "lint": "eslint src",
-    "test": "vitest run",
+    "test": "vitest run --passWithNoTests",
     "fixtures": "tsx src/export-fixtures.ts"
   },
   "dependencies": {

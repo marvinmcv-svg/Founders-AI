@@ -1,5 +1,5 @@
 /**
- * Copy keys (plan Rule 8). Every UI string comes from /content/copy/en.json via t("page.section.slot").
+ * Copy keys (plan Rule 8). Every UI string comes from /content/copy/en.json via t(<page.section.slot>).
  * Missing keys render the visible placeholder [TODO-COPY key]; `pnpm copy:check` fails on any.
  */
 import en from "../../../../content/copy/en.json";

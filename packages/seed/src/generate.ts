@@ -667,20 +667,25 @@ export function generate(opts: SeedOptions = {}) {
   };
   for (const st of STAGES) {
     const group = companies.filter((c) => c.stage === st);
-    const hc = z(group.map((c) => growth(c.employees, 3)));
-    const wv = z(group.map((c) => growth(c.web, 3)));
+    // Smoothed growth (+10 heads) so 1→2 employees doesn't read as a 100% surge.
+    const smooth = (series: number[], back: number, k: number) => ((series[11] ?? 0) - (series[11 - back] ?? 0)) / ((series[11 - back] ?? 0) + k);
+    const hc = z(group.map((c) => smooth(c.employees, 3, 10)));
+    const wv = z(group.map((c) => smooth(c.web, 3, 2000)));
     const fund = z(group.map((c) => Math.log1p(c.rounds.reduce((a, r) => a + r.amount, 0))));
     const soc = z(group.map((c) => growth(c.followers, 3)));
     group.forEach((c, i) => {
       const iq = c.investorIds.size ? [...c.investorIds].filter((x) => investorById.get(x)?.tier1).length / c.investorIds.size : 0;
-      c.rankScore = 0.3 * (hc[i] ?? 0) + 0.25 * (wv[i] ?? 0) + 0.15 * (fund[i] ?? 0) + 0.15 * iq + 0.1 * Math.min(3, c.signalCount / 2) + 0.05 * (soc[i] ?? 0);
+      // Plan 9.2 rank v1 weights, plus a scale term so momentum at size outranks momentum from a tiny base.
+      const scale = 0.35 * STAGES.indexOf(c.stage) + 0.25 * Math.log10(Math.max(1, c.employees[11] ?? 1));
+      c.rankScore = 0.3 * (hc[i] ?? 0) + 0.25 * (wv[i] ?? 0) + 0.15 * (fund[i] ?? 0) + 0.15 * iq + 0.1 * Math.min(3, c.signalCount / 2) + 0.05 * (soc[i] ?? 0) + scale;
     });
   }
   [...companies].sort((a, b) => b.rankScore - a.rankScore).forEach((c, i) => (c.rank = i + 1));
   for (const c of companies) {
     const h = growth(c.employees, 3);
-    if (h > 0.25) c.highlights.push("headcount_surge");
-    else if (h > 0.1) c.highlights.push("strong_headcount_growth");
+    const big = (c.employees[8] ?? 0) >= 10;
+    if (h > 0.25 && big) c.highlights.push("headcount_surge");
+    else if (h > 0.1 && big) c.highlights.push("strong_headcount_growth");
     if (growth(c.web, 3) > 0.3) c.highlights.push("strong_web_traffic_growth");
     if (growth(c.followers, 3) > 0.2) c.highlights.push("strong_social_growth");
     if ([...c.investorIds].some((x) => investorById.get(x)?.tier1)) c.highlights.push("top_tier_investors");

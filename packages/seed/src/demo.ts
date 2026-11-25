@@ -151,7 +151,8 @@ export async function seedDemoWorkspace(
     // Simulate ingestion since the last read: drop ~12% of the snapshot, backdate the rest and the read
     // marker, then refresh so the dropped results reappear as "new".
     await sql`UPDATE saved_searches SET created_at = now() - interval '14 days' WHERE id = ${created.id}`;
-    await sql`DELETE FROM search_result_snapshots WHERE search_id = ${created.id} AND random() < 0.12`;
+    await sql`DELETE FROM search_result_snapshots WHERE search_id = ${created.id} AND entity_id IN (
+      SELECT entity_id FROM search_result_snapshots WHERE search_id = ${created.id} ORDER BY random() LIMIT GREATEST(1, LEAST(40, (SELECT count(*) / 8 FROM search_result_snapshots WHERE search_id = ${created.id}))))`;
     await sql`UPDATE search_result_snapshots SET first_seen_at = now() - interval '10 days' WHERE search_id = ${created.id}`;
     await sql`UPDATE search_reads SET last_read_at = now() - interval '2 days' WHERE search_id = ${created.id}`;
     const r = await refreshSavedSearch(ctx, created.id);

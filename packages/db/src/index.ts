@@ -16,7 +16,13 @@ function url() {
 /** Shared connection (one per process; survives Next.js dev HMR). */
 export function getSql(): postgres.Sql {
   if (!globalForDb.__foundersSql) {
-    globalForDb.__foundersSql = postgres(url(), { max: 10, prepare: true, onnotice: () => {} });
+    globalForDb.__foundersSql = postgres(url(), {
+      max: 10,
+      prepare: true,
+      onnotice: () => {},
+      // Return int8/numeric as JS numbers (all our amounts fit in 2^53).
+      types: { bigint: { to: 20, from: [20, 1700], parse: (x: string) => Number(x), serialize: (x: number) => String(x) } },
+    });
   }
   return globalForDb.__foundersSql;
 }

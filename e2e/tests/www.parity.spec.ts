@@ -1,0 +1,38 @@
+import { expect, test } from "@playwright/test";
+import { readFileSync } from "node:fs";
+
+/** Structural parity (plan 15): every page's section IDs from recon/sections.md exist, in order. */
+const spec = readFileSync(new URL("../../recon/sections.md", import.meta.url), "utf8");
+const pages = spec
+  .split(/\n## /)
+  .slice(1)
+  .map((block) => ({ path: block.match(/^`([^`]+)`/)![1]!, ids: [...block.matchAll(/^- `([a-z0-9-]+\.[a-z0-9-]+)`/gm)].map((x) => x[1]!) }));
+
+for (const p of pages) {
+  test(`sections in order on ${p.path}`, async ({ page }) => {
+    await page.goto(p.path);
+    const found = await page.$$eval("[data-section]", (els) => els.map((e) => e.getAttribute("data-section")));
+    expect(found).toEqual(p.ids);
+    expect(await page.locator("text=TODO-COPY").count()).toBe(0);
+  });
+}
+
+test("demo form rejects free mail and accepts work email", async ({ page }) => {
+  await page.goto("/contact");
+  await page.fill("#firstName", "Ana");
+  await page.fill("#lastName", "Paz");
+  await page.fill("#email", "ana@gmail.com");
+  await page.selectOption("#firmType", "VC");
+  await page.selectOption("#aum", "<$50M");
+  await page.click("form button[type=submit]");
+  await expect(page.getByText("Please use your work email.")).toBeVisible();
+  await page.fill("#email", "ana@andes-ventures.example");
+  await page.click("form button[type=submit]");
+  await expect(page.getByText(/we'll be in touch/i)).toBeVisible();
+});
+
+test("R2 links land on coming-soon, not 404", async ({ page }) => {
+  const r = await page.goto("/soon/agents");
+  expect(r?.status()).toBe(200);
+  await expect(page.getByRole("heading", { name: "Coming soon" })).toBeVisible();
+});

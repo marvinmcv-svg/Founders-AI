@@ -44,6 +44,9 @@ importers:
       '@hono/zod-openapi':
         specifier: ^1.1.0
         version: 1.6.3(hono@4.13.22)(zod@4.6.7)
+      drizzle-orm:
+        specifier: ^0.45.4
+        version: 0.45.4(@opentelemetry/api@1.10.0)(kysely@0.29.9)(postgres@3.4.9)
       hono:
         specifier: ^4.10.0
         version: 4.13.22
@@ -105,6 +108,9 @@ importers:
       cmdk:
         specifier: ^1.1.1
         version: 1.1.1(@types/react-dom@19.3.0(@types/react@19.3.3))(@types/react@19.3.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+      drizzle-orm:
+        specifier: ^0.45.4
+        version: 0.45.4(@opentelemetry/api@1.10.0)(kysely@0.29.9)(postgres@3.4.9)
       hono:
         specifier: ^4.10.0
         version: 4.13.22
@@ -129,6 +135,9 @@ importers:
       recharts:
         specifier: ^3.3.0
         version: 3.11.1(@types/react@19.3.3)(react-dom@19.3.1(react@19.3.1))(react-is@19.3.1)(react@19.3.1)(redux@5.0.1)
+      server-only:
+        specifier: ^0.0.1
+        version: 0.0.1
       zod:
         specifier: ^4.1.12
         version: 4.6.7
@@ -255,6 +264,9 @@ importers:
       '@types/node':
         specifier: ^22.18.0
         version: 22.20.7
+      dotenv:
+        specifier: ^17.2.3
+        version: 17.4.2
       vitest:
         specifier: ^3.2.4
         version: 3.2.7(@types/node@22.20.7)(jiti@2.7.0)(lightningcss@1.33.0)(tsx@4.23.15)(yaml@2.9.1)
@@ -2768,6 +2780,9 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
 
+  server-only@0.0.1:
+    resolution: {integrity: sha512-qepMx2JxAa5jjfzxG79yPPq+8BuFToHd1hm7kI+Z4zAq1ftQiP7HcxMhDDItrbtwVeLg/cY2JnKnrcFkmiswNA==}
+
   set-cookie-parser@3.2.3:
     resolution: {integrity: sha512-bDO7NdAkLprNt3BNl3LAh0oVnOS5+WspzxOxiboo7vRIyTqj2pvFmNWYEFynSGQgpJ+7yG/9nc/aSG20UDBUpg==}
 
@@ -4909,6 +4924,8 @@ snapshots:
   scheduler@0.28.0: {}
 
   semver@7.8.6: {}
+
+  server-only@0.0.1: {}
 
   set-cookie-parser@3.2.3: {}
 

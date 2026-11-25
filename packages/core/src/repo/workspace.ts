@@ -135,13 +135,13 @@ export async function removeFromList(ctx: OrgContext, listId: string, entityIds:
 export async function getListItems(ctx: OrgContext, listId: string, opts: { limit?: number; offset?: number } = {}) {
   const l = await getList(ctx, listId);
   const items = await q<{ entity_id: string; status: string | null; note: string | null; added_at: string }>(
-    sql`SELECT entity_id, status, note, added_at FROM list_items WHERE list_id = ${listId} ORDER BY added_at DESC
+    sql`SELECT entity_id, status, note, created_at AS added_at FROM list_items WHERE list_id = ${listId} ORDER BY created_at DESC
         LIMIT ${opts.limit ?? 500} OFFSET ${opts.offset ?? 0}`,
   );
   const [{ n } = { n: 0 }] = await q<{ n: number }>(sql`SELECT count(*)::int AS n FROM list_items WHERE list_id = ${listId}`);
   const rows = await getRowsByIds(ENTITY_PRODUCT[l.entity_type], items.map((i) => i.entity_id));
   const meta = new Map(items.map((i) => [i.entity_id, i]));
-  return { list: l, total: n, rows: rows.map((r) => ({ ...r, _list: meta.get(String(r.id)) })) };
+  return { list: l, total: n, rows: rows.map((r): Row => ({ ...r, _list: meta.get(String(r.id)) })) };
 }
 
 export function getListsContaining(ctx: OrgContext, entityId: string) {

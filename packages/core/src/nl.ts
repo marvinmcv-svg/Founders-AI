@@ -35,8 +35,8 @@ const norm = (s: string) =>
 
 function detectProduct(t: string): Product {
   if (/\b(stealth|talent signal|left (their|his|her) job|new compan(y|ies) founded|just (started|founded))\b/.test(t)) return "talent_signals";
-  if (/\b(rounds?|deals?|financings?|raised in|transactions?)\b/.test(t) && !/\bcompan/.test(t)) return "funding_rounds";
   if (/\b(investors?|vcs?|funds?|angels?|backers?|family offices?|accelerators?)\b/.test(t) && !/\bcompan(y|ies) (backed|funded)\b/.test(t)) return "investors";
+  if (/\b(rounds?|deals?|financings?|raised in|transactions?)\b/.test(t) && !/\bcompan/.test(t)) return "funding_rounds";
   if (/\b(founders?|people|persons?|engineers?|ctos?|ceos?|executives?|operators?|talent)\b/.test(t)) return "people";
   return "companies";
 }

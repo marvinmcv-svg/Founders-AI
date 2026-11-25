@@ -1,0 +1,146 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import * as repo from "@founders/core/repo";
+import { API_TRIAL_CREDITS, MCP_FREE_CALLS_PER_DAY } from "@founders/core/limits";
+import { Badge, buttonClass, Card } from "@founders/ui";
+import { getCtx } from "@/lib/session";
+import { ApiKeys, DigestPanel, InviteForm } from "./SettingsClient";
+
+export const metadata: Metadata = { title: "Settings" };
+
+export default async function Settings() {
+  const ctx = await getCtx();
+  const [org, members, keys, balance, ledger, usage, statuses, digests, audit] = await Promise.all([
+    repo.getOrg(ctx),
+    repo.getMembers(ctx),
+    repo.listApiKeys(ctx),
+    repo.getBalance(ctx.orgId),
+    repo.getLedger(ctx, 12),
+    repo.getUsageByDay(ctx.orgId, 30),
+    repo.getStatuses(ctx),
+    repo.getDigestRuns(ctx, 5),
+    repo.rawQuery<{ action: string; target: string | null; at: string }>(
+      (await import("drizzle-orm")).sql`SELECT action, target, at FROM audit_log WHERE org_id = ${ctx.orgId} ORDER BY at DESC LIMIT 12`,
+    ),
+  ]);
+  const isAdmin = ctx.role === "admin" || ctx.role === "owner";
+  const byOp = new Map<string, { calls: number; credits: number }>();
+  for (const u of usage) {
+    const k = `${u.surface} · ${u.operation}`;
+    const v = byOp.get(k) ?? { calls: 0, credits: 0 };
+    byOp.set(k, { calls: v.calls + u.calls, credits: v.credits + u.credits });
+  }
+  const Section = ({ id, title, children, sub }: { id: string; title: string; sub?: string; children: React.ReactNode }) => (
+    <section id={id} className="scroll-mt-6">
+      <h2 className="text-[16px] font-semibold">{title}</h2>
+      {sub ? <p className="mb-3 text-[13px] text-muted">{sub}</p> : <div className="mb-3" />}
+      {children}
+    </section>
+  );
+  return (
+    <div className="grid gap-8 p-6 xl:grid-cols-[180px_1fr]">
+      <nav className="hidden flex-col gap-1 text-[13px] xl:flex">
+        {[["workspace", "Workspace"], ["members", "Members"], ["api", "API keys"], ["credits", "Credits & usage"], ["notifications", "Notifications"], ["statuses", "Statuses"], ["privacy", "Data & privacy"], ["audit", "Audit log"]].map(([id, l]) => (
+          <a key={id} href={`#${id}`} className="rounded-md px-2 py-1.5 text-muted hover:bg-white/[0.05] hover:text-ink">
+            {l}
+          </a>
+        ))}
+      </nav>
+      <div className="flex max-w-4xl flex-col gap-10">
+        <Section id="workspace" title="Workspace">
+          <Card className="flex flex-wrap items-center gap-4 p-4 text-[13px]">
+            <span className="text-ink">{String(org?.name ?? "")}</span>
+            <Badge tone="neutral">Plan: {String(org?.plan ?? "")}</Badge>
+            <Badge tone="neutral">{members.length} / {String(org?.seats ?? "")} seats</Badge>
+            <span className="text-muted">Your role: {ctx.role}</span>
+            <Link href="/onboarding" className={buttonClass("secondary", "sm", "ml-auto")}>
+              Edit thesis
+            </Link>
+          </Card>
+        </Section>
+        <Section id="members" title="Members" sub="Admin · Member · Viewer. Users can belong to several workspaces.">
+          <Card className="divide-y divide-line">
+            {members.map((m) => (
+              <div key={String(m.id)} className="flex items-center gap-3 px-4 py-2.5 text-[13px]">
+                <span className="text-ink">{String(m.name)}</span>
+                <span className="text-muted">{String(m.email)}</span>
+                <Badge tone="neutral" className="ml-auto">{String(m.role)}</Badge>
+              </div>
+            ))}
+          </Card>
+          {isAdmin ? <div className="mt-3"><InviteForm /></div> : null}
+        </Section>
+        <Section id="api" title="API keys" sub={`Keys are shown once and stored as a hash. New keys need admin approval; the first approved key adds ${API_TRIAL_CREDITS} trial credits.`}>
+          <ApiKeys keys={keys} isAdmin={isAdmin} />
+          <p className="mt-2 text-[12px] text-muted">
+            Docs, OpenAPI and llms.txt: <Link href="/developers" className="text-accent hover:underline">API & docs</Link> · MCP (R2): {MCP_FREE_CALLS_PER_DAY} free calls/day/user.
+          </p>
+        </Section>
+        <Section id="credits" title="Credits & usage" sub="Exports, email reveals and API calls draw from one balance. Misses are never charged.">
+          <div className="grid gap-4 md:grid-cols-[200px_1fr]">
+            <Card className="p-4">
+              <p className="text-[12px] text-muted">Balance</p>
+              <p className="font-display text-[30px] text-accent">{balance.toLocaleString()}</p>
+              <p className="text-[11px] text-faint">Top-ups via Stripe once billing is connected.</p>
+            </Card>
+            <Card className="overflow-hidden">
+              <table className="w-full text-[12.5px]">
+                <thead>
+                  <tr className="border-b border-line text-left text-[11px] uppercase tracking-wide text-faint">
+                    <th className="px-3 py-2 font-medium">Last 30 days</th>
+                    <th className="px-3 py-2 text-right font-medium">Calls</th>
+                    <th className="px-3 py-2 text-right font-medium">Credits</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[...byOp.entries()].slice(0, 10).map(([k, v]) => (
+                    <tr key={k} className="border-b border-line/60">
+                      <td className="px-3 py-2 text-text">{k}</td>
+                      <td className="px-3 py-2 text-right tabular">{v.calls}</td>
+                      <td className="px-3 py-2 text-right tabular">{v.credits}</td>
+                    </tr>
+                  ))}
+                  {!byOp.size ? <tr><td className="px-3 py-4 text-muted" colSpan={3}>No usage yet.</td></tr> : null}
+                </tbody>
+              </table>
+            </Card>
+          </div>
+          <Card className="mt-3 divide-y divide-line text-[12.5px]">
+            {ledger.map((l) => (
+              <div key={String(l.id)} className="flex justify-between px-4 py-2">
+                <span className="text-muted">{String(l.reason)} {l.operation ? `· ${String(l.operation)}` : ""}</span>
+                <span className={Number(l.delta) >= 0 ? "text-positive" : "text-text"}>{Number(l.delta) > 0 ? "+" : ""}{String(l.delta)}</span>
+              </div>
+            ))}
+          </Card>
+        </Section>
+        <Section id="notifications" title="Notifications & digests" sub="Daily digest at 07:00 your time, weekly on Mondays. Email delivery turns on when Resend is configured.">
+          <DigestPanel runs={digests.map((d) => ({ id: d.id, sent_at: d.sent_at, item_count: d.item_count, html: d.html }))} />
+        </Section>
+        <Section id="statuses" title="Statuses" sub="Your workspace's status set, used on every grid and profile.">
+          <div className="flex flex-wrap gap-2">
+            {statuses.map((s) => (
+              <span key={s.id} className="inline-flex items-center gap-1.5 rounded-full border border-line px-3 py-1 text-[12.5px]" style={{ color: s.color }}>
+                <span className="h-2 w-2 rounded-full" style={{ background: s.color }} /> {s.label}
+              </span>
+            ))}
+          </div>
+        </Section>
+        <Section id="privacy" title="Data & privacy">
+          <p className="text-[13px] text-muted">Your lists, searches and notes are visible only inside this workspace. To export or delete your account data, contact privacy@ — self-serve DSAR tooling arrives with the admin console (R3).</p>
+        </Section>
+        <Section id="audit" title="Audit log">
+          <Card className="divide-y divide-line text-[12.5px]">
+            {audit.map((a, i) => (
+              <div key={i} className="flex justify-between px-4 py-2">
+                <span className="text-text">{a.action} <span className="text-muted">{a.target ?? ""}</span></span>
+                <span className="text-faint">{new Date(a.at).toLocaleString()}</span>
+              </div>
+            ))}
+            {!audit.length ? <p className="px-4 py-3 text-muted">No events yet.</p> : null}
+          </Card>
+        </Section>
+      </div>
+    </div>
+  );
+}

@@ -1,0 +1,8 @@
+@import "tailwindcss";
+@import "@founders/ui/tokens.css";
+@import "@fontsource-variable/space-grotesk";
+@import "@fontsource-variable/dm-sans";
+
+@source "../../../../packages/ui/src";
+
+body { font-size: 14px; }

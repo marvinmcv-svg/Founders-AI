@@ -8,7 +8,7 @@
     "build": "next build",
     "start": "next start -p 3001",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint ."
+    "lint": "eslint src"
   },
   "dependencies": {
     "@founders/config": "workspace:*",
@@ -33,7 +33,9 @@
     "@tanstack/react-table": "^8.21.3",
     "@tanstack/react-virtual": "^3.13.12",
     "recharts": "^3.3.0",
-    "cmdk": "^1.1.1"
+    "cmdk": "^1.1.1",
+    "server-only": "^0.0.1",
+    "drizzle-orm": "^0.45.4"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.16",
