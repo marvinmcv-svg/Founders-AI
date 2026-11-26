@@ -2,7 +2,9 @@ import { betterAuth } from "better-auth";
 import { APIError } from "better-auth/api";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
-import { jwt, organization } from "better-auth/plugins";
+import { jwt, organization, twoFactor } from "better-auth/plugins";
+import { sso } from "@better-auth/sso";
+import { brand } from "@founders/config";
 import { cimd } from "@better-auth/cimd";
 import { mcp } from "@better-auth/mcp";
 import { egressFetch } from "@founders/core/egress";
@@ -60,8 +62,11 @@ export const auth = betterAuth({
       oauthAccessToken: schema.oauthAccessToken,
       oauthConsent: schema.oauthConsent,
       oauthClientAssertion: schema.oauthClientAssertion,
+      twoFactor: schema.twoFactor,
+      ssoProvider: schema.ssoProvider,
     },
   }),
+  session: { additionalFields: { loginMethod: { type: "string", required: false, input: false } } },
   emailAndPassword: { enabled: true, minPasswordLength: 8 },
   advanced: { database: { generateId: () => crypto.randomUUID().replace(/-/g, "").slice(0, 24) } },
   databaseHooks: {
@@ -72,8 +77,28 @@ export const auth = betterAuth({
           const rows = (await getDb().execute(
             sql`SELECT 1 FROM invitation WHERE lower(email) = lower(${user.email}) AND status = 'pending' AND expires_at > now() LIMIT 1`,
           )) as unknown as unknown[];
-          if (!rows.length) throw new APIError("FORBIDDEN", { message: "Sign-up is by invitation. Ask your workspace admin for an invite." });
-          return { data: user };
+          if (rows.length) return { data: user };
+          // Just-in-time SSO provisioning (plan 14.4): the e-mail's domain belongs to a workspace's verified SSO provider,
+          // and that workspace has a free seat.
+          const sso = (await getDb().execute(sql`SELECT p.organization_id, o.seats,
+              (SELECT count(*)::int FROM member m WHERE m.organization_id = p.organization_id) AS members
+            FROM sso_provider p JOIN organization o ON o.id = p.organization_id
+            WHERE lower(p.domain) = lower(split_part(${user.email}, '@', 2)) AND p.domain_verified LIMIT 1`)) as unknown as { seats: number; members: number }[];
+          if (sso[0]) {
+            if (sso[0].members >= sso[0].seats) throw new APIError("FORBIDDEN", { message: "Your workspace has no free seats. Ask your admin to add seats." });
+            return { data: user };
+          }
+          throw new APIError("FORBIDDEN", { message: "Sign-up is by invitation. Ask your workspace admin for an invite." });
+        },
+      },
+    },
+    session: {
+      create: {
+        // Record how the session was created, for workspace "require SSO" (plan 14.4).
+        before: async (session, ctx) => {
+          const path = ctx?.path ?? "";
+          const loginMethod = path.startsWith("/sso/") ? "sso" : path.startsWith("/two-factor/") ? "password+2fa" : path.startsWith("/sign-in/email") ? "password" : path ? path.split("/")[1] : null;
+          return { data: { ...session, loginMethod } };
         },
       },
     },
@@ -116,6 +141,17 @@ export const auth = betterAuth({
       customAccessTokenClaims: ({ referenceId }) => (referenceId ? { [ORG_CLAIM]: referenceId } : {}),
     }),
     cimd({ fetchClientMetadataResource: fetchClientMetadataViaEgress, metadataProfile: "mcp-2026-07-28" }),
+    /** MFA (plan 14.4): TOTP with backup codes. Password sign-in of a user with 2FA on returns `twoFactorRedirect`. */
+    twoFactor({ issuer: brand.name }),
+    /**
+     * Enterprise SSO (plan 0A/14.4): OIDC or SAML per workspace, bound to a verified e-mail domain (DNS TXT).
+     * Workspace admins register providers in Settings → Security; new users from the domain join that workspace.
+     */
+    sso({
+      domainVerification: { enabled: true, tokenPrefix: "founders-ai" },
+      organizationProvisioning: { disabled: false, defaultRole: "member" },
+      providersLimit: 5,
+    }),
     nextCookies(),
   ],
 });

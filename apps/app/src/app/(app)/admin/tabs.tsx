@@ -6,7 +6,7 @@ import { Empty } from "@/components/profile/bits";
 import { ActionButton, ActionForm, MatchPicker } from "./AdminActions";
 import {
   addSuppressionAction, adjustCreditsAction, dsarCompleteAction, dsarMatchAction, dsarRejectAction, dsarVerifyAction, mergeEntitiesAction,
-  renameTaxonomyAction, reviewKeyAction, reviewSignalAction, updateAccountAction, updateEntityAction,
+  renameTaxonomyAction, reviewKeyAction, reviewSignalAction, updateAccountAction, updateEntityAction, verifySsoDomainAction,
 } from "./actions";
 
 const when = (s: string | null | undefined) => (s ? new Date(s).toLocaleString("en-US", { dateStyle: "medium", timeStyle: "short" }) : "—");
@@ -55,6 +55,7 @@ export async function AccountsTab({ a, q, org }: { a: repo.AdminContext; q?: str
 
 async function AccountDetail({ a, orgId }: { a: repo.AdminContext; orgId: string }) {
   const d = await repo.getAccount(a, orgId);
+  const sso = await repo.listSsoProviders({ orgId, userId: a.userId, role: "admin" });
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center gap-2">
@@ -96,6 +97,16 @@ async function AccountDetail({ a, orgId }: { a: repo.AdminContext; orgId: string
           {d.members.map((m) => (
             <div key={m.email} className="flex items-center gap-2 py-1"><span className="text-ink">{m.name}</span><span className="text-muted">{m.email}</span><Badge tone="neutral" className="ml-auto">{m.role}</Badge>{m.two_factor_enabled ? <Badge tone="positive">2FA</Badge> : null}</div>
           ))}
+        </Card>
+        <Card className="p-4 text-[12.5px] xl:col-span-2">
+          <p className="mb-2 text-[13px] text-ink">Single sign-on</p>
+          {sso.map((p) => (
+            <div key={p.provider_id} className="flex flex-wrap items-center gap-2 py-1">
+              <span className="text-ink">{p.domain}</span><Badge tone="neutral">{p.protocol}</Badge><code className="text-faint">{p.provider_id}</code>
+              {p.domain_verified ? <Badge tone="positive">verified</Badge> : <span className="ml-auto"><ActionButton action={verifySsoDomainAction.bind(null, p.provider_id)} label="Mark domain verified" confirm={`Only if ownership of ${p.domain} was confirmed another way (contract, support ticket). Continue?`} /></span>}
+            </div>
+          ))}
+          {!sso.length ? <p className="text-muted">No identity provider.</p> : null}
         </Card>
         <Card className="p-4 text-[12.5px]">
           <p className="mb-2 text-[13px] text-ink">API keys</p>

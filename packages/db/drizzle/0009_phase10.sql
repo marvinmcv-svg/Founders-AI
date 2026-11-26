@@ -152,6 +152,7 @@ ALTER TABLE "dsar_requests" ADD COLUMN "completed_at" timestamp with time zone;-
 ALTER TABLE "dsar_requests" ADD COLUMN "result" jsonb;--> statement-breakpoint
 ALTER TABLE "organization" ADD COLUMN "require_sso" boolean DEFAULT false NOT NULL;--> statement-breakpoint
 ALTER TABLE "organization" ADD COLUMN "require_2fa" boolean DEFAULT false NOT NULL;--> statement-breakpoint
+ALTER TABLE "session" ADD COLUMN "login_method" text;--> statement-breakpoint
 ALTER TABLE "user" ADD COLUMN "two_factor_enabled" boolean DEFAULT false;--> statement-breakpoint
 ALTER TABLE "sso_provider" ADD CONSTRAINT "sso_provider_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "two_factor" ADD CONSTRAINT "two_factor_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint

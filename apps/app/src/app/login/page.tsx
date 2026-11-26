@@ -16,6 +16,7 @@ export default async function Login({ searchParams }: { searchParams: Promise<{ 
         <p className="mt-1 text-[14px] text-muted">Access is by invitation. Ask your workspace admin, or book a demo.</p>
         {sp.error === "no-workspace" ? <p className="mt-4 rounded-lg border border-warning/30 bg-warning/10 p-3 text-[13px] text-warning">Your account isn't in a workspace yet.</p> : null}
         <LoginForm next={sp.next && sp.next.startsWith("/") ? sp.next : "/companies"} demo={process.env.NODE_ENV !== "production" || process.env.SHOW_DEMO_LOGIN === "1"} />
+        <a href={`/login/sso${sp.next ? `?next=${encodeURIComponent(sp.next)}` : ""}`} className="mt-3 block text-center text-[13px] text-accent hover:underline">Sign in with SSO</a>
         <p className="mt-6 text-[13px] text-muted">
           New here? <a className="text-accent hover:underline" href={`${brand.urls.www}/contact`}>Book a demo</a>
         </p>

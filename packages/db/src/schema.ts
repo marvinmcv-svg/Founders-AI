@@ -67,6 +67,8 @@ export const session = pgTable("session", {
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
   activeOrganizationId: text("active_organization_id"),
+  /** How this session was created (password | sso | oauth); workspace "require SSO" checks it (plan 14.4). */
+  loginMethod: text("login_method"),
 });
 
 export const account = pgTable("account", {

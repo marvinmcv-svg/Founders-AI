@@ -18,3 +18,5 @@ export * from "./audit";
 export * from "./billing";
 export * from "./privacy";
 export * from "./admin-console";
+export * from "./security";
+export * from "./scim";

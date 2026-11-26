@@ -55,7 +55,7 @@ export default async function Settings() {
   return (
     <div className="grid gap-8 p-6 xl:grid-cols-[180px_1fr]">
       <nav className="hidden flex-col gap-1 text-[13px] xl:flex">
-        {([["workspace", "Workspace"], ["members", "Members"], ["api", "API keys"], ["mcp", "MCP"], ["credits", "Credits & usage"], ["/settings/billing", "Billing"], ["notifications", "Notifications"], ["crm", "CRM"], ["network", "Network"], ["bulk", "Bulk delivery"], ["integrations", "Alerts & automation"], ["statuses", "Statuses"], ["privacy", "Data & privacy"], ["audit", "Audit log"]] as [string, string][]).map(([id, l]) => (
+        {([["workspace", "Workspace"], ["members", "Members"], ["api", "API keys"], ["mcp", "MCP"], ["credits", "Credits & usage"], ["/settings/billing", "Billing"], ["/settings/security", "Security"], ["notifications", "Notifications"], ["crm", "CRM"], ["network", "Network"], ["bulk", "Bulk delivery"], ["integrations", "Alerts & automation"], ["statuses", "Statuses"], ["privacy", "Data & privacy"], ["audit", "Audit log"]] as [string, string][]).map(([id, l]) => (
           <a key={id} href={id.startsWith("/") ? id : `#${id}`} className="rounded-md px-2 py-1.5 text-muted hover:bg-white/[0.05] hover:text-ink">
             {l}
           </a>

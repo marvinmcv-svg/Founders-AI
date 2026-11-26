@@ -108,3 +108,10 @@ export async function renameTaxonomyAction(id: string, v: Values) {
 export async function reviewSignalAction(kind: repo.QaKind, id: string, verdict: "CORRECT" | "WRONG", v: Values) {
   return run(async (a) => repo.reviewSignal(a, kind, id, verdict, v.corrected || null, v.note));
 }
+
+export async function verifySsoDomainAction(providerId: string) {
+  return run(async (a) => {
+    await repo.adminVerifySsoDomain(a, providerId);
+    return "Domain marked verified.";
+  });
+}
