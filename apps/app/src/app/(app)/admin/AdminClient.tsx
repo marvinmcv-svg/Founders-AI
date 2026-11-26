@@ -1,7 +1,7 @@
 "use client";
 import { useState, useTransition } from "react";
 import { Button } from "@founders/ui";
-import { activateModel, reviewDisclosure } from "./actions";
+import { setFeatureFlag, activateModel, reviewDisclosure } from "./actions";
 
 export function ReviewButtons({ id, amount }: { id: string; amount: number }) {
   const [pending, start] = useTransition();
@@ -39,5 +39,41 @@ export function ActivateButton({ version }: { version: string }) {
     <Button size="sm" variant="secondary" disabled={pending} onClick={() => start(() => activateModel(version))}>
       {pending ? "Switching…" : "Make active"}
     </Button>
+  );
+}
+
+export function FlagToggle({ flagKey, enabled, orgs, locked }: { flagKey: string; enabled: boolean; orgs: string[]; locked?: boolean }) {
+  const [pending, start] = useTransition();
+  const [list, setList] = useState(orgs.join(", "));
+  const [err, setErr] = useState<string | null>(null);
+  const save = (on: boolean) =>
+    start(async () => {
+      try {
+        setErr(null);
+        await setFeatureFlag(flagKey, on, list.split(/[\s,]+/).filter(Boolean));
+      } catch (e) {
+        setErr(e instanceof Error ? e.message : "Failed");
+      }
+    });
+  if (locked) return <p className="text-[12px] text-faint">Locked off: needs legal approval (H8) and customer contracts.</p>;
+  return (
+    <div className="flex flex-wrap items-center gap-2">
+      <input
+        aria-label={`Org allow-list for ${flagKey}`}
+        className="h-8 min-w-[280px] flex-1 rounded-md border border-line bg-white/[0.03] px-2.5 text-[12.5px] text-ink"
+        value={list}
+        onChange={(e) => setList(e.target.value)}
+        placeholder="org_… ids (empty = all workspaces)"
+      />
+      <Button size="sm" variant={enabled ? "secondary" : "primary"} disabled={pending} onClick={() => save(true)}>
+        {enabled ? "Save" : "Turn on"}
+      </Button>
+      {enabled ? (
+        <Button size="sm" variant="danger" disabled={pending} onClick={() => save(false)}>
+          Turn off
+        </Button>
+      ) : null}
+      {err ? <span className="text-[12px] text-negative">{err}</span> : null}
+    </div>
   );
 }

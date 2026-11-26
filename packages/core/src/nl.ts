@@ -43,6 +43,7 @@ const COUNTRY_KEY: Record<Product, string> = {
   acquisitions: "target_country",
   ipos: "company_country",
   news_signals: "company_country",
+  interest_signals: "target_country",
 };
 const DATE_KEY: Partial<Record<Product, string>> = {
   funding_rounds: "announced_date",
@@ -50,6 +51,7 @@ const DATE_KEY: Partial<Record<Product, string>> = {
   acquisitions: "date",
   ipos: "date",
   news_signals: "published_at",
+  interest_signals: "signal_date",
 };
 const COMPANY_CONTEXT_PREFIX: Partial<Record<Product, string>> = { funding_rounds: "company", acquisitions: "target", ipos: "company", news_signals: "company" };
 

@@ -20,3 +20,9 @@ export async function activateModel(version: string) {
   await repo.activateModel(a, version);
   revalidatePath("/admin");
 }
+
+export async function setFeatureFlag(key: string, enabled: boolean, orgs: string[]) {
+  const a = await admin();
+  await repo.setFlag(a.email, key as repo.FlagKey, { enabled, orgs });
+  revalidatePath("/admin");
+}

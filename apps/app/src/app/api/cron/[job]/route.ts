@@ -5,14 +5,14 @@ import { JOBS, runJob } from "@founders/pipelines";
  * Scheduled pipeline runs (D-023). Vercel Cron calls GET with `Authorization: Bearer $CRON_SECRET`.
  * Only jobs that fit a serverless time budget run here; the weekly competitors and monthly traction /
  * ML jobs run on a worker host (H2) or from the CLI.
- *   /api/cron/daily    talent → news → highlights → alerts → webhooks → digests → agent-schedules → crm-sync → network (digests and schedules: everything due today)
+ *   /api/cron/daily    talent → news → highlights → alerts → webhooks → digests → agent-schedules → interest (flag) → crm-sync → network (digests and schedules: everything due today)
  *   /api/cron/alerts   real-time alert sweep (point an external scheduler here for sub-daily cadence)
  *   /api/cron/webhooks customer webhook deliveries and retries (same: sub-hourly scheduler recommended)
  */
 export const runtime = "nodejs";
 export const maxDuration = 300;
 
-const SERVERLESS_JOBS = ["talent", "news", "highlights", "alerts", "webhooks", "digests", "agent-schedules", "crm-sync", "network"];
+const SERVERLESS_JOBS = ["talent", "news", "highlights", "alerts", "webhooks", "digests", "agent-schedules", "interest", "crm-sync", "network"];
 
 function authorized(req: Request) {
   const secret = process.env.CRON_SECRET;

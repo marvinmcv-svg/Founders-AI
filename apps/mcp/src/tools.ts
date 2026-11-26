@@ -33,7 +33,7 @@ const BY_ID = CREDIT_PRICES["entity.by_id"];
 const ESTIMATE = CREDIT_PRICES["estimates.record"];
 const miss = (what: string): ToolOutput => ({ markdown: `No ${what} found. Misses are free.`, data: { found: false }, credits: 0, matched: false });
 const R3 = (what: string): ToolOutput => ({
-  markdown: `${what} launches with Release 3 (it needs legal review of interest sources). This call is free.`,
+  markdown: `${what} are not enabled for this workspace yet (legal review of interest sources is pending). This call is free.`,
   data: { available: false, available_in: "R3" },
   credits: 0,
   matched: false,
@@ -249,10 +249,14 @@ const getCompanyNews = def({
 const getCompanyInvestorInterest = def({
   name: "get_company_investor_interest",
   title: "Investor interest in a company",
-  description: "Which investors are showing interest in a company (Release 3).",
-  input: z.object(companyId),
+  description: "Which investors are showing interest in a company, from public evidence (score 1–10). Needs the interest-signals feature on the workspace.",
+  input: z.object({ ...companyId, ...pageInput }),
   paid: false,
-  run: async () => R3("Investor-interest signals"),
+  async run(p, i) {
+    const rows = await repo.interestFor(p, { companyId: i.company_id });
+    if (!rows) return R3("Investor-interest signals");
+    return pageOut("Investor interest", rows as Row[], i, [["signal_date", "Date", (r) => day(r.signal_date)], ["target_name", "Company", (r) => `${str(r.target_name)} (\`${str(r.target_company_id)}\`)`], ["investor_name", "Investor", (r) => str(r.investor_name ?? `${str(r.investor_type)} investor`)], ["score", "Score", (r) => `${str(r.score)}/10`], ["source_type", "Evidence", (r) => str(r.source_type).toLowerCase().replace("_", " ")]]);
+  },
 });
 
 const getCompanyPeople = def({
@@ -394,10 +398,14 @@ const getInvestorRounds = def({
 const getInvestorInterestSignals = def({
   name: "get_investor_interest_signals",
   title: "Investor interest signals",
-  description: "Interest signals an investor generates (Release 3).",
-  input: z.object(investorId),
+  description: "Companies an investor is publicly showing interest in (score 1–10). Needs the interest-signals feature on the workspace.",
+  input: z.object({ ...investorId, ...pageInput }),
   paid: false,
-  run: async () => R3("Investor-interest signals"),
+  async run(p, i) {
+    const rows = await repo.interestFor(p, { investorId: i.investor_id });
+    if (!rows) return R3("Investor-interest signals");
+    return pageOut("Interest signals", rows as Row[], i, [["signal_date", "Date", (r) => day(r.signal_date)], ["target_name", "Company", (r) => `${str(r.target_name)} (\`${str(r.target_company_id)}\`)`], ["investor_name", "Investor", (r) => str(r.investor_name ?? `${str(r.investor_type)} investor`)], ["score", "Score", (r) => `${str(r.score)}/10`], ["source_type", "Evidence", (r) => str(r.source_type).toLowerCase().replace("_", " ")]]);
+  },
 });
 
 /* ======================= Lists (5) ======================= */

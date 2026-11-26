@@ -9,6 +9,7 @@ export const PRODUCT_PATH: Record<Product, string> = {
   investors: "/investors",
   funding_rounds: "/funding-rounds",
   talent_signals: "/talent-signals",
+  interest_signals: "/interest-signals",
   acquisitions: "/acquisitions",
   ipos: "/ipos",
   news_signals: "/news",

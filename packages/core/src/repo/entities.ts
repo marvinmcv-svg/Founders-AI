@@ -8,6 +8,7 @@ import { emptyFilter, type Group, type Product } from "../filters/ast";
 import { compileFilter, compileQuery, compileSort, type SortSpec } from "../filters/compile";
 import { PRODUCT_META } from "../filters/fields";
 import { EXACT_COUNT_CAP } from "../limits";
+import { isFlagOn } from "./flags";
 
 export type Row = Record<string, unknown>;
 
@@ -38,6 +39,8 @@ const SELECT: Record<Product, string> = {
     t.ticker, t.share_price, t.valuation_usd, t.raised_usd`,
   news_signals: `t.id, t.company_id, c.name AS company_name, c.domain AS company_domain, c.hq_country AS company_country, t.category,
     t.summary, t.score, t.is_major, t.published_at, ni.title, ni.publisher, ni.url`,
+  interest_signals: `t.id, t.target_company_id, c.name AS target_name, c.domain AS target_domain, c.hq_country AS target_country, c.growth_stage AS target_stage,
+    t.investor_id, i.name AS investor_name, t.investor_type, t.score, t.signal_date, t.source_type, t.evidence`,
 };
 
 export type SearchParams = {
@@ -62,6 +65,8 @@ function fromClause(product: Product): SQL {
 }
 
 export async function searchEntities(product: Product, p: SearchParams = {}): Promise<SearchResult> {
+  // Interest signals exist only for orgs with the flag (legal sign-off H8); everyone else sees nothing.
+  if (product === "interest_signals" && !(await isFlagOn("interest_signals", p.orgId))) return { rows: [], total: 0, totalCapped: false };
   const filter = compileFilter(product, p.filter ?? emptyFilter(), { orgId: p.orgId });
   const text = p.ids ? sql`${compileQuery(product, p.q)} AND t.id IN (${p.ids.length ? inList(p.ids) : sql`NULL`})` : compileQuery(product, p.q);
   const order = compileSort(product, p.sort);

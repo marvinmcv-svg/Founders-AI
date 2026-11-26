@@ -9,12 +9,13 @@ export const dynamic = "force-dynamic";
 
 export default async function AppLayout({ children }: { children: ReactNode }) {
   const ctx = await getCtx();
-  const [lists, searches, notifications, unread, threads] = await Promise.all([
+  const [lists, searches, notifications, unread, threads, interest] = await Promise.all([
     repo.getLists(ctx),
     repo.getSavedSearches(ctx),
     repo.getNotifications(ctx, 10),
     repo.unreadNotificationCount(ctx),
     repo.listThreads(ctx, 60),
+    repo.isFlagOn("interest_signals", ctx.orgId),
   ]);
   return (
     <div className="flex min-h-screen">
@@ -30,6 +31,7 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
         notifications={notifications}
         unread={unread}
         isAdmin={repo.isPlatformAdmin(ctx.email)}
+        interestSignals={interest}
         threads={threads.map((t) => ({ id: t.id, title: t.title, visibility: t.visibility, updated_at: t.updated_at, mine: t.owner_id === ctx.userId }))}
       />
       <div className="flex min-w-0 flex-1 flex-col">

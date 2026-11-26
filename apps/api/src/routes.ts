@@ -551,17 +551,40 @@ endpoint({ method: "post", path: "/webhooks/:webhookId/test", tag: "Webhooks", s
 
 /* ============================ R3 routes (D-031): registered, 501 until released ============================ */
 
-const notYet = (path: string, tag: string, summary: string, credit: string, why: string) =>
-  endpoint({ method: "get", path, tag, summary: `${summary} (available in R3)`, credit, query: pageQuery, release: "R3", handler: async () => {
-    throw new ApiError(501, "Not Implemented", `${why} This endpoint is not charged.`, { available_in: "R3" });
+/**
+ * Investor-interest routes (#14, 28, 36, 37, 53): live for workspaces with the `interest_signals`
+ * flag (legal sign-off H8); everyone else gets the documented 501 (not charged).
+ */
+const INTEREST = "Investor-interest signals are not enabled for this workspace (legal review pending, plan 0B / H8).";
+const interestOff = () => new ApiError(501, "Not Implemented", `${INTEREST} This endpoint is not charged.`, { available_in: "R3" });
+
+const interestRoute = (path: string, tag: string, summary: string, credit: string, by: (p: Record<string, string | undefined>) => { companyId?: string; investorId?: string; signalId?: string }) =>
+  endpoint({ method: "get", path, tag, summary: `${summary} (needs the interest-signals feature)`, credit, query: pageQuery, release: "R3", handler: async (c, { params, query }) => {
+    const rows = await repo.interestFor(orgCtx(c), by(params));
+    if (!rows) throw interestOff();
+    if (path.endsWith(":signalId")) {
+      if (!rows[0]) throw new ApiError(404, "Not Found", "No such interest signal. Not charged.");
+      await bill(c, "interest.get", CREDIT_PRICES["entity.by_id"], true);
+      return json(c, rows[0]);
+    }
+    return paged(c, "interest.feed", rows, query);
   } });
 
-const INTEREST = "Investor-interest signals launch with R3, after legal review (plan 0B, H8).";
-notYet("/companies/:companyId/investor-interest-signals", "Companies", "Investor-interest signals on a company", "per_page", INTEREST);
-notYet("/investors/:investorId/investor-interest-signals", "Investors", "Interest signals an investor generates", "per_page", INTEREST);
-notYet("/investor-interest", "Signals", "Investor-interest feed", "per_page", INTEREST);
-notYet("/investor-interest/:signalId", "Signals", "One investor-interest signal", "per_match", INTEREST);
-notYet("/searches/investor-interest/:searchId/results", "Saved searches", "Saved-search results: investor-interest", "per_result", INTEREST);
+interestRoute("/companies/:companyId/investor-interest-signals", "Companies", "Investor-interest signals on a company", "per_page", (p) => ({ companyId: p.companyId }));
+interestRoute("/investors/:investorId/investor-interest-signals", "Investors", "Interest signals an investor generates", "per_page", (p) => ({ investorId: p.investorId }));
+interestRoute("/investor-interest", "Signals", "Investor-interest feed", "per_page", () => ({}));
+interestRoute("/investor-interest/:signalId", "Signals", "One investor-interest signal", "per_match", (p) => ({ signalId: p.signalId }));
+endpoint({ method: "get", path: "/searches/investor-interest/:searchId/results", tag: "Saved searches", summary: "Saved-search results: investor-interest (needs the interest-signals feature)", credit: "per_result", query: pageQuery, release: "R3", handler: async (c, { params, query }) => {
+  const ctx = orgCtx(c);
+  if (!(await repo.isFlagOn("interest_signals", ctx.orgId))) throw interestOff();
+  const s = await repo.getSavedSearch(ctx, params.searchId!);
+  if (s.product !== "interest_signals") throw new ApiError(400, "Bad Request", `This saved search is for ${s.product}. Not charged.`);
+  const offset = decodeCursor(query.cursor as string | undefined);
+  const res = await repo.getSavedSearchResults(ctx, s.id, { newOnly: false, limit: Number(query.limit), offset, readerId: c.get("principal").keyId });
+  await bill(c, "searches.results", pageCost(res.rows.length, CREDIT_PRICES["saved_results.per_100"]), res.rows.length > 0);
+  return json(c, { items: res.rows, total: res.total, next_cursor: nextCursor(offset, res.rows.length, res.total) });
+} });
+
 /* ============================ Network (plan 13.2; needs the read:network scope) ============================ */
 
 const networkCtx = (c: Ctx) => {

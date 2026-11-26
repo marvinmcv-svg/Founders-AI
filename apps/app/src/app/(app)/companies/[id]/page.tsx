@@ -30,7 +30,7 @@ export default async function CompanyProfile({ params, searchParams }: P) {
   const sp = await searchParams;
   const tab = sp.tab ?? "overview";
   const ctx = await getCtx();
-  const [crmBadges, crmTarget, teamConn] = await Promise.all([repo.getCrmBadges(ctx, [id]), repo.defaultCrm(ctx), repo.companyConnections(ctx, id)]);
+  const [crmBadges, crmTarget, teamConn, forming] = await Promise.all([repo.getCrmBadges(ctx, [id]), repo.defaultCrm(ctx), repo.companyConnections(ctx, id), repo.getRoundForming(ctx, id)]);
   const c = await repo.getCompany(id);
   if (!c) notFound();
   const [people, investors, rounds, competitors, news, estimates, disclosures, metrics, statuses, entityStatus, liked, inLists, notes, talent, acquisitions, ipos, team] = await Promise.all([
@@ -197,6 +197,30 @@ export default async function CompanyProfile({ params, searchParams }: P) {
                 ))}
               </Panel>
             </div>
+            {forming ? (
+              <Panel title="Round forming · investor interest" action={<Badge tone="neutral">public evidence only</Badge>}>
+                <div className="grid gap-4 md:grid-cols-[220px_1fr]">
+                  <div className="flex flex-col gap-1 text-[13px]">
+                    <span className="text-muted">Raise in the next 90 days</span>
+                    <span className="font-display text-[30px] text-accent">{Math.round(forming.forecast.probability * 100)}%</span>
+                    <span className="text-[12px] text-muted">{forming.firms.length} firm{forming.firms.length === 1 ? "" : "s"} engaging{forming.forecast.likelyLead ? ` · likely lead ${forming.forecast.likelyLead}` : ""}</span>
+                    <span className="text-[11px] text-faint">Model estimate from public signals; not a prediction of any firm's decision.</span>
+                  </div>
+                  <ul className="flex min-w-0 flex-col gap-1.5 text-[13px]">
+                    {forming.firms.slice(0, 6).map((f) => (
+                      <li key={`${f.investorId ?? f.investorName}`} className="flex min-w-0 items-center gap-2">
+                        <span className="w-28 shrink-0">
+                          <span className="block h-1.5 rounded-full bg-accent" style={{ width: `${f.score * 10}%` }} />
+                        </span>
+                        <span className="tabular text-ink">{f.score}/10</span>
+                        {f.investorId ? <Link href={`/investors/${f.investorId}`} className="shrink-0 hover:text-accent">{f.investorName}</Link> : <span className="shrink-0">{f.investorName}</span>}
+                        <span className="min-w-0 truncate text-[12px] text-muted">{f.evidence ?? ""}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </Panel>
+            ) : null}
             <Panel title="Team notes">
               <Notes entityType="COMPANY" id={id} notes={notes} />
             </Panel>

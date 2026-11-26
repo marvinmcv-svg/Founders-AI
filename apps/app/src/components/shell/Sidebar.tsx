@@ -3,7 +3,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useTransition, type ReactNode } from "react";
 import {
-  Bell, BellRing, Bookmark, Building2, Merge, MessageSquare, Newspaper, ShieldCheck, ChevronsUpDown, Code2, Command, Handshake, Landmark, List, LogOut, Network, Settings, SlidersHorizontal, Sparkles, SquarePen, Star, TrendingUp, Users, Wand2,
+  Bell, BellRing, Bookmark, Building2, Merge, MessageSquare, Newspaper, Radar, ShieldCheck, ChevronsUpDown, Code2, Command, Handshake, Landmark, List, LogOut, Network, Settings, SlidersHorizontal, Sparkles, SquarePen, Star, TrendingUp, Users, Wand2,
 } from "lucide-react";
 import { cn, LogoMark } from "@founders/ui";
 import { markNotificationsRead, switchOrg } from "@/app/actions";
@@ -21,6 +21,8 @@ export type SidebarData = {
   notifications: { id: string; kind: string; payload: Record<string, unknown>; read_at: string | null; created_at: string }[];
   unread: number;
   isAdmin?: boolean;
+  /** Interest Signals grid (behind the H8 flag). */
+  interestSignals?: boolean;
   threads?: { id: string; title: string; visibility: string; updated_at: string; mine: boolean }[];
 };
 
@@ -178,6 +180,7 @@ export function Sidebar(d: SidebarData) {
       </Group>
       <Group label="Investors">
         <Item href="/investors" icon={ic(Landmark)} label="Investor DB" />
+        {d.interestSignals ? <Item href="/interest-signals" icon={ic(Radar)} label="Interest Signals" /> : null}
       </Group>
       <Group label="Transactions">
         <Item href="/funding-rounds" icon={ic(TrendingUp)} label="Funding Rounds" />

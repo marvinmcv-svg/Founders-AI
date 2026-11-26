@@ -229,7 +229,18 @@ export const COLUMNS: Record<Product, Column[]> = {
     { key: "score", label: "Score", width: 80, align: "right", sortField: "score", render: (r) => <span className="tabular font-medium text-ink">{Number(r.score ?? 0).toFixed(1)}</span> },
     { key: "publisher", label: "Source", width: 180, render: (r) => <span className="truncate text-muted">{s(r.publisher)}</span> },
   ],
+  interest_signals: [
+    { key: "target", label: "Target", width: 210, render: (r, l) => <NameCell name={s(r.target_name)} sub={s(r.target_stage)} kind="company" id={s(r.target_company_id)} link={l} /> },
+    { key: "investor", label: "Investor", width: 200, render: (r, l) => (r.investor_id ? <span className="truncate">{l("investor", s(r.investor_id), s(r.investor_name))}</span> : <span className="text-muted">{cap(s(r.investor_type))} investor</span>) },
+    { key: "investor_type", label: "Type", width: 90, render: (r) => <Chip className="px-1.5 py-0.5 text-[11px]">{s(r.investor_type)}</Chip> },
+    { key: "score", label: "Score", width: 80, align: "right", sortField: "score", render: (r) => <span className="tabular font-medium text-ink">{s(r.score)}/10</span> },
+    { key: "signal_date", label: "Signal Date", width: 120, sortField: "signal_date", render: (r) => <span className="tabular text-muted">{shortDate(s(r.signal_date))}</span> },
+    { key: "source_type", label: "Evidence", width: 130, render: (r) => <Badge tone="neutral">{INTEREST_SOURCE[s(r.source_type)] ?? s(r.source_type)}</Badge> },
+    { key: "evidence", label: "Details", width: 420, render: (r) => <span className="line-clamp-1 text-muted" title={s(r.evidence)}>{s(r.evidence)}</span> },
+  ],
 };
+
+const INTEREST_SOURCE: Record<string, string> = { SOCIAL_FOLLOW: "Social follow", PUBLIC_CONTENT: "Public content", EVENT: "Event", FILING: "Filing" };
 
 function cap(x: string) {
   return x.charAt(0) + x.slice(1).toLowerCase();

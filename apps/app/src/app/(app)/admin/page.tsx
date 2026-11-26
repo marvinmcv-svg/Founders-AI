@@ -4,7 +4,7 @@ import * as repo from "@founders/core/repo";
 import { Badge, Card } from "@founders/ui";
 import { Empty, Tabs } from "@/components/profile/bits";
 import { getCtx } from "@/lib/session";
-import { ActivateButton, ReviewButtons } from "./AdminClient";
+import { ActivateButton, FlagToggle, ReviewButtons } from "./AdminClient";
 
 export const metadata: Metadata = { title: "Admin" };
 
@@ -25,6 +25,7 @@ export default async function Admin({ searchParams }: { searchParams: Promise<{ 
     tab === "pipelines" ? repo.recentPipelineRuns(a) : Promise.resolve([]),
     tab === "models" ? repo.modelRegistry(a) : Promise.resolve([]),
   ]);
+  const flags = tab === "flags" ? await repo.listFlags() : [];
   return (
     <div className="flex flex-col">
       <div className="px-6 pt-6">
@@ -38,6 +39,7 @@ export default async function Admin({ searchParams }: { searchParams: Promise<{ 
           { id: "disclosures", label: "Disclosure queue", count: counts.pending ?? 0 },
           { id: "pipelines", label: "Pipelines" },
           { id: "models", label: "Models" },
+          { id: "flags", label: "Feature flags" },
         ]}
       />
       <div className="p-6">
@@ -145,6 +147,22 @@ export default async function Admin({ searchParams }: { searchParams: Promise<{ 
                 </Card>
               );
             })}
+          </div>
+        ) : null}
+        {tab === "flags" ? (
+          <div className="flex max-w-3xl flex-col gap-3">
+            <p className="text-[13px] text-muted">Remote switches. An empty org list means every workspace. Every change is audited.</p>
+            {flags.map((f) => (
+              <Card key={f.key} className="flex flex-col gap-2 p-4 text-[13px]">
+                <div className="flex items-center gap-2">
+                  <code className="text-ink">{f.key}</code>
+                  <Badge tone={f.enabled ? "positive" : "neutral"}>{f.enabled ? (f.orgs.length ? `on for ${f.orgs.length} org(s)` : "on everywhere") : "off"}</Badge>
+                </div>
+                {f.note ? <p className="text-muted">{f.note}</p> : null}
+                <FlagToggle flagKey={f.key} enabled={f.enabled} orgs={f.orgs} locked={f.key === "interest_telemetry"} />
+                <p className="text-[11.5px] text-faint">Updated {when(f.updated_at)}{f.updated_by ? ` by ${f.updated_by}` : ""}</p>
+              </Card>
+            ))}
           </div>
         ) : null}
       </div>

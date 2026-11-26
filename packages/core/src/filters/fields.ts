@@ -260,6 +260,19 @@ const newsFields: FieldDef[] = [
   { key: "company_list", label: "Company in list", group: "Lists", type: "list", column: "t.company_id" },
 ];
 
+/** Interest signals (plan 7.3 grid; R3 behind the `interest_signals` flag, H8). Target company alias `c`, investor `i`. */
+const interestFields: FieldDef[] = [
+  { key: "investor_type", label: "Investor Type", group: "Signal", type: "enum", column: "t.investor_type", options: opts(["VC", "PE", "CVC", "ANGEL", "STRATEGIC"]) },
+  { key: "score", label: "Signal Score", group: "Signal", type: "number", column: "t.score", sortable: true },
+  { key: "signal_date", label: "Signal Date", group: "Signal", type: "date", column: "t.signal_date", sortable: true },
+  { key: "source_type", label: "Evidence", group: "Signal", type: "enum", column: "t.source_type", options: [
+    { value: "SOCIAL_FOLLOW", label: "Social follow" }, { value: "PUBLIC_CONTENT", label: "Public content" }, { value: "EVENT", label: "Event" }, { value: "FILING", label: "Filing" },
+  ] },
+  { key: "investor_name", label: "Investor", group: "Signal", type: "text", column: "i.name" },
+  ...companyContext("target", "Target"),
+  { key: "target_list", label: "Target in list", group: "Lists", type: "list", column: "t.target_company_id" },
+];
+
 export const FIELDS: Record<Product, FieldDef[]> = {
   companies: companyFields,
   people: peopleFields,
@@ -269,6 +282,7 @@ export const FIELDS: Record<Product, FieldDef[]> = {
   acquisitions: acquisitionFields,
   ipos: ipoFields,
   news_signals: newsFields,
+  interest_signals: interestFields,
 };
 
 export function getField(product: Product, key: string): FieldDef | undefined {
@@ -298,4 +312,5 @@ export const PRODUCT_META: Record<Product, ProductMeta> = {
   acquisitions: { label: "Acquisitions", singular: "acquisition", table: "acquisitions", join: "JOIN companies c ON c.id = t.target_id", defaultSort: { field: "date", dir: "desc" }, textColumns: ["c.name", "t.acquirer_name"] },
   ipos: { label: "IPOs", singular: "IPO", table: "ipos", join: "JOIN companies c ON c.id = t.company_id", defaultSort: { field: "date", dir: "desc" }, textColumns: ["c.name", "t.ticker"] },
   news_signals: { label: "News", singular: "news signal", table: "news_signals", join: "JOIN companies c ON c.id = t.company_id JOIN news_items ni ON ni.id = t.news_item_id", defaultSort: { field: "published_at", dir: "desc" }, textColumns: ["c.name", "ni.title"] },
+  interest_signals: { label: "Interest Signals", singular: "interest signal", table: "interest_signals", join: "JOIN companies c ON c.id = t.target_company_id LEFT JOIN investors i ON i.id = t.investor_id", defaultSort: { field: "signal_date", dir: "desc" }, textColumns: ["c.name", "i.name"] },
 };

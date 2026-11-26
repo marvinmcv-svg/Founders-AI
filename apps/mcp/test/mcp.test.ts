@@ -120,7 +120,7 @@ describe("tools", () => {
   it("R3 interest tools answer that they are coming, for free", async () => {
     if (!dbUp) return;
     const r = await call("get_company_investor_interest", { company_id: companyId });
-    expect(r.result.content![0]!.text).toMatch(/Release 3/);
+    expect(r.result.content![0]!.text).toMatch(/not enabled for this workspace/);
     expect((r.result.structuredContent!._meta_usage as { credits_charged: number }).credits_charged).toBe(0);
   });
 });

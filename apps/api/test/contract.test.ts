@@ -215,4 +215,28 @@ describe("5b endpoints", () => {
     expect(conn.body).toHaveProperty("teammates");
     expect((await call("/network/connection/per_doesnotexist000000000000", { key: networkKey })).status).toBe(404);
   });
+
+  it("interest routes go live only for workspaces with the interest_signals flag", async () => {
+    if (!dbUp) return;
+    const [{ n } = { n: 0 }] = await repo.rawQuery<{ n: number }>(sql`SELECT count(*)::int AS n FROM interest_signals`);
+    if (!n) return; // run `pnpm pipelines interest --force=1` to populate
+    await repo.setFlag("contract-test", "interest_signals", { enabled: true, orgs: ["org_demo000000000000000000002"] });
+    try {
+      expect((await call("/investor-interest", { key: networkKey })).status).toBe(501); // flag on, but not for this org
+      await repo.setFlag("contract-test", "interest_signals", { enabled: true, orgs: [OWNER.orgId] });
+      const feed = await call("/investor-interest?limit=3", { key: networkKey });
+      expect(feed.status).toBe(200);
+      const items = feed.body.items as { id: string; target_company_id: string; score: number }[];
+      expect(items.length).toBe(3);
+      expect(items[0]!.score).toBeGreaterThanOrEqual(1);
+      const one = await call(`/investor-interest/${items[0]!.id}`, { key: networkKey });
+      expect(one.status).toBe(200);
+      expect(one.headers.get("x-credits-charged")).toBeTruthy();
+      expect((await call(`/companies/${items[0]!.target_company_id}/investor-interest-signals`, { key: networkKey })).status).toBe(200);
+      expect((await call("/investor-interest/isg_missing0000000000000000", { key: networkKey })).status).toBe(404);
+    } finally {
+      await repo.setFlag("contract-test", "interest_signals", { enabled: false, orgs: [] });
+    }
+    expect((await call("/investor-interest", { key: networkKey })).status).toBe(501);
+  });
 });
