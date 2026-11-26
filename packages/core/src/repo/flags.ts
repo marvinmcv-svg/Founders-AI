@@ -4,7 +4,7 @@
  * (never on without H8 + contracts). Values are cached for 30 s per process.
  */
 import { sql } from "drizzle-orm";
-import { newId } from "../ids";
+import { PLATFORM_ORG, recordAudit } from "./audit";
 import { rawQuery as q } from "./entities";
 
 export const FLAGS = ["interest_signals", "extension_linkedin_panel", "interest_telemetry"] as const;
@@ -40,7 +40,7 @@ export async function setFlag(actor: string, key: FlagKey, input: { enabled: boo
   const orgs = (input.orgs ?? []).filter((o) => /^org_[A-Za-z0-9]+$/.test(o));
   await q(sql`INSERT INTO feature_flags (key, enabled, orgs, updated_by, updated_at) VALUES (${key}, ${input.enabled}, ARRAY(SELECT jsonb_array_elements_text(${JSON.stringify(orgs)}::jsonb)), ${actor}, now())
     ON CONFLICT (key) DO UPDATE SET enabled = EXCLUDED.enabled, orgs = EXCLUDED.orgs, updated_by = EXCLUDED.updated_by, updated_at = now()`);
-  await q(sql`INSERT INTO audit_log (id, org_id, actor, action, target) VALUES (${newId("event")}, 'platform', ${actor}, ${`flag.${input.enabled ? "on" : "off"}`}, ${key})`);
+  await recordAudit({ orgId: PLATFORM_ORG, actor, actorType: "platform_admin", action: `flag.${input.enabled ? "on" : "off"}`, target: key, metadata: { orgs } });
   cache = null;
 }
 

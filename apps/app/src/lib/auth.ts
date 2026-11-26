@@ -79,7 +79,14 @@ export const auth = betterAuth({
     },
   },
   plugins: [
-    organization({ allowUserToCreateOrganization: false }),
+    organization({
+      allowUserToCreateOrganization: false,
+      // Seats bought (plan 14.1) cap memberships; invites are checked against seats in the invite action.
+      membershipLimit: async (_user, org) => {
+        const rows = (await getDb().execute(sql`SELECT seats FROM organization WHERE id = ${org.id}`)) as unknown as { seats: number }[];
+        return rows[0]?.seats ?? 5;
+      },
+    }),
     jwt({ disableSettingJwtHeader: true }),
     /**
      * MCP authorization server (plan 12): OAuth 2.1 + PKCE, Client ID Metadata Documents and dynamic

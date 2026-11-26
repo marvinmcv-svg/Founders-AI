@@ -22,3 +22,19 @@ export function pageCost(n: number, per100: number = CREDIT_PRICES["feed.per_100
   if (n <= 0) return 0;
   return Math.ceil(n / 100) * per100;
 }
+
+/**
+ * Credit packs sold through Stripe (plan 14.1). Sizes are config; prices live on the Stripe price
+ * named by each pack's env var (H13: "contact sales" until the account and prices exist).
+ */
+export const CREDIT_PACKS = [
+  { id: "pack_10k", credits: 10_000, priceEnv: "STRIPE_PRICE_CREDITS_10K" },
+  { id: "pack_50k", credits: 50_000, priceEnv: "STRIPE_PRICE_CREDITS_50K" },
+  { id: "pack_250k", credits: 250_000, priceEnv: "STRIPE_PRICE_CREDITS_250K" },
+] as const;
+export type CreditPackId = (typeof CREDIT_PACKS)[number]["id"];
+
+/** Annual per-user platform seat (plan 14.1: required for API access). */
+export const SEAT_PRICE_ENV = "STRIPE_PRICE_SEAT_ANNUAL";
+/** Stripe billing meter for credits used past zero when overage is on. */
+export const CREDIT_OVERAGE_METER = "founders_credit_overage";

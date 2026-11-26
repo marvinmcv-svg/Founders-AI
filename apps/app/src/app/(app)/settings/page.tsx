@@ -34,9 +34,7 @@ export default async function Settings() {
     repo.getUsageByDay(ctx.orgId, 30),
     repo.getStatuses(ctx),
     repo.getDigestRuns(ctx, 5),
-    repo.rawQuery<{ action: string; target: string | null; at: string }>(
-      (await import("drizzle-orm")).sql`SELECT action, target, at FROM audit_log WHERE org_id = ${ctx.orgId} ORDER BY at DESC LIMIT 12`,
-    ),
+    ctx.role === "admin" || ctx.role === "owner" ? repo.listAudit(ctx, { limit: 12 }) : Promise.resolve([] as repo.AuditRow[]),
   ]);
   const isAdmin = ctx.role === "admin" || ctx.role === "owner";
   const [mcpOverage, mcpUsage, mcpConnections] = await Promise.all([repo.getMcpOverage(ctx.orgId), repo.getMcpUsage(ctx), repo.getMcpConnections(ctx)]);
@@ -56,8 +54,8 @@ export default async function Settings() {
   return (
     <div className="grid gap-8 p-6 xl:grid-cols-[180px_1fr]">
       <nav className="hidden flex-col gap-1 text-[13px] xl:flex">
-        {[["workspace", "Workspace"], ["members", "Members"], ["api", "API keys"], ["mcp", "MCP"], ["credits", "Credits & usage"], ["notifications", "Notifications"], ["crm", "CRM"], ["network", "Network"], ["bulk", "Bulk delivery"], ["integrations", "Alerts & automation"], ["statuses", "Statuses"], ["privacy", "Data & privacy"], ["audit", "Audit log"]].map(([id, l]) => (
-          <a key={id} href={`#${id}`} className="rounded-md px-2 py-1.5 text-muted hover:bg-white/[0.05] hover:text-ink">
+        {([["workspace", "Workspace"], ["members", "Members"], ["api", "API keys"], ["mcp", "MCP"], ["credits", "Credits & usage"], ["/settings/billing", "Billing"], ["notifications", "Notifications"], ["crm", "CRM"], ["network", "Network"], ["bulk", "Bulk delivery"], ["integrations", "Alerts & automation"], ["statuses", "Statuses"], ["privacy", "Data & privacy"], ["audit", "Audit log"]] as [string, string][]).map(([id, l]) => (
+          <a key={id} href={id.startsWith("/") ? id : `#${id}`} className="rounded-md px-2 py-1.5 text-muted hover:bg-white/[0.05] hover:text-ink">
             {l}
           </a>
         ))}
@@ -69,7 +67,10 @@ export default async function Settings() {
             <Badge tone="neutral">Plan: {String(org?.plan ?? "")}</Badge>
             <Badge tone="neutral">{members.length} / {String(org?.seats ?? "")} seats</Badge>
             <span className="text-muted">Your role: {ctx.role}</span>
-            <Link href="/onboarding" className={buttonClass("secondary", "sm", "ml-auto")}>
+            <Link href="/settings/billing" className={buttonClass("secondary", "sm", "ml-auto")}>
+              Billing
+            </Link>
+            <Link href="/onboarding" className={buttonClass("secondary", "sm")}>
               Edit thesis
             </Link>
           </Card>
@@ -101,7 +102,7 @@ export default async function Settings() {
             <Card className="p-4">
               <p className="text-[12px] text-muted">Balance</p>
               <p className="font-display text-[30px] text-accent">{balance.toLocaleString()}</p>
-              <p className="text-[11px] text-faint">Top-ups via Stripe once billing is connected.</p>
+              <Link href="/settings/billing" className="text-[11px] text-accent hover:underline">Buy credits · overage</Link>
             </Card>
             <Card className="overflow-hidden">
               <table className="w-full text-[12.5px]">
@@ -180,16 +181,21 @@ export default async function Settings() {
         <Section id="privacy" title="Data & privacy">
           <p className="text-[13px] text-muted">Your lists, searches and notes are visible only inside this workspace. To export or delete your account data, contact privacy@ — self-serve DSAR tooling arrives with the admin console (R3).</p>
         </Section>
-        <Section id="audit" title="Audit log">
-          <Card className="divide-y divide-line text-[12.5px]">
-            {audit.map((a, i) => (
-              <div key={i} className="flex justify-between px-4 py-2">
-                <span className="text-text">{a.action} <span className="text-muted">{a.target ?? ""}</span></span>
-                <span className="text-faint">{new Date(a.at).toLocaleString()}</span>
-              </div>
-            ))}
-            {!audit.length ? <p className="px-4 py-3 text-muted">No events yet.</p> : null}
-          </Card>
+        <Section id="audit" title="Audit log" sub={isAdmin ? "Latest entries. The full log has filters and CSV export." : "Visible to workspace admins."}>
+          {isAdmin ? (
+            <>
+              <Card className="divide-y divide-line text-[12.5px]">
+                {audit.map((a) => (
+                  <div key={a.id} className="flex justify-between gap-3 px-4 py-2">
+                    <span className="text-text">{a.action} <span className="text-muted">{a.target ?? ""}</span></span>
+                    <span className="shrink-0 text-faint">{a.actor_name ?? a.actor} · {new Date(a.at).toLocaleString()}</span>
+                  </div>
+                ))}
+                {!audit.length ? <p className="px-4 py-3 text-muted">No events yet.</p> : null}
+              </Card>
+              <Link href="/settings/audit" className="mt-2 inline-block text-[12px] text-accent hover:underline">Open the full audit log →</Link>
+            </>
+          ) : null}
         </Section>
       </div>
     </div>

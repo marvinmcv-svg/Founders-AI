@@ -23,3 +23,10 @@ export const AGENT_DAILY_TURNS_PER_USER = 200;
 export const AGENT_TOOL_RESULT_MAX_ROWS = 25;
 /** Curated skills shipped with the agent; pinned by packages/agent tests. */
 export const AGENT_CURATED_SKILL_COUNT = 12;
+/** Phase 10: data-subject requests are answered within this many days (GDPR one month; CCPA 45). */
+export const DSAR_DUE_DAYS = 30;
+/** Default overage ceiling (credits below zero) when an admin turns overage on. */
+export const DEFAULT_OVERAGE_LIMIT = 10_000;
+/** Load-test target from plan 15 Phase 10. */
+export const LOAD_TEST_RPS = 15;
+export const LOAD_TEST_KEYS = 200;

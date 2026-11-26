@@ -29,6 +29,7 @@ import { egressFetch } from "../egress";
 import { newId } from "../ids";
 import { redistributable } from "../redistribution";
 import { rawQuery as q } from "./entities";
+import { recordAudit } from "./audit";
 import { ForbiddenError, NotFoundError, type OrgContext } from "./workspace";
 
 export const BULK_DATASETS = ["companies", "people", "investors", "transactions", "estimates"] as const;
@@ -190,7 +191,7 @@ export async function createBulkDelivery(ctx: OrgContext, input: CreateBulkInput
   await q(sql`INSERT INTO bulk_deliveries (id, org_id, name, datasets, fields, format, sink, sink_config, cadence, created_by)
     VALUES (${id}, ${ctx.orgId}, ${input.name.trim().slice(0, 120)}, ARRAY(SELECT jsonb_array_elements_text(${JSON.stringify(datasets)}::jsonb)), ${JSON.stringify(fields)}::jsonb,
       ${input.format === "CSV" ? "CSV" : "PARQUET"}, ${input.sink.kind}, ${encryptSecret(JSON.stringify(input.sink))}, ${["DAILY", "WEEKLY", "MANUAL"].includes(input.cadence) ? input.cadence : "DAILY"}, ${ctx.userId})`);
-  await q(sql`INSERT INTO audit_log (id, org_id, actor, action, target) VALUES (${newId("event")}, ${ctx.orgId}, ${ctx.userId}, 'bulk.create', ${id})`);
+  await recordAudit({ orgId: ctx.orgId, actor: ctx.userId, action: "bulk.create", target: id });
   return { id };
 }
 
@@ -208,7 +209,7 @@ export async function deleteBulkDelivery(ctx: OrgContext, id: string) {
   const r = await q(sql`DELETE FROM bulk_deliveries WHERE id = ${id} AND org_id = ${ctx.orgId} RETURNING id`);
   if (!r.length) throw new NotFoundError("Delivery not found");
   await q(sql`DELETE FROM bulk_state WHERE delivery_id = ${id}`);
-  await q(sql`INSERT INTO audit_log (id, org_id, actor, action, target) VALUES (${newId("event")}, ${ctx.orgId}, ${ctx.userId}, 'bulk.delete', ${id})`);
+  await recordAudit({ orgId: ctx.orgId, actor: ctx.userId, action: "bulk.delete", target: id });
 }
 
 /* ------------------------------------------------------------------ */

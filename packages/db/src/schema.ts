@@ -49,6 +49,8 @@ export const user = pgTable("user", {
   emailVerified: boolean("email_verified").notNull().default(false),
   image: text("image"),
   timezone: text("timezone").notNull().default("America/La_Paz"),
+  /** Better Auth `twoFactor` plugin (plan 14.4 MFA). */
+  twoFactorEnabled: boolean("two_factor_enabled").default(false),
   createdAt: createdAt(),
   updatedAt: ts("updated_at").notNull().defaultNow(),
 });
@@ -104,6 +106,9 @@ export const organization = pgTable("organization", {
   plan: text("plan").notNull().default("trial"),
   seats: integer("seats").notNull().default(5),
   mcpOverageEnabled: boolean("mcp_overage_enabled").notNull().default(false),
+  /** Workspace security policies (plan 14.4): members must sign in with SSO / have 2FA on. */
+  requireSso: boolean("require_sso").notNull().default(false),
+  require2fa: boolean("require_2fa").notNull().default(false),
   thesis: jsonb("thesis").$type<Thesis>(),
   createdAt: createdAt(),
 });
@@ -765,6 +770,8 @@ export const apiKeys = pgTable(
 export const creditBalances = pgTable("credit_balances", {
   orgId: text("org_id").primaryKey(),
   balance: integer("balance").notNull(),
+  /** How far below zero charges may go when overage is on (billed through the Stripe meter). 0 = hard stop. */
+  overageLimit: integer("overage_limit").notNull().default(0),
   periodStart: ts("period_start").notNull().defaultNow(),
   periodEnd: ts("period_end"),
 });
@@ -778,6 +785,10 @@ export const creditLedger = pgTable(
     reason: text("reason").notNull(),
     operation: text("operation"),
     requestId: text("request_id"),
+    /** Part of this debit that took the balance below zero (billed on the Stripe meter, plan 14.1). */
+    overage: integer("overage").notNull().default(0),
+    /** Set when `overage` was sent to the Stripe meter. */
+    reportedAt: ts("reported_at"),
     at: ts("at").notNull().defaultNow(),
   },
   (t) => [index("credit_ledger_org_idx").on(t.orgId, t.at)],
@@ -801,14 +812,29 @@ export const usageEvents = pgTable(
   (t) => [index("usage_events_org_idx").on(t.orgId, t.at)],
 );
 
-export const auditLog = pgTable("audit_log", {
-  id: text("id").primaryKey(),
-  orgId: text("org_id").notNull(),
-  actor: text("actor").notNull(),
-  action: text("action").notNull(),
-  target: text("target"),
-  at: ts("at").notNull().defaultNow(),
-});
+/**
+ * Audit log (plan 14.4). `org_id = 'platform'` for internal-admin actions. Rows are chained per org:
+ * `hash = sha256(prev_hash | canonical row)`, so an edited or deleted row breaks verification.
+ */
+export const auditLog = pgTable(
+  "audit_log",
+  {
+    id: text("id").primaryKey(),
+    orgId: text("org_id").notNull(),
+    actor: text("actor").notNull(),
+    actorType: text("actor_type").notNull().default("user"), // user | api_key | scim | system | platform_admin | stripe
+    action: text("action").notNull(),
+    target: text("target"),
+    metadata: jsonb("metadata").$type<Record<string, unknown>>(),
+    ip: text("ip"),
+    userAgent: text("user_agent"),
+    seq: bigint("seq", { mode: "number" }),
+    prevHash: text("prev_hash"),
+    hash: text("hash"),
+    at: ts("at").notNull().defaultNow(),
+  },
+  (t) => [index("audit_log_org_at_idx").on(t.orgId, t.at), uniqueIndex("audit_log_org_seq_uq").on(t.orgId, t.seq)],
+);
 
 /* ------------------------------------------------------------------ */
 /* Public forms                                                        */
@@ -832,6 +858,7 @@ export const leads = pgTable("leads", {
   createdAt: createdAt(),
 });
 
+/** Data-subject requests (plan 14.5). Status: RECEIVED → VERIFIED → IN_PROGRESS → COMPLETED | REJECTED. */
 export const dsarRequests = pgTable("dsar_requests", {
   id: text("id").primaryKey(),
   email: text("email").notNull(),
@@ -839,9 +866,52 @@ export const dsarRequests = pgTable("dsar_requests", {
   type: text("type").notNull(), // ACCESS | DELETE | OPT_OUT
   entityId: text("entity_id"),
   details: text("details"),
+  linkedinUrl: text("linkedin_url"),
   status: text("status").notNull().default("RECEIVED"),
+  /** Statutory clock: GDPR one month / CCPA 45 days; we use 30 days from receipt. */
+  dueAt: ts("due_at"),
+  /** SHA-256 of the email-verification token (the token itself is only in the email). */
+  verifyTokenHash: text("verify_token_hash"),
+  verifiedAt: ts("verified_at"),
+  matchedPersonIds: text("matched_person_ids").array().notNull().default(sql`'{}'::text[]`),
+  handledBy: text("handled_by"),
+  completedAt: ts("completed_at"),
+  /** ACCESS: the export (JSON) delivered to the requester; DELETE/OPT_OUT: counts of what was removed. */
+  result: jsonb("result").$type<Record<string, unknown>>(),
   createdAt: createdAt(),
 });
+
+export const dsarEvents = pgTable(
+  "dsar_events",
+  {
+    id: text("id").primaryKey(),
+    dsarId: text("dsar_id").notNull(),
+    actor: text("actor").notNull(),
+    action: text("action").notNull(),
+    note: text("note"),
+    at: ts("at").notNull().defaultNow(),
+  },
+  (t) => [index("dsar_events_dsar_idx").on(t.dsarId, t.at)],
+);
+
+/**
+ * Suppression list (plan 14.5): blocks re-ingestion of people who asked to be deleted or opted out.
+ * Values are stored as SHA-256 of the normalised value, so the list itself holds no contact data.
+ * kind: email | linkedin | person_id
+ */
+export const suppressionList = pgTable(
+  "suppression_list",
+  {
+    id: text("id").primaryKey(),
+    kind: text("kind").notNull(),
+    valueHash: text("value_hash").notNull(),
+    reason: text("reason").notNull(), // DELETE | OPT_OUT | ADMIN
+    dsarId: text("dsar_id"),
+    createdBy: text("created_by"),
+    createdAt: createdAt(),
+  },
+  (t) => [uniqueIndex("suppression_kind_hash_uq").on(t.kind, t.valueHash)],
+);
 
 /* ------------------------------------------------------------------ */
 /* Partitioned metrics table (created by custom migration 0001)        */
@@ -1581,3 +1651,127 @@ export const featureFlags = pgTable("feature_flags", {
   updatedBy: text("updated_by"),
   updatedAt: ts("updated_at").notNull().defaultNow(),
 });
+
+/* ------------------------------------------------------------------ */
+/* Phase 10 (R3): billing, SSO/SCIM/2FA                                */
+/* ------------------------------------------------------------------ */
+
+/** One billing account per org (plan 14.1). Stripe ids are null until checkout (H13). */
+export const billingAccounts = pgTable("billing_accounts", {
+  orgId: text("org_id").primaryKey(),
+  stripeCustomerId: text("stripe_customer_id").unique(),
+  stripeSubscriptionId: text("stripe_subscription_id"),
+  /** none | trialing | active | past_due | canceled | unpaid | incomplete */
+  subscriptionStatus: text("subscription_status").notNull().default("none"),
+  billingEmail: text("billing_email"),
+  currentPeriodStart: ts("current_period_start"),
+  currentPeriodEnd: ts("current_period_end"),
+  cancelAtPeriodEnd: boolean("cancel_at_period_end").notNull().default(false),
+  /** Credits included per billing period; the balance is reset to this (+ rollover) on renewal. */
+  periodCredits: integer("period_credits").notNull().default(0),
+  /** Share (0–100) of unused credits carried into the next period, capped at `rolloverCap` (0 = no cap). */
+  rolloverPct: integer("rollover_pct").notNull().default(100),
+  rolloverCap: integer("rollover_cap").notNull().default(0),
+  /** Allow charges past zero up to `credit_balances.overage_limit`, billed on the meter. */
+  overageEnabled: boolean("overage_enabled").notNull().default(false),
+  lastResetAt: ts("last_reset_at"),
+  updatedAt: ts("updated_at").notNull().defaultNow(),
+});
+
+/** Every Stripe webhook event we received (idempotency by Stripe's event id). */
+export const stripeEvents = pgTable("stripe_events", {
+  id: text("id").primaryKey(),
+  type: text("type").notNull(),
+  orgId: text("org_id"),
+  payload: jsonb("payload").$type<Record<string, unknown>>().notNull(),
+  receivedAt: ts("received_at").notNull().defaultNow(),
+  processedAt: ts("processed_at"),
+  error: text("error"),
+});
+
+/** Credits sent to the Stripe meter (one row per report; `identifier` is Stripe's idempotency key). */
+export const usageReports = pgTable(
+  "usage_reports",
+  {
+    id: text("id").primaryKey(),
+    orgId: text("org_id").notNull(),
+    identifier: text("identifier").notNull().unique(),
+    credits: integer("credits").notNull(),
+    ledgerRows: integer("ledger_rows").notNull(),
+    status: text("status").notNull(), // SENT | FAILED | SKIPPED
+    error: text("error"),
+    at: ts("at").notNull().defaultNow(),
+  },
+  (t) => [index("usage_reports_org_idx").on(t.orgId, t.at)],
+);
+
+/** Better Auth `twoFactor` plugin table (TOTP secret + backup codes, both encrypted by Better Auth). */
+export const twoFactor = pgTable(
+  "two_factor",
+  {
+    id: text("id").primaryKey(),
+    secret: text("secret").notNull(),
+    backupCodes: text("backup_codes").notNull(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    verified: boolean("verified").default(true),
+    failedVerificationCount: integer("failed_verification_count").default(0),
+    lockedUntil: ts("locked_until"),
+  },
+  (t) => [index("two_factor_user_idx").on(t.userId), index("two_factor_secret_idx").on(t.secret)],
+);
+
+/** Better Auth `@better-auth/sso` provider (OIDC or SAML) bound to a workspace and an email domain. */
+export const ssoProvider = pgTable("sso_provider", {
+  id: text("id").primaryKey(),
+  issuer: text("issuer").notNull(),
+  oidcConfig: text("oidc_config"),
+  samlConfig: text("saml_config"),
+  userId: text("user_id").references(() => user.id, { onDelete: "set null" }),
+  providerId: text("provider_id").notNull().unique(),
+  organizationId: text("organization_id"),
+  domain: text("domain").notNull(),
+  domainVerified: boolean("domain_verified").default(false),
+  createdAt: ts("created_at").defaultNow(),
+  updatedAt: ts("updated_at").defaultNow(),
+});
+
+/** SCIM 2.0 bearer tokens, one or more per workspace (shown once, stored as SHA-256). */
+export const scimTokens = pgTable(
+  "scim_tokens",
+  {
+    id: text("id").primaryKey(),
+    orgId: text("org_id").notNull(),
+    name: text("name").notNull(),
+    prefix: text("prefix").notNull(),
+    hash: text("hash").notNull().unique(),
+    createdBy: text("created_by").notNull(),
+    lastUsedAt: ts("last_used_at"),
+    revokedAt: ts("revoked_at"),
+    createdAt: createdAt(),
+  },
+  (t) => [index("scim_tokens_org_idx").on(t.orgId)],
+);
+
+/** SCIM User resources per workspace: the IdP's view (externalId, active) mapped to a user + membership. */
+export const scimUsers = pgTable(
+  "scim_users",
+  {
+    id: text("id").primaryKey(),
+    orgId: text("org_id").notNull(),
+    userId: text("user_id").notNull(),
+    externalId: text("external_id"),
+    userName: text("user_name").notNull(),
+    displayName: text("display_name"),
+    active: boolean("active").notNull().default(true),
+    role: text("role").notNull().default("member"),
+    createdAt: createdAt(),
+    updatedAt: ts("updated_at").notNull().defaultNow(),
+  },
+  (t) => [
+    uniqueIndex("scim_users_org_user_uq").on(t.orgId, t.userId),
+    uniqueIndex("scim_users_org_username_uq").on(t.orgId, t.userName),
+    uniqueIndex("scim_users_org_external_uq").on(t.orgId, t.externalId),
+  ],
+);

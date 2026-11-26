@@ -35,8 +35,13 @@ export async function seedDemoWorkspace(
   const org2 = "org_demo000000000000000000002";
 
   // Clean previous demo rows (workspace tables are not truncated by the dataset seed).
+  // audit_log is append-only (migration 0009); the reseed is a sanctioned maintenance path.
+  await sql.begin(async (tx) => {
+    await tx`SELECT set_config('founders.audit_maintenance', 'on', true)`;
+    await tx`DELETE FROM audit_log WHERE org_id IN (${orgId}, ${org2})`;
+  });
   for (const t of ["list_items", "search_result_snapshots", "search_reads"]) await sql.unsafe(`DELETE FROM ${t}`);
-  for (const t of ["lists", "saved_searches", "org_statuses", "entity_status", "likes", "hides", "notes", "notifications", "api_keys", "credit_ledger", "usage_events", "audit_log", "digest_runs"])
+  for (const t of ["lists", "saved_searches", "org_statuses", "entity_status", "likes", "hides", "notes", "notifications", "api_keys", "credit_ledger", "usage_events", "digest_runs"])
     await sql.unsafe(`DELETE FROM ${t} WHERE org_id IN ('${orgId}', '${org2}')`);
   await sql`DELETE FROM credit_balances WHERE org_id IN (${orgId}, ${org2})`;
   await sql`DELETE FROM member WHERE organization_id IN (${orgId}, ${org2})`;

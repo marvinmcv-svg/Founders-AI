@@ -51,7 +51,7 @@ export function InviteForm() {
   const [pending, start] = useTransition();
   return (
     <div className="flex flex-col gap-2">
-      <form className="flex flex-wrap gap-2" onSubmit={(e) => { e.preventDefault(); start(async () => { try { const r = await inviteMember(email, role); setLink(`${window.location.origin}${r.link}`); setErr(null); } catch (x) { setErr((x as Error).message); } }); }}>
+      <form className="flex flex-wrap gap-2" onSubmit={(e) => { e.preventDefault(); start(async () => { try { const r = await inviteMember(email, role); if ("error" in r) { setErr(r.error); setLink(null); } else { setLink(`${window.location.origin}${r.link}`); setErr(null); } } catch (x) { setErr((x as Error).message); } }); }}>
         <input type="email" required className={`${input} w-[260px]`} value={email} onChange={(e) => setEmail(e.target.value)} placeholder="teammate@fund.com" />
         <select className={input} value={role} onChange={(e) => setRole(e.target.value as typeof role)}>
           <option value="member">Member</option>

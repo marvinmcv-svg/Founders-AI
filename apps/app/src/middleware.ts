@@ -2,7 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { getSessionCookie } from "better-auth/cookies";
 
 // /oauth/consent handles its own login redirect so the signed OAuth query survives it.
-const PUBLIC = [/^\/mcp(\/|$)/, /^\/oauth\//,/^\/\.well-known\//, /^\/login/, /^\/signup/, /^\/api\/auth/, /^\/api\/v1/, /^\/api\/ext\//, /^\/api\/admin\//, /^\/api\/cron\//, /^\/developers/, /^\/_next/, /^\/founders-mark\.jpg$/, /^\/favicon/];
+const PUBLIC = [/^\/mcp(\/|$)/, /^\/oauth\//,/^\/\.well-known\//, /^\/login/, /^\/signup/, /^\/api\/auth/, /^\/api\/v1/, /^\/api\/ext\//, /^\/api\/admin\//, /^\/api\/cron\//, /^\/api\/stripe\/webhook$/, /^\/developers/, /^\/_next/, /^\/founders-mark\.jpg$/, /^\/favicon/];
 
 /** Cheap cookie check; the real session is verified server-side in getCtx(). */
 export function middleware(req: NextRequest) {

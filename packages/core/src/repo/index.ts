@@ -14,3 +14,5 @@ export * from "./network";
 export * from "./bulk";
 export * from "./flags";
 export * from "./interest";
+export * from "./audit";
+export * from "./billing";

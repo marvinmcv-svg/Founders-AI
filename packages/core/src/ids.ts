@@ -44,6 +44,13 @@ export const ID_PREFIX = {
   bulkDelivery: "blk",
   bulkRun: "blr",
   interestSignal: "isg",
+  audit: "aud",
+  dsarEvent: "dse",
+  suppression: "sup",
+  scimToken: "sct",
+  scimUser: "scu",
+  usageReport: "urp",
+  ssoProvider: "sso",
 } as const;
 
 export type IdKind = keyof typeof ID_PREFIX;

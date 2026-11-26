@@ -12,6 +12,7 @@ import { CREDIT_PRICES } from "@founders/core/pricing";
 import * as repo from "@founders/core/repo";
 import { APP_GRID_PAGE_SIZE } from "@founders/core/limits";
 import { getCtx, ORG_COOKIE } from "@/lib/session";
+import { requestMeta } from "@/lib/request-meta";
 
 export type GridResult = {
   rows: repo.Row[];
@@ -218,13 +219,19 @@ export async function sendDigestNow() {
   return { total: d.total };
 }
 
-export async function inviteMember(email: string, role: "member" | "admin" | "viewer") {
+export async function inviteMember(email: string, role: "member" | "admin" | "viewer"): Promise<{ id: string; link: string } | { error: string }> {
   const ctx = await getCtx();
-  if (ctx.role !== "admin" && ctx.role !== "owner") throw new Error("Only admins can invite");
+  if (ctx.role !== "admin" && ctx.role !== "owner") return { error: "Only admins can invite" };
+  try {
+    // Seats (plan 14.1): members + pending invites may not exceed the seats bought.
+    await repo.assertSeatAvailable(ctx.orgId);
+  } catch (e) {
+    return { error: e instanceof Error ? e.message : "No seats available" };
+  }
   const { auth } = await import("@/lib/auth");
   const { headers } = await import("next/headers");
   const inv = await auth.api.createInvitation({ body: { email, role: role === "viewer" ? "member" : role, organizationId: ctx.orgId }, headers: await headers() });
-  await repo.audit(ctx, "member.invite", email);
+  await repo.audit(ctx, "member.invite", email, { role }, await requestMeta());
   return { id: inv.id, link: `/signup?invite=${inv.id}&email=${encodeURIComponent(email)}` };
 }
 

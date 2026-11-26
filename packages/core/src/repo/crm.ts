@@ -31,6 +31,7 @@ import {
   type Transport,
 } from "@founders/integrations/crm";
 import { sql } from "drizzle-orm";
+import { recordAudit } from "./audit";
 import { decryptSecret, encryptSecret } from "../crypto";
 import { egressFetch } from "../egress";
 import { newId } from "../ids";
@@ -609,7 +610,7 @@ async function fail(ctx: OrgContext, conn: ConnRow, direction: string, trigger: 
 }
 
 async function audit(ctx: OrgContext, action: string, target: string) {
-  await q(sql`INSERT INTO audit_log (id, org_id, actor, action, target) VALUES (${newId("event")}, ${ctx.orgId}, ${ctx.userId}, ${action}, ${target})`);
+  await recordAudit({ orgId: ctx.orgId, actor: ctx.userId, action, target });
 }
 
 export function getCrmLog(ctx: OrgContext, limit = 30) {

@@ -44,11 +44,12 @@ export type ChargeInput = {
   latencyMs?: number;
 };
 
-/** Pre-flight check without charging (returns 402-able error). */
+/** Pre-flight check without charging (returns 402-able error). Counts the overage allowance. */
 export async function assertCredits(orgId: string, credits: number) {
   if (credits <= 0) return;
-  const balance = await getBalance(orgId);
-  if (balance < credits) throw new InsufficientCreditsError(credits, balance);
+  const [r] = await q<{ balance: number; overage_limit: number }>(sql`SELECT balance, overage_limit FROM credit_balances WHERE org_id = ${orgId}`);
+  const balance = r?.balance ?? 0;
+  if (balance + (r?.overage_limit ?? 0) < credits) throw new InsufficientCreditsError(credits, balance);
 }
 
 /** Charge atomically. Returns the remaining balance. Misses and zero-cost ops only log usage. */
@@ -56,12 +57,14 @@ export async function charge(input: ChargeInput): Promise<{ charged: number; rem
   const credits = input.matched ? Math.max(0, Math.floor(input.credits)) : 0;
   let remaining: number;
   if (credits > 0) {
+    // Overage (plan 14.1): the balance may go down to −overage_limit (0 unless an admin turned overage on).
     const rows = await q<{ balance: number }>(sql`UPDATE credit_balances SET balance = balance - ${credits}
-      WHERE org_id = ${input.orgId} AND balance >= ${credits} RETURNING balance`);
+      WHERE org_id = ${input.orgId} AND balance - ${credits} >= -overage_limit RETURNING balance`);
     if (!rows.length) throw new InsufficientCreditsError(credits, await getBalance(input.orgId));
     remaining = rows[0]?.balance ?? 0;
-    await q(sql`INSERT INTO credit_ledger (id, org_id, delta, reason, operation, request_id)
-      VALUES (${newId("ledger")}, ${input.orgId}, ${-credits}, ${input.surface}, ${input.operation}, ${input.requestId ?? null})`);
+    const overage = remaining < 0 ? Math.min(credits, -remaining) : 0;
+    await q(sql`INSERT INTO credit_ledger (id, org_id, delta, reason, operation, request_id, overage)
+      VALUES (${newId("ledger")}, ${input.orgId}, ${-credits}, ${input.surface}, ${input.operation}, ${input.requestId ?? null}, ${overage})`);
   } else {
     remaining = await getBalance(input.orgId);
   }

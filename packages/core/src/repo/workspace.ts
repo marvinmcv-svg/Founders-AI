@@ -374,6 +374,8 @@ export async function notify(ctx: OrgContext, kind: string, payload: Record<stri
   await q(sql`INSERT INTO notifications (id, org_id, user_id, kind, payload) VALUES (${newId("notification")}, ${ctx.orgId}, ${userId}, ${kind}, ${JSON.stringify(payload)}::jsonb)`);
 }
 
-export async function audit(ctx: OrgContext, action: string, target?: string) {
-  await q(sql`INSERT INTO audit_log (id, org_id, actor, action, target) VALUES (${newId("event")}, ${ctx.orgId}, ${ctx.userId}, ${action}, ${target ?? null})`);
+/** Workspace audit entry by the signed-in user (hash-chained, see repo/audit.ts). */
+export async function audit(ctx: OrgContext, action: string, target?: string, metadata?: Record<string, unknown>, req?: { ip?: string | null; userAgent?: string | null }) {
+  const { recordAudit } = await import("./audit");
+  await recordAudit({ orgId: ctx.orgId, actor: ctx.userId, action, target: target ?? null, metadata, ip: req?.ip, userAgent: req?.userAgent });
 }
