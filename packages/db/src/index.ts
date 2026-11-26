@@ -24,6 +24,7 @@ export function getSql(): postgres.Sql {
       prepare: !u.includes(":6543"),
       ssl: local ? false : "require",
       idle_timeout: process.env.VERCEL ? 20 : undefined,
+      connect_timeout: 10,
       onnotice: () => {},
       // Return int8/numeric as JS numbers (all our amounts fit in 2^53).
       types: { bigint: { to: 20, from: [20, 1700], parse: (x: string) => Number(x), serialize: (x: number) => String(x) } },
