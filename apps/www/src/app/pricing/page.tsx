@@ -7,7 +7,7 @@ import { ClosingCta, LogoWall, PageHero, Section } from "@/components/sections";
 import { t, tList, tObjects } from "@/lib/copy";
 import { getStatVars } from "@/lib/stats";
 
-export const revalidate = 3600;
+export const revalidate = 600;
 export const metadata: Metadata = { title: "Pricing", description: "Platform seats, API credits and bulk data — talk to us for pricing." };
 
 export default async function Pricing() {

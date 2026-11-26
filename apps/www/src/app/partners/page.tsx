@@ -5,7 +5,7 @@ import { ClosingCta, LogoWall, PageHero, Section } from "@/components/sections";
 import { t, tList, tObjects } from "@/lib/copy";
 import { getStatVars } from "@/lib/stats";
 
-export const revalidate = 3600;
+export const revalidate = 600;
 export const metadata: Metadata = { title: "Partners", description: "Partner with Founders AI." };
 
 export default async function Partners() {

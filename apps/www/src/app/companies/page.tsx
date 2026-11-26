@@ -5,7 +5,7 @@ import { ApiPromo, ClosingCta, FourCards, Header2, LogoWall, PageHero, Section, 
 import { t } from "@/lib/copy";
 import { getStatVars } from "@/lib/stats";
 
-export const revalidate = 3600;
+export const revalidate = 600;
 export const metadata: Metadata = { title: "Companies", description: "A private company database with funding, growth and modeled revenue for every company." };
 
 export default async function Companies() {

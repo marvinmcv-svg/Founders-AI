@@ -9,7 +9,7 @@ import { DataTabs } from "@/components/sections/DataTabs";
 import { t } from "@/lib/copy";
 import { getStatVars } from "@/lib/stats";
 
-export const revalidate = 3600;
+export const revalidate = 600;
 export const metadata: Metadata = { title: "Platform", description: "One workspace to discover, qualify and monitor private companies." };
 
 function Grid4({ prefix, keys }: { prefix: string; keys: string[] }) {

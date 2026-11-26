@@ -6,7 +6,7 @@ import { ApiPromo, ClosingCta, FourCards, Header2, LogoWall, PageHero, Section }
 import { t } from "@/lib/copy";
 import { getStatVars } from "@/lib/stats";
 
-export const revalidate = 3600;
+export const revalidate = 600;
 export const metadata: Metadata = { title: "Investors", description: "Funds, angels and CVCs with stages, check sizes, portfolios and co-investors." };
 
 export default async function Investors() {

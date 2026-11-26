@@ -3,7 +3,7 @@ import { DemoForm } from "@/components/forms";
 import { t, tList } from "@/lib/copy";
 import { getStatVars } from "@/lib/stats";
 
-export const revalidate = 3600;
+export const revalidate = 600;
 export const metadata: Metadata = { title: "Book a demo", description: "See Founders AI on your own thesis." };
 
 const KEYS = ["firstName", "lastName", "email", "company", "firmType", "aum", "phone", "optional", "submit", "submitting", "freeMail", "required", "success", "successBook", "error"];

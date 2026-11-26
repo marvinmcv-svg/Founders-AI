@@ -15,7 +15,8 @@ export async function getStatVars(): Promise<Vars> {
   };
   try {
     const { getPlatformStats } = await import("@founders/core/repo");
-    const s = await getPlatformStats();
+    // Never let a slow or unreachable DB stall a build or a render: cap at 5s, then fall back to words.
+    const s = await Promise.race([getPlatformStats(), new Promise<null>((r) => setTimeout(() => r(null), 5000))]);
     if (!s) return { ...limits, ...fallbackVars() };
     return {
       ...limits,

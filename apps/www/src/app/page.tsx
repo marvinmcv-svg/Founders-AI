@@ -9,7 +9,7 @@ import { PillarNav } from "@/components/sections/PillarNav";
 import { t } from "@/lib/copy";
 import { getStatVars } from "@/lib/stats";
 
-export const revalidate = 3600;
+export const revalidate = 600;
 
 export default async function Home() {
   const vars = await getStatVars();

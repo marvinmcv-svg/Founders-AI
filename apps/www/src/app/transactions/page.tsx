@@ -7,7 +7,7 @@ import { ApiPromo, ClosingCta, FourCards, Header2, LogoWall, PageHero, Section }
 import { t, tList } from "@/lib/copy";
 import { getStatVars } from "@/lib/stats";
 
-export const revalidate = 3600;
+export const revalidate = 600;
 export const metadata: Metadata = { title: "Transactions", description: "Funding rounds, acquisitions and IPOs with every investor attached." };
 
 export default async function Transactions() {
