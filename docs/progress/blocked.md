@@ -5,7 +5,7 @@ Items from plan Section 0C. Each is stubbed behind an interface so work can cont
 | # | Status | Needed for | Task | Current stub |
 |---|---|---|---|---|
 | H1 | PARTIAL | Everything | Final brand name, domain, logo, colour tweaks, legal entity name | Using **Founders AI**, the existing Founders "F." mark and lime-on-black palette from academy.foundersscz.com. Domain defaults to `foundersscz.com` (`BRAND_DOMAIN`). Legal entity placeholder `Founders SCZ` (`BRAND_LEGAL_ENTITY`) — confirm. |
-| H2 | BLOCKED-HUMAN | R1 | Cloud accounts (Vercel, Railway/Fly, managed Postgres, OpenSearch, Redis), DNS | Local stack via `docker compose` / local Postgres. |
+| H2 | PARTIAL | R1 | Cloud accounts (Vercel, Railway/Fly, managed Postgres, OpenSearch, Redis), DNS | Vercel (2 projects, gru1) + Supabase Postgres (sa-east-1) live. Still needed: custom domain + DNS, Redis, OpenSearch, Railway/Fly for workers. |
 | H3 | BLOCKED-HUMAN | R1 | Anthropic, Resend, Cal.com, PostHog, Sentry, Turnstile keys | NL search falls back to a deterministic parser when `ANTHROPIC_API_KEY` is unset; demo form leads go to the `leads` table (mock CRM sink); demo-pill count hidden; Turnstile skipped when no secret. |
 | H4 | PARTIAL | R1 | Copy for every key in `/content/copy/en.json` | Engineering wrote **first-draft original copy** (EN + ES) so the demo is presentable. Every key still needs copy-team review — see `content/copy/README.md`. |
 | H5 | BLOCKED-HUMAN | R1/R2 | Data provider contracts with redistribution rights | Synthetic seed dataset only. Provider adapters are interfaces in `packages/core/src/providers.ts`. |
