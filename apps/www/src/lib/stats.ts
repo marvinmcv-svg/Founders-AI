@@ -34,16 +34,19 @@ export async function getStatVars(): Promise<Vars> {
   }
 }
 
-/** No DB: show words, not numbers. */
+/**
+ * No DB (or slow DB at build time): words, not numbers — and always understated, never overstated
+ * (plan 1.2: never publish a number we can't prove). Pages revalidate every 10 minutes at runtime.
+ */
 function fallbackVars(): Vars {
   return {
     "stats.companies": "thousands of",
-    "stats.people": "hundreds of thousands of",
-    "stats.investors": "thousands of",
-    "stats.transactions": "tens of thousands of",
-    "stats.rounds_30d": "hundreds of",
-    "stats.talent_signals_7d": "Thousands of",
-    "stats.latam_companies": "Most",
+    "stats.people": "tens of thousands of",
+    "stats.investors": "hundreds of",
+    "stats.transactions": "thousands of",
+    "stats.rounds_30d": "dozens of",
+    "stats.talent_signals_7d": "Hundreds of",
+    "stats.latam_companies": "Many",
     "stats.countries": "many",
   };
 }
