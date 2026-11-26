@@ -51,14 +51,27 @@ export function Reveal({ children, index = 0, className }: { children: ReactNode
   );
 }
 
-/** Count-up when 40% visible, 1.2s ease-out. */
+/**
+ * Count-up when 40% visible, 1.2s ease-out. Server HTML carries the real value (crawlers and
+ * link previews read it); the client resets to 0 only while the number is still off-screen.
+ */
 export function CountUp({ value, format = (n) => Math.round(n).toLocaleString("en-US"), className }: { value: number; format?: (n: number) => string; className?: string }) {
   const { ref, inView } = useInView<HTMLSpanElement>(0.4);
   const reduced = useReducedMotion();
-  const [n, setN] = useState(0);
+  const [n, setN] = useState(value);
+  const armed = useRef(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const r = el.getBoundingClientRect();
+    if (r.top >= window.innerHeight || r.bottom <= 0) {
+      armed.current = true;
+      setN(0);
+    }
+  }, [ref]);
   useEffect(() => {
     if (!inView) return;
-    if (reduced) {
+    if (reduced || !armed.current) {
       setN(value);
       return;
     }
