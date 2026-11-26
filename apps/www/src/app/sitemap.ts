@@ -5,7 +5,7 @@ import { allComparisons } from "@/lib/comparisons";
 
 const ROUTES = [
   "", "/platform", "/companies", "/people", "/investors", "/transactions", "/signals/talent", "/news", "/revenue-valuation",
-  "/agents", "/api", "/mcp", "/pricing", "/contact", "/partners", "/blog", "/insights", "/careers", "/comparisons",
+  "/agents", "/api", "/mcp", "/integrations", "/pricing", "/contact", "/partners", "/blog", "/insights", "/careers", "/comparisons",
   "/privacy-policy", "/privacy-rights", "/terms-conditions", "/dpa",
 ];
 

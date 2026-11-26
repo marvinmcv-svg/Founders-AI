@@ -134,6 +134,17 @@ Structural-parity checklist (plan 2.5 / 15). Derived from the plan's Section 6 p
 - `mcp.usage`
 - `mcp.closing`
 
+## `/integrations`
+- `integrations.hero`
+- `integrations.delivery`
+- `integrations.directory`
+- `integrations.crm`
+- `integrations.network`
+- `integrations.chrome`
+- `integrations.api`
+- `integrations.mcp`
+- `integrations.closing`
+
 ## `/blog`
 - `blog.hero`
 - `blog.posts`

@@ -43,17 +43,17 @@ export function integrationsMenu(): MenuGroup[] {
     {
       label: t("global.menu.integrations.connectGroup"),
       items: [
-        { ...m("all"), href: soon("integrations"), badge: "soon" },
-        { ...m("crm"), href: soon("integrations"), badge: "soon" },
-        { ...m("network"), href: soon("integrations"), badge: "soon" },
-        { ...m("chrome"), href: soon("integrations"), badge: "soon" },
+        { ...m("all"), href: "/integrations" },
+        { ...m("crm"), href: "/integrations#crm" },
+        { ...m("network"), href: "/integrations#network" },
+        { ...m("chrome"), href: "/integrations#chrome", badge: "new" },
       ],
     },
     {
       label: t("global.menu.integrations.deliveryGroup"),
       items: [
         { ...m("api"), href: "/api" },
-        { ...m("bulk"), href: "/pricing#bulk" },
+        { ...m("bulk"), href: "/integrations#api", badge: "new" },
         { ...m("mcp"), href: "/mcp", badge: "new" },
       ],
     },

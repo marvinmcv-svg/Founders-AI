@@ -14,7 +14,8 @@ Started 2026-11-26 ("R2 approved, start the next phase", D-051). Plan sections: 
 | 8.3b | Zapier app: triggers New saved-search result / New talent signal (REST hooks on our signed webhooks, tagged `zapier`), actions Enrich company / Enrich person / Add to list, dynamic dropdowns, API-key auth | `apps/zapier/src/index.ts` | done (publishing: H9) |
 | 8.4a | Interest signals behind the `interest_signals` remote flag (default OFF, H8): public-evidence-only scoring 1–10 (social follow / public content / event / filing, recency, investor fit), `interest` daily job (skips while the flag is off), Interest Signals grid product (gated in `searchEntities`), company "Round forming" card with 90-day raise probability and likely lead, API #14/28/36/37/53 live per flagged org (501 otherwise), MCP interest tools, `/admin` → Feature flags (org allow-list, audited; `interest_telemetry` locked off) | `packages/core/src/signals/interest.ts`, `packages/core/src/repo/{flags,interest}.ts`, `packages/pipelines/src/jobs/interest.ts` | done (flag off) |
 | 8.4b | Chrome extension (MV3, plain TypeScript, D-063): side panel company card for the active tab's site (rank, one-liner, HQ, founded, model chips, raised, key people, team size with Δ) or person card on a LinkedIn profile; Push to CRM · Add to list · Like · View in app; options page (API key, app URL); LinkedIn button content script registered only when the `extension_linkedin_panel` flag is on **and** the user granted linkedin.com (reads the URL only); app helper routes `/api/ext/{config,like,push}` | `apps/extension`, `apps/app/src/app/api/ext/[action]/route.ts` | done (store listing: H11) |
-| 8.4c | Integrations marketing page | — | next |
+| 8.4c | Integrations marketing page `/integrations` (plan 6.14: hero tiles, delivery ticker + 4 cards, tabbed directory, CRM `#crm`, Network `#network`, Chrome `#chrome`, API & bulk `#api` with 5 endpoint samples, MCP promo, CTA); nav and footer point at it instead of `/soon`; sitemap; `CRM_INTEGRATION_COUNT` in `limits.ts` pinned to the adapters | `apps/www/src/app/integrations`, `apps/www/src/components/mocks/integrations.tsx` | done |
+| 8.5 | ClickHouse migration "if volumes require" | — | not needed (D-064) |
 
 ## Acceptance evidence (2026-11-26, local)
 | Plan 15 Phase 8 criterion | Result |
@@ -28,6 +29,15 @@ Started 2026-11-26 ("R2 approved, start the next phase", D-051). Plan sections: 
 | Extension | `apps/extension/test/core.test.ts` (URL → target, client headers/errors, card mapping) and `e2e/tests/ext.extension.spec.ts`: the built extension loaded unpacked in Chromium → options save + connection test → side panel card for a seeded company's website → Like → Push to CRM → "not a company" state. Screenshot `phase-8-extension-panel.png`. **Chrome Web Store (unlisted first) needs the developer account + review and the LinkedIn legal check (H11).** `STORE=1 pnpm --filter @founders/extension build` drops the localhost permission. |
 | Bulk sinks against real buckets / Snowflake | **BLOCKED-HUMAN (H12)**: AWS / GCP / Snowflake accounts. |
 | Zapier | `apps/zapier/test/zapier.test.ts` runs the app definition against the in-process API: auth test (and rejection), subscribe → webhook tagged `zapier` → perform filters by search → sample via performList → unsubscribe deletes; enrich hit/miss; add to list. Publishing needs the Zapier partner review (**H9**). |
+| Integrations page | Structural parity test on `/integrations` (9 sections, no TODO-COPY); link checker passes on every sitemap page; copy check clean. Screens `www-integrations-hero.png`, `www-integrations-crm.png`, `www-integrations-chrome.png`. |
 | Real vendor accounts | **BLOCKED-HUMAN (H9)**: OAuth apps + marketplace reviews. API-token mode works today for Attio, Affinity, HubSpot (private app token), Pipedrive and Airtable; Salesforce needs the OAuth app. |
 
 Screenshots: `docs/progress/screens/phase-8-crm-preview.png`, `phase-8-crm-grid.png`, `phase-8-crm-settings.png`, `phase-8-network-sources.png`, `phase-8-network-people.png`, `phase-8-network-paths.png`.
+
+## Still open (human-only or later)
+- H9: CRM marketplace apps (OAuth), Slack app, Zapier partner review.
+- H10: Google verification + CASA, Microsoft publisher verification for mailbox/calendar OAuth.
+- H11: Chrome Web Store account + review (unlisted first); legal check before the LinkedIn panel flag is turned on.
+- H12: AWS / GCP / Snowflake accounts to test bulk delivery against real sinks.
+- H8: legal + privacy sign-off before the `interest_signals` flag is turned on anywhere.
+- Cloud: apply migrations 0007 and 0008 (as `founders_app`) before deploying; the `bulk` job needs a worker host (H2), not Vercel cron.

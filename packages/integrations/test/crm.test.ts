@@ -45,6 +45,14 @@ async function pullAll(adapter: ReturnType<typeof createAdapter>, kind: CrmKind)
   return out;
 }
 
+describe("inventory", () => {
+  it("marketing's CRM count matches the adapters (D-050)", async () => {
+    const { CRM_INTEGRATION_COUNT } = await import("../../core/src/limits");
+    expect(CRM_PROVIDERS).toHaveLength(CRM_INTEGRATION_COUNT);
+    expect(Object.keys(SPECS)).toHaveLength(CRM_INTEGRATION_COUNT);
+  });
+});
+
 describe("normalisers", () => {
   it("canonicalises domains and LinkedIn URLs", () => {
     expect(normDomain("https://www.Andes-Pay.com/about?x=1")).toBe("andes-pay.com");

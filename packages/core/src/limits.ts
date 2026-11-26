@@ -9,6 +9,8 @@ export const MCP_FREE_CALLS_PER_DAY = 100;
 export const MCP_TOOL_COUNT = 29;
 export const MCP_WRITE_TOOL_COUNT = 5;
 export const API_ENDPOINT_COUNT = 74;
+/** CRMs with two-way sync (plan 13.1); pinned to `CRM_PROVIDERS` by a test. */
+export const CRM_INTEGRATION_COUNT = 6;
 export const APP_GRID_PAGE_SIZE = 100;
 export const EXACT_COUNT_CAP = 10_000;
 export const EXPORT_MAX_ROWS = 5000;

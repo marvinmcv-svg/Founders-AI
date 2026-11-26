@@ -1757,5 +1757,231 @@
       "no": "No",
       "partial": "Partial"
     }
+  },
+  "integrationsPage": {
+    "meta": {
+      "title": "Integrations",
+      "description": "Founders AI inside your CRM, inbox, browser, warehouse and AI tools: {limits.crms} CRMs both ways, team network, Chrome extension, API, bulk delivery and MCP."
+    },
+    "hero": {
+      "eyebrow": "Integrations",
+      "h1": "Your data, where you",
+      "h1Accent": "already work.",
+      "sub": "Two-way sync with {limits.crms} CRMs, a warm-path map from your team's network, a side panel on every website, and a feed for your warehouse and AI tools.",
+      "cta": "Connect in the app"
+    },
+    "tiles": [
+      "Claude",
+      "Cursor",
+      "ChatGPT",
+      "Attio",
+      "Affinity",
+      "Salesforce",
+      "HubSpot",
+      "Pipedrive",
+      "Airtable",
+      "Snowflake",
+      "Chrome",
+      "Zapier"
+    ],
+    "delivery": {
+      "eyebrow": "Delivery",
+      "h2": "One dataset. Every surface.",
+      "ticker": [
+        "{limits.crms} CRM integrations",
+        "One REST API",
+        "{limits.mcpTools} MCP tools",
+        "Full and daily bulk files"
+      ],
+      "cards": [
+        {
+          "title": "CRM sync both ways",
+          "body": "Pull your book in with a match preview, push companies and people back with fresh fields."
+        },
+        {
+          "title": "Network intelligence",
+          "body": "See who on your team knows whom, and the warmest path into any target."
+        },
+        {
+          "title": "API and bulk",
+          "body": "Query live, or receive Parquet and CSV files in your own bucket every day."
+        },
+        {
+          "title": "Agents and browser",
+          "body": "Ask the agent, connect your AI client, or open the side panel on any company site."
+        }
+      ]
+    },
+    "directory": {
+      "eyebrow": "Directory",
+      "h2": "Pick your stack.",
+      "lede": "Everything below is available today, unless it says it is waiting on a partner review.",
+      "ask": "Need another one? Ask us.",
+      "tabs": {
+        "crm": "CRM",
+        "network": "Network & alerts",
+        "ai": "AI clients",
+        "warehouse": "Warehouse & bulk",
+        "dev": "Developer & automation"
+      },
+      "items": {
+        "crm": [
+          "Attio",
+          "Affinity",
+          "Salesforce",
+          "HubSpot",
+          "Pipedrive",
+          "Airtable"
+        ],
+        "network": [
+          "LinkedIn export",
+          "Gmail",
+          "Outlook",
+          "Google Calendar",
+          "Microsoft Calendar",
+          "Chrome extension",
+          "Slack",
+          "Email"
+        ],
+        "ai": [
+          "Founders AI Agents",
+          "Claude Desktop",
+          "Claude Code",
+          "ChatGPT",
+          "Cursor",
+          "Windsurf",
+          "OpenCode",
+          "Any MCP client"
+        ],
+        "warehouse": [
+          "Snowflake",
+          "Amazon S3",
+          "Google Cloud Storage",
+          "CSV export"
+        ],
+        "dev": [
+          "REST API",
+          "Webhooks",
+          "Zapier",
+          "Saved search sync"
+        ]
+      }
+    },
+    "crm": {
+      "eyebrow": "CRM",
+      "h2": "Your CRM, always current.",
+      "lede": "Connect once. Preview matches before anything lands, push from any grid, list or profile, and let a schedule keep fields fresh.",
+      "cards": [
+        {
+          "title": "Match before you pull",
+          "body": "See which records match by domain, LinkedIn URL or email, and which do not, before you confirm."
+        },
+        {
+          "title": "Push in bulk",
+          "body": "Create or update by domain or LinkedIn URL, with your field map and record owner."
+        },
+        {
+          "title": "Filter by your CRM",
+          "body": "Owner, stage, last activity and open deals become filters next to every other field."
+        },
+        {
+          "title": "Every sync logged",
+          "body": "Pulls, pushes and enrichments with counts and errors, plus a webhook when each one finishes."
+        }
+      ],
+      "mock": {
+        "connected": "Connected",
+        "pull": "Pull setup",
+        "push": "Push setup",
+        "matched": "matched & visible",
+        "unmatched": "unmatched",
+        "companies": "Companies",
+        "people": "People",
+        "owner": "Owner for new records",
+        "schedule": "Daily enrichment",
+        "toast": "Pushed to CRM"
+      }
+    },
+    "network": {
+      "eyebrow": "Network",
+      "h2": "Your team's network, mapped.",
+      "lede": "Each person opts in with their own sources. Teammates see who knows whom and how well, never anyone's messages.",
+      "cards": [
+        {
+          "title": "Sync every source",
+          "body": "LinkedIn data export, Gmail, Outlook and calendars. Metadata only."
+        },
+        {
+          "title": "Team-wide view",
+          "body": "Connections are deduplicated across the team, strongest first."
+        },
+        {
+          "title": "Moves, as they happen",
+          "body": "Get told when someone you know joins a company you track."
+        },
+        {
+          "title": "Warm paths",
+          "body": "For any list, the best teammate to ask for each company."
+        }
+      ],
+      "mock": {
+        "connected": "is connected",
+        "hired": "hired from your network"
+      }
+    },
+    "chrome": {
+      "eyebrow": "Chrome extension",
+      "h2": "The card follows you around the web.",
+      "lede": "Open the side panel on any company's website to see its profile, then push it to your CRM, add it to a list or like it.",
+      "cards": [
+        {
+          "title": "Any website",
+          "body": "The panel reads the address of the tab you are on, nothing else."
+        },
+        {
+          "title": "One-click actions",
+          "body": "Push to CRM, add to list, like, or open the full profile."
+        },
+        {
+          "title": "On LinkedIn, when allowed",
+          "body": "A View button on profile and company pages, switched on per workspace."
+        }
+      ],
+      "mock": {
+        "push": "Push to CRM",
+        "list": "Add to list",
+        "like": "Like",
+        "team": "Team size",
+        "raised": "Raised",
+        "people": "Key people",
+        "view": "View on Founders AI"
+      }
+    },
+    "api": {
+      "eyebrow": "API & bulk",
+      "h2": "Build on it, or have it delivered.",
+      "lede": "The same records through a REST API with credits per match, or as full and daily incremental files in your S3, Google Cloud or Snowflake.",
+      "samples": {
+        "search": "AI search",
+        "resolve": "Find a company ID (free)",
+        "person": "Enrich a person by email",
+        "feed": "Saved search results feed",
+        "network": "Network companies"
+      },
+      "bulk": {
+        "title": "Bulk delivery",
+        "body": "Parquet or CSV, stable IDs, an op column on every incremental, and a manifest with checksums."
+      }
+    },
+    "mcp": {
+      "eyebrow": "MCP",
+      "h2": "Bring it into your AI tools.",
+      "lede": "Connect Claude, ChatGPT, Cursor and others to {limits.mcpTools} tools, {limits.mcpFree} free calls a day per user.",
+      "link": "More on MCP"
+    },
+    "closing": {
+      "h2": "Connect your stack in an afternoon.",
+      "body": "Start with a sandbox CRM and demo data, then switch on your real accounts."
+    }
   }
 }

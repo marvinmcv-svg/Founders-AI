@@ -3,7 +3,7 @@
  * If the DB is unreachable, numbers are omitted rather than invented.
  */
 import { floorPlus } from "@founders/core/format";
-import { API_BULK_MAX, API_ENDPOINT_COUNT, API_MAX_PAGE_SIZE, API_RATE_LIMIT_RPS, API_TRIAL_CREDITS, AGENT_CURATED_SKILL_COUNT, MCP_FREE_CALLS_PER_DAY, MCP_TOOL_COUNT, MCP_WRITE_TOOL_COUNT } from "@founders/core/limits";
+import { API_BULK_MAX, API_ENDPOINT_COUNT, CRM_INTEGRATION_COUNT, API_MAX_PAGE_SIZE, API_RATE_LIMIT_RPS, API_TRIAL_CREDITS, AGENT_CURATED_SKILL_COUNT, MCP_FREE_CALLS_PER_DAY, MCP_TOOL_COUNT, MCP_WRITE_TOOL_COUNT } from "@founders/core/limits";
 import type { Vars } from "./copy";
 
 export async function getStatVars(): Promise<Vars> {
@@ -18,6 +18,7 @@ export async function getStatVars(): Promise<Vars> {
     "limits.mcpReadTools": MCP_TOOL_COUNT - MCP_WRITE_TOOL_COUNT,
     "limits.mcpFree": MCP_FREE_CALLS_PER_DAY,
     "limits.skills": AGENT_CURATED_SKILL_COUNT,
+    "limits.crms": CRM_INTEGRATION_COUNT,
   };
   try {
     const { getPlatformStats } = await import("@founders/core/repo");
