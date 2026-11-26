@@ -4,7 +4,7 @@
  */
 import { z } from "zod";
 
-export const PRODUCTS = ["companies", "people", "investors", "funding_rounds", "talent_signals"] as const;
+export const PRODUCTS = ["companies", "people", "investors", "funding_rounds", "talent_signals", "acquisitions", "ipos", "news_signals"] as const;
 export type Product = (typeof PRODUCTS)[number];
 
 export const OPERATORS = [

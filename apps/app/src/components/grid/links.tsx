@@ -9,6 +9,9 @@ export const PRODUCT_PATH: Record<Product, string> = {
   investors: "/investors",
   funding_rounds: "/funding-rounds",
   talent_signals: "/talent-signals",
+  acquisitions: "/acquisitions",
+  ipos: "/ipos",
+  news_signals: "/news",
 };
 
 export const appLink: LinkFn = (kind, id, label) => {

@@ -192,6 +192,10 @@ export const MAJOR_EMPLOYERS = [
   "Northwind Software", "Globex Cloud", "Initech Systems", "Umbrella Logistics", "Soylent Foods International",
 ] as const;
 
+export const IPO_EXCHANGES = ["B3", "BMV", "BBV", "NASDAQ", "NYSE"] as const;
+export const ACQUISITION_STATUSES = ["Completed", "Pending", "Cancelled"] as const;
+export const NEWS_SIGNAL_CATEGORIES = ["funding", "revenue", "profitability", "traction", "deals", "other"] as const;
+
 export const INVESTOR_HIGHLIGHTS = ["Tier-1", "Lead investor", "Active", "Unicorn backer", "High follow-on rate"] as const;
 
 export const HIGHLIGHT_LABELS: Record<string, string> = {

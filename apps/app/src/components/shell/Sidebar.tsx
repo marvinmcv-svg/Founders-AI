@@ -3,7 +3,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useTransition, type ReactNode } from "react";
 import {
-  Bell, Bookmark, Building2, ChevronsUpDown, Code2, Command, Handshake, Landmark, List, LogOut, Network, Settings, Sparkles, Star, TrendingUp, Users,
+  Bell, BellRing, Bookmark, Building2, Merge, Newspaper, ShieldCheck, ChevronsUpDown, Code2, Command, Handshake, Landmark, List, LogOut, Network, Settings, Sparkles, Star, TrendingUp, Users,
 } from "lucide-react";
 import { cn, LogoMark } from "@founders/ui";
 import { markNotificationsRead, switchOrg } from "@/app/actions";
@@ -20,6 +20,7 @@ export type SidebarData = {
   lists: { id: string; name: string; system: string | null; entity_type: string }[];
   notifications: { id: string; kind: string; payload: Record<string, unknown>; read_at: string | null; created_at: string }[];
   unread: number;
+  isAdmin?: boolean;
 };
 
 function Item({ href, icon, label, badge, exact }: { href: string; icon: ReactNode; label: string; badge?: ReactNode; exact?: boolean }) {
@@ -121,6 +122,7 @@ export function Sidebar(d: SidebarData) {
 
       <Group label="Companies">
         <Item href="/companies" icon={ic(Building2)} label="Company DB" />
+        <Item href="/news" icon={ic(Newspaper)} label="News" />
       </Group>
       <Group label="People">
         <Item href="/people" icon={ic(Users)} label="People DB" />
@@ -131,11 +133,14 @@ export function Sidebar(d: SidebarData) {
       </Group>
       <Group label="Transactions">
         <Item href="/funding-rounds" icon={ic(TrendingUp)} label="Funding Rounds" />
+        <Item href="/acquisitions" icon={ic(Merge)} label="Acquisitions" />
+        <Item href="/ipos" icon={ic(BellRing)} label="IPOs" />
       </Group>
 
       <div className="mt-auto flex flex-col gap-0.5 border-t border-line pt-3">
         <Item href="/developers" icon={ic(Code2)} label="API & docs" />
         <Item href="/settings" icon={ic(Settings)} label="Settings" />
+        {d.isAdmin ? <Item href="/admin" icon={ic(ShieldCheck)} label="Admin" /> : null}
         <div className="relative mt-2">
           <button onClick={() => setOrgOpen((o) => !o)} className="flex w-full items-center gap-2 rounded-lg border border-line px-2 py-2 text-left hover:border-line-strong">
             <span className="flex h-7 w-7 items-center justify-center rounded-md bg-accent-soft font-display text-[12px] text-accent">{d.orgName.charAt(0)}</span>

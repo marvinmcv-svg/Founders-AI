@@ -20,6 +20,9 @@ import {
   DEPARTMENTS,
   TALENT_SIGNAL_TYPES,
   TAXONOMY,
+  ACQUISITION_STATUSES,
+  IPO_EXCHANGES,
+  NEWS_SIGNAL_CATEGORIES,
 } from "../taxonomy";
 import type { Operator, Product } from "./ast";
 
@@ -175,12 +178,56 @@ const talentFields: FieldDef[] = [
   { key: "person_highlights", label: "Person Highlights", group: "Person", type: "multi", column: "p.highlights", options: opts(PEOPLE_HIGHLIGHTS) },
 ];
 
+/** Target-company fields shared by the transaction and news grids (alias `c`). */
+const companyContext = (prefix: string, group = "Company"): FieldDef[] => [
+  { key: `${prefix}_name`, label: `${group} name`, group, type: "text", column: "c.name" },
+  { key: `${prefix}_country`, label: `${group} HQ Country`, group, type: "enum", column: "c.hq_country", options: opts(COUNTRIES) },
+  { key: `${prefix}_region`, label: `${group} HQ Region`, group, type: "enum", column: "c.hq_region", options: opts(REGIONS) },
+  { key: `${prefix}_sector`, label: `${group} Sector`, group, type: "enum", column: "c.sector_id", options: nodeOpts(TAXONOMY.sectors) },
+  { key: `${prefix}_tech_vertical`, label: `${group} Tech Vertical`, group, type: "multi", column: "c.tech_vertical_ids", options: nodeOpts(TAXONOMY.verticals), searchable: true },
+  { key: `${prefix}_stage`, label: `${group} Growth Stage`, group, type: "enum", column: "c.growth_stage", options: opts(GROWTH_STAGES) },
+];
+
+const acquisitionFields: FieldDef[] = [
+  { key: "date", label: "Date", group: "Deal", type: "date", column: "t.date", sortable: true },
+  { key: "amount_usd", label: "Amount (USD)", group: "Deal", type: "money", column: "t.amount_usd", sortable: true },
+  { key: "status", label: "Status", group: "Deal", type: "enum", column: "t.status", options: opts(ACQUISITION_STATUSES) },
+  { key: "acquirer_name", label: "Acquirer", group: "Deal", type: "text", column: "t.acquirer_name" },
+  { key: "acquirer_tracked", label: "Acquirer is a tracked company", group: "Deal", type: "boolean", column: "(t.acquirer_id IS NOT NULL)" },
+  ...companyContext("target", "Target"),
+  { key: "target_list", label: "Target in list", group: "Lists", type: "list", column: "t.target_id" },
+];
+
+const ipoFields: FieldDef[] = [
+  { key: "date", label: "IPO Date", group: "IPO", type: "date", column: "t.date", sortable: true },
+  { key: "exchange", label: "Exchange", group: "IPO", type: "enum", column: "t.exchange", options: opts(IPO_EXCHANGES) },
+  { key: "ticker", label: "Ticker", group: "IPO", type: "text", column: "t.ticker" },
+  { key: "share_price", label: "Share price", group: "IPO", type: "number", column: "t.share_price", sortable: true },
+  { key: "valuation_usd", label: "Valuation (USD)", group: "IPO", type: "money", column: "t.valuation_usd", sortable: true },
+  { key: "raised_usd", label: "Raised (USD)", group: "IPO", type: "money", column: "t.raised_usd", sortable: true },
+  ...companyContext("company"),
+  { key: "company_list", label: "Company in list", group: "Lists", type: "list", column: "t.company_id" },
+];
+
+const newsFields: FieldDef[] = [
+  { key: "category", label: "Category", group: "News", type: "enum", column: "t.category", options: opts(NEWS_SIGNAL_CATEGORIES) },
+  { key: "score", label: "Signal Score (0–5)", group: "News", type: "number", column: "t.score", sortable: true },
+  { key: "is_major", label: "Major news", group: "News", type: "boolean", column: "t.is_major" },
+  { key: "published_at", label: "Published", group: "News", type: "date", column: "t.published_at", sortable: true },
+  { key: "publisher", label: "Publisher", group: "News", type: "text", column: "ni.publisher" },
+  ...companyContext("company"),
+  { key: "company_list", label: "Company in list", group: "Lists", type: "list", column: "t.company_id" },
+];
+
 export const FIELDS: Record<Product, FieldDef[]> = {
   companies: companyFields,
   people: peopleFields,
   investors: investorFields,
   funding_rounds: roundFields,
   talent_signals: talentFields,
+  acquisitions: acquisitionFields,
+  ipos: ipoFields,
+  news_signals: newsFields,
 };
 
 export function getField(product: Product, key: string): FieldDef | undefined {
@@ -207,4 +254,7 @@ export const PRODUCT_META: Record<Product, ProductMeta> = {
   investors: { label: "Investors", singular: "investor", table: "investors", defaultSort: { field: "investments_count", dir: "desc" }, textColumns: ["t.name"] },
   funding_rounds: { label: "Funding Rounds", singular: "funding round", table: "funding_rounds", join: "JOIN companies c ON c.id = t.company_id", defaultSort: { field: "announced_date", dir: "desc" }, textColumns: ["c.name"] },
   talent_signals: { label: "Talent Signals", singular: "talent signal", table: "talent_signals", join: "JOIN people p ON p.id = t.person_id", defaultSort: { field: "signal_date", dir: "desc" }, textColumns: ["p.full_name"] },
+  acquisitions: { label: "Acquisitions", singular: "acquisition", table: "acquisitions", join: "JOIN companies c ON c.id = t.target_id", defaultSort: { field: "date", dir: "desc" }, textColumns: ["c.name", "t.acquirer_name"] },
+  ipos: { label: "IPOs", singular: "IPO", table: "ipos", join: "JOIN companies c ON c.id = t.company_id", defaultSort: { field: "date", dir: "desc" }, textColumns: ["c.name", "t.ticker"] },
+  news_signals: { label: "News", singular: "news signal", table: "news_signals", join: "JOIN companies c ON c.id = t.company_id JOIN news_items ni ON ni.id = t.news_item_id", defaultSort: { field: "published_at", dir: "desc" }, textColumns: ["c.name", "ni.title"] },
 };

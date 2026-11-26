@@ -26,7 +26,9 @@ function rowHref(product: Product, r: Row): string {
   if (product === "companies") return `/companies/${String(r.id)}`;
   if (product === "people") return `/people/${String(r.id)}`;
   if (product === "investors") return `/investors/${String(r.id)}`;
-  if (product === "funding_rounds") return `/companies/${String(r.company_id)}?tab=financials`;
+  if (product === "funding_rounds" || product === "ipos") return `/companies/${String(r.company_id)}?tab=financials`;
+  if (product === "acquisitions") return `/companies/${String(r.target_id)}?tab=financials`;
+  if (product === "news_signals") return `/companies/${String(r.company_id)}?tab=news`;
   return `/people/${String(r.person_id)}`;
 }
 

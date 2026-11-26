@@ -179,6 +179,56 @@ export const COLUMNS: Record<Product, Column[]> = {
     { key: "score", label: "Score", width: 80, align: "right", sortField: "score", render: (r) => <span className="tabular font-medium text-ink">{s(r.score)}/10</span> },
     { key: "experience", label: "Current Experience", width: 220, render: (r) => <span className="truncate text-muted">{[r.current_title, r.current_company_name].filter(Boolean).join(" · ")}</span> },
   ],
+  acquisitions: [
+    {
+      key: "acquirer",
+      label: "Acquirer",
+      width: 220,
+      render: (r, l) =>
+        r.acquirer_id ? (
+          <NameCell name={s(r.acquirer_name)} kind="company" id={s(r.acquirer_id)} link={l} />
+        ) : (
+          <span className="flex items-center gap-2">
+            <Favicon name={s(r.acquirer_name)} />
+            <span className="truncate text-ink">{s(r.acquirer_name)}</span>
+          </span>
+        ),
+    },
+    { key: "target", label: "Target", width: 240, render: (r, l) => <NameCell name={s(r.target_name)} sub={s(r.target_country)} kind="company" id={s(r.target_id)} link={l} /> },
+    { key: "date", label: "Date", width: 120, sortField: "date", render: (r) => <span className="tabular text-muted">{shortDate(s(r.date))}</span> },
+    { key: "amount_usd", label: "Amount", width: 120, align: "right", sortField: "amount_usd", render: (r) => <span className="tabular font-medium text-ink">{r.amount_usd ? usd(n(r.amount_usd)) : <span className="text-faint">Undisclosed</span>}</span> },
+    { key: "status", label: "Status", width: 110, render: (r) => <Badge tone={s(r.status) === "Completed" ? "positive" : "neutral"}>{s(r.status)}</Badge> },
+    { key: "tagline", label: "Target tagline", width: 320, render: (r) => <span className="line-clamp-1 text-muted">{s(r.target_tagline)}</span> },
+  ],
+  ipos: [
+    { key: "company", label: "Company", width: 230, render: (r, l) => <NameCell name={s(r.company_name)} sub={s(r.company_country)} kind="company" id={s(r.company_id)} link={l} /> },
+    { key: "date", label: "Date", width: 120, sortField: "date", render: (r) => <span className="tabular text-muted">{shortDate(s(r.date))}</span> },
+    { key: "exchange", label: "Exchange", width: 100, render: (r) => <Chip className="px-1.5 py-0.5 text-[11px]">{s(r.exchange)}</Chip> },
+    { key: "ticker", label: "Ticker", width: 90, render: (r) => <span className="font-mono text-[12px] text-ink">{s(r.ticker)}</span> },
+    { key: "share_price", label: "Share price", width: 110, align: "right", sortField: "share_price", render: (r) => <span className="tabular">{r.share_price ? usd(n(r.share_price)) : "—"}</span> },
+    { key: "valuation_usd", label: "Valuation", width: 120, align: "right", sortField: "valuation_usd", render: (r) => <span className="tabular font-medium text-ink">{usd(n(r.valuation_usd))}</span> },
+    { key: "raised_usd", label: "Raised", width: 110, align: "right", sortField: "raised_usd", render: (r) => <span className="tabular text-muted">{usd(n(r.raised_usd))}</span> },
+  ],
+  news_signals: [
+    { key: "company", label: "Company", width: 210, render: (r, l) => <NameCell name={s(r.company_name)} sub={s(r.company_country)} kind="company" id={s(r.company_id)} link={l} /> },
+    { key: "published_at", label: "Published", width: 110, sortField: "published_at", render: (r) => <span className="tabular text-muted">{shortDate(s(r.published_at))}</span> },
+    { key: "category", label: "Category", width: 120, render: (r) => <Chip className="px-1.5 py-0.5 text-[11px] capitalize">{s(r.category) === "deals" ? "M&A / deals" : s(r.category)}</Chip> },
+    {
+      key: "summary",
+      label: "Summary",
+      width: 380,
+      render: (r) => (
+        <span className="flex min-w-0 items-center gap-1.5">
+          {r.is_major ? <Badge tone="warning">Major</Badge> : null}
+          <span className="line-clamp-1 text-muted" title={s(r.title)}>
+            {s(r.summary)}
+          </span>
+        </span>
+      ),
+    },
+    { key: "score", label: "Score", width: 80, align: "right", sortField: "score", render: (r) => <span className="tabular font-medium text-ink">{Number(r.score ?? 0).toFixed(1)}</span> },
+    { key: "publisher", label: "Source", width: 180, render: (r) => <span className="truncate text-muted">{s(r.publisher)}</span> },
+  ],
 };
 
 function cap(x: string) {

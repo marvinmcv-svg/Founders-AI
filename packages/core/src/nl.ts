@@ -6,7 +6,7 @@
  */
 import { PRODUCTS, type Condition, type Group, type Product } from "./filters/ast";
 import type { SortSpec } from "./filters/compile";
-import { FIELDS, OPERATORS_BY_TYPE } from "./filters/fields";
+import { FIELDS, OPERATORS_BY_TYPE, PRODUCT_META } from "./filters/fields";
 import { validateFilter } from "./filters/validate";
 import { structuredCall } from "./llm";
 import {
@@ -33,8 +33,31 @@ const norm = (s: string) =>
     .normalize("NFD")
     .replace(/[̀-ͯ]/g, "");
 
+/** Filter key for "in <country>" per product (the entity's own country, or its company's). */
+const COUNTRY_KEY: Record<Product, string> = {
+  companies: "hq_country",
+  people: "country",
+  investors: "hq_country",
+  funding_rounds: "company_country",
+  talent_signals: "person_country",
+  acquisitions: "target_country",
+  ipos: "company_country",
+  news_signals: "company_country",
+};
+const DATE_KEY: Partial<Record<Product, string>> = {
+  funding_rounds: "announced_date",
+  talent_signals: "signal_date",
+  acquisitions: "date",
+  ipos: "date",
+  news_signals: "published_at",
+};
+const COMPANY_CONTEXT_PREFIX: Partial<Record<Product, string>> = { funding_rounds: "company", acquisitions: "target", ipos: "company", news_signals: "company" };
+
 function detectProduct(t: string): Product {
   if (/\b(stealth|talent signal|left (their|his|her) job|new compan(y|ies) founded|just (started|founded))\b/.test(t)) return "talent_signals";
+  if (/\b(acquisitions?|acquired|m&a|exits? by acquisition|adquisicion(es)?)\b/.test(t)) return "acquisitions";
+  if (/\b(ipos?|went public|listings?|salida a bolsa)\b/.test(t)) return "ipos";
+  if (/\b(news|headlines?|press|noticias)\b/.test(t)) return "news_signals";
   if (/\b(investors?|vcs?|funds?|angels?|backers?|family offices?|accelerators?)\b/.test(t) && !/\bcompan(y|ies) (backed|funded)\b/.test(t)) return "investors";
   if (/\b(rounds?|deals?|financings?|raised in|transactions?)\b/.test(t) && !/\bcompan/.test(t)) return "funding_rounds";
   if (/\b(founders?|people|persons?|engineers?|ctos?|ceos?|executives?|operators?|talent)\b/.test(t)) return "people";
@@ -66,15 +89,13 @@ export function parseRules(text: string, forced?: Product): NlResult {
   const countries = GEOGRAPHY.filter((g) => t.includes(norm(g.country)) || g.cities.some((c) => t.includes(norm(c)))).map((g) => g.country);
   const latam = /\b(latam|latin america|latinoamerica|south america|sudamerica)\b/.test(t);
   if (countries.length) {
-    const key = product === "people" ? "country" : product === "funding_rounds" ? "company_country" : product === "talent_signals" ? "person_country" : "hq_country";
-    add(key, "any_of", [...new Set(countries)]);
+    add(COUNTRY_KEY[product], "any_of", [...new Set(countries)]);
     notes.push(`in ${countries.join(", ")}`);
   } else if (latam) {
     if (product === "companies") add("hq_region", "any_of", ["Latin America"]);
     else if (product === "investors") add("geographies", "any_of", ["Latin America"]);
     else {
-      const key = product === "people" ? "country" : product === "funding_rounds" ? "company_country" : "person_country";
-      add(key, "any_of", GEOGRAPHY.filter((g) => g.region === "Latin America").map((g) => g.country));
+      add(COUNTRY_KEY[product], "any_of", GEOGRAPHY.filter((g) => g.region === "Latin America").map((g) => g.country));
     }
     notes.push("in Latin America");
   }
@@ -116,9 +137,10 @@ export function parseRules(text: string, forced?: Product): NlResult {
   ];
   const sectors = sectorKeywords.filter(([re]) => re.test(t)).map(([, s]) => TAXONOMY.sectors.find((x) => x.name === s)?.id).filter((x): x is string => Boolean(x));
 
-  if (product === "companies" || product === "funding_rounds") {
-    const vKey = product === "companies" ? "tech_vertical" : "company_tech_vertical";
-    const sKey = product === "companies" ? "sector" : "company_sector";
+  const ctxPrefix = COMPANY_CONTEXT_PREFIX[product];
+  if (product === "companies" || ctxPrefix) {
+    const vKey = product === "companies" ? "tech_vertical" : `${ctxPrefix}_tech_vertical`;
+    const sKey = product === "companies" ? "sector" : `${ctxPrefix}_sector`;
     if (verticals.length) {
       add(vKey, "any_of", verticals.map((v) => v.id));
       notes.push(verticals.map((v) => v.name).join(" / "));
@@ -192,7 +214,7 @@ export function parseRules(text: string, forced?: Product): NlResult {
   if (amt) {
     const over = /\b(over|more than|above|at least|>|mas de|minimum)\b/.test(t);
     const under = /\b(under|less than|below|<|menos de|up to)\b/.test(t);
-    const key = product === "companies" ? (/\b(revenue|arr|ingresos)\b/.test(t) ? "est_revenue_usd" : "total_funding_usd") : product === "funding_rounds" ? "amount_usd" : product === "investors" ? "aum_usd" : null;
+    const key = product === "companies" ? (/\b(revenue|arr|ingresos)\b/.test(t) ? "est_revenue_usd" : "total_funding_usd") : product === "funding_rounds" || product === "acquisitions" ? "amount_usd" : product === "ipos" ? "raised_usd" : product === "investors" ? "aum_usd" : null;
     if (key) add(key, under && !over ? "lte" : "gte", amt);
   }
   const emp = t.match(/(\d+)\+?\s*(employees|people|staff|empleados)/);
@@ -204,9 +226,15 @@ export function parseRules(text: string, forced?: Product): NlResult {
   const days = t.match(/last (\d+) (days|weeks|months)/);
   const recentDays = days ? Number(days[1]) * (days[2] === "weeks" ? 7 : days[2] === "months" ? 30 : 1) : /\b(this month|recent(ly)?)\b/.test(t) ? 30 : /\bthis year\b/.test(t) ? 365 : null;
   if (recentDays) {
-    if (product === "funding_rounds") add("announced_date", "within_last_days", recentDays);
-    if (product === "talent_signals") add("signal_date", "within_last_days", recentDays);
+    const dateKey = DATE_KEY[product];
+    if (dateKey) add(dateKey, "within_last_days", recentDays);
     if (product === "companies" && /\b(raised|funded|round)\b/.test(t)) add("last_funding_date", "within_last_days", recentDays);
+  }
+  if (product === "news_signals") {
+    if (/\b(major|big|important|biggest)\b/.test(t)) add("is_major", "is_true", null);
+    const cat = (["funding", "revenue", "profitability", "traction"] as const).find((c) => t.includes(c));
+    if (cat) add("category", "any_of", [cat]);
+    else if (/\b(m&a|acquisitions?|partnerships?|deals?)\b/.test(t)) add("category", "any_of", ["deals"]);
   }
 
   // Sorting hints
@@ -222,7 +250,7 @@ export function parseRules(text: string, forced?: Product): NlResult {
     seen.add(k);
     return true;
   });
-  const label = { companies: "Companies", people: "People", investors: "Investors", funding_rounds: "Funding rounds", talent_signals: "Talent signals" }[product];
+  const label = PRODUCT_META[product].label;
   return {
     product,
     filter: { kind: "group", op: "AND", children: unique },
