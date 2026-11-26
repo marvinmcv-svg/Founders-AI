@@ -13,7 +13,9 @@ import { getDb, schema } from "@founders/db";
  */
 export const auth = betterAuth({
   secret: process.env.BETTER_AUTH_SECRET ?? "dev-only-secret-change-me-dev-only-secret",
-  baseURL: process.env.BETTER_AUTH_URL ?? process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3001",
+  baseURL: process.env.BETTER_AUTH_URL ?? (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : (process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3001")),
+  // Production alias, this deployment's own URL and its branch URL may all serve the app on Vercel.
+  trustedOrigins: [process.env.VERCEL_PROJECT_PRODUCTION_URL, process.env.VERCEL_URL, process.env.VERCEL_BRANCH_URL].filter((h): h is string => Boolean(h)).map((h) => `https://${h}`),
   database: drizzleAdapter(getDb(), {
     provider: "pg",
     schema: {
