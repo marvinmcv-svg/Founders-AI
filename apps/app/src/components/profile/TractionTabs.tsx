@@ -1,6 +1,6 @@
 /** Company profile tabs 5–6 (plan 7.7): Traction Metrics and Reviews. Server components. */
 import Link from "next/link";
-import { compact, int, pct } from "@founders/core/format";
+import { compact, int } from "@founders/core/format";
 import { Badge, cn, Delta, LineChart, StackBar } from "@founders/ui";
 import type { ReviewsDetail, TractionSnapshot } from "@founders/db/schema";
 import { Empty, Metric, Panel } from "./bits";
@@ -78,7 +78,7 @@ export function TractionTab({ base, period, metrics, snapshot }: { base: string;
       <div className="grid gap-4 xl:grid-cols-2">
         <SeriesPanel title="Web visits" s={visits} format={compact} />
         <SeriesPanel title="Popularity rank (lower is better)" s={rank} format={(n) => `#${int(n)}`} invert />
-        {has("bounce_rate") ? <SeriesPanel title="Bounce rate" s={w("bounce_rate")} format={(n) => pct(n)} invert /> : null}
+        {has("bounce_rate") ? <SeriesPanel title="Bounce rate" s={w("bounce_rate")} format={(n) => `${(n * 100).toFixed(0)}%`} invert /> : null}
         {has("pages_per_visit") ? <SeriesPanel title="Pages per visit" s={w("pages_per_visit")} format={(n) => n.toFixed(1)} /> : null}
         {has("avg_session_s") ? <SeriesPanel title="Avg. session duration" s={w("avg_session_s")} format={(n) => `${Math.floor(n / 60)}m ${Math.round(n % 60)}s`} /> : null}
         <SeriesPanel title="Employee count" s={w("employee_count")} format={int} />

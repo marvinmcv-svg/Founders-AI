@@ -18,3 +18,7 @@ Items from plan Section 0C. Each is stubbed behind an interface so work can cont
 | H12 | BLOCKED-HUMAN | R3 | Snowflake / AWS / GCP accounts | Not built (R3). |
 | H13 | BLOCKED-HUMAN | R1 | Stripe account, prices | Credits ledger works locally; Stripe checkout not wired. |
 | H14 | BLOCKED-HUMAN | Launch | Pen test vendor, SOC 2 auditor | — |
+| H15 | BLOCKED-HUMAN | R2 Phase 4 | Human-labelled evaluation samples: 200 talent signals, ~200 news items, plus review of the revenue-anchor queue | Precision/F1 reported on synthetic labels and an engineering-labelled set (`docs/progress/phase-4.md`). `/admin` queue holds extracted anchors as `pending`. |
+| H3 (R2) | BLOCKED-HUMAN | R2 Phase 4 | Working `ANTHROPIC_API_KEY` (the configured key returns 401), hosted embedding model, Resend | LLM steps use deterministic fallbacks (circuit breaker, D-025); competitors use the local hashed TF-IDF embedder; alert/digest email is stored, not sent. |
+| H2 (R2) | BLOCKED-HUMAN | R2 Phase 4 | Worker host (Railway/Fly) + Redis for weekly/monthly jobs and the Python ML service | Daily jobs run from Vercel cron (D-023); competitors, traction and ML estimates run from the CLI. |
+

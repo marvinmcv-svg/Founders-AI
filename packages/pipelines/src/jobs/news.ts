@@ -230,7 +230,10 @@ export async function evaluateNews(): Promise<NewsEval | null> {
   for (const r of rows.filter((x) => x.status !== "DUPLICATE")) {
     const truth = new Set(r.label?.companyIds ?? []);
     const pred = new Set(r.linked ?? []);
-    for (const p of pred) (truth.has(p) ? tp++ : fp++);
+    for (const p of pred) {
+      if (truth.has(p)) tp++;
+      else fp++;
+    }
     for (const t of truth) if (!pred.has(t)) fn++;
   }
   const flagged = rows.filter((r) => r.status === "DUPLICATE");

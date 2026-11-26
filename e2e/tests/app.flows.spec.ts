@@ -34,6 +34,7 @@ test("build a nested filter, share the URL, save the search", async ({ page }) =
   const name = `E2E Bolivia seed ${Date.now()}`;
   await page.getByPlaceholder(/Name, e.g./).fill(name);
   await page.getByRole("button", { name: "Save", exact: true }).click();
+  await expect(page.getByPlaceholder(/Name, e.g./)).toBeHidden({ timeout: 15000 }); // save action finished
   await page.goto("/searches");
   await expect(page.getByRole("link", { name })).toBeVisible();
 });
@@ -66,8 +67,8 @@ test("profile tabs render data", async ({ page }) => {
   await login(page);
   const href = await page.locator("[role=row] a[href^='/companies/com_']").first().getAttribute("href");
   await page.goto(href!);
-  for (const tab of ["Financials", "Team", "News", "Competitors", "Business"]) {
-    await page.getByRole("link", { name: new RegExp(`^${tab}`) }).click();
+  for (const tab of ["Financials", "Team", "Traction Metrics", "Reviews", "News", "Competitors", "Business"]) {
+    await page.getByRole("navigation", { name: "Profile sections" }).getByRole("link", { name: new RegExp(`^${tab}`) }).click();
     await expect(page.locator("main, body").getByRole("heading").first()).toBeVisible();
   }
 });
