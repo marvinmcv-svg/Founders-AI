@@ -6,7 +6,10 @@
 import type { Product } from "@founders/core/filters";
 import { pg } from "./db";
 
-export async function emit(product: Product, entityIds: string[], kind: "CREATED" | "UPDATED" = "CREATED"): Promise<number> {
+/** Products whose rows can appear in saved searches (news_signals joins the grid list in Phase 4). */
+export type OutboxProduct = Product | "news_signals" | "acquisitions" | "ipos";
+
+export async function emit(product: OutboxProduct, entityIds: string[], kind: "CREATED" | "UPDATED" = "CREATED"): Promise<number> {
   const ids = [...new Set(entityIds)];
   if (!ids.length) return 0;
   const sql = pg();

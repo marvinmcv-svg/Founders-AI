@@ -119,3 +119,7 @@ BEGIN
     EXECUTE format('ALTER TABLE %I ENABLE ROW LEVEL SECURITY', r.tablename);
   END LOOP;
 END $$;
+--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "news_items_url_idx" ON "news_items" USING btree ("url");
+--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "news_signals_published_idx" ON "news_signals" USING btree ("published_at");

@@ -326,14 +326,18 @@ export const revenueDisclosures = pgTable(
   (t) => [index("revenue_disclosures_company_idx").on(t.companyId)],
 );
 
-export const newsItems = pgTable("news_items", {
-  id: text("id").primaryKey(),
-  url: text("url").notNull(),
-  publisher: text("publisher").notNull(),
-  title: text("title").notNull(),
-  publishedAt: ts("published_at").notNull(),
-  bodyHash: text("body_hash"),
-});
+export const newsItems = pgTable(
+  "news_items",
+  {
+    id: text("id").primaryKey(),
+    url: text("url").notNull(),
+    publisher: text("publisher").notNull(),
+    title: text("title").notNull(),
+    publishedAt: ts("published_at").notNull(),
+    bodyHash: text("body_hash"),
+  },
+  (t) => [index("news_items_url_idx").on(t.url)],
+);
 
 export const newsSignals = pgTable(
   "news_signals",
@@ -349,7 +353,7 @@ export const newsSignals = pgTable(
     publishedAt: ts("published_at").notNull(),
     modelVersion: text("model_version").notNull().default("v0-seed"),
   },
-  (t) => [index("news_signals_company_idx").on(t.companyId, t.publishedAt)],
+  (t) => [index("news_signals_company_idx").on(t.companyId, t.publishedAt), index("news_signals_published_idx").on(t.publishedAt)],
 );
 
 /* ------------------------------------------------------------------ */
