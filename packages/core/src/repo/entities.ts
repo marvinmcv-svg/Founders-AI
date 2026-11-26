@@ -11,6 +11,8 @@ import { EXACT_COUNT_CAP } from "../limits";
 
 export type Row = Record<string, unknown>;
 
+const inList = (ids: string[]) => sql.join(ids.map((x) => sql`${x}`), sql`, `);
+
 async function q<T = Row>(query: SQL): Promise<T[]> {
   const res = await getDb().execute(query);
   return res as unknown as T[];
@@ -47,6 +49,8 @@ export type SearchParams = {
   orgId?: string;
   /** Only return ids (saved-search snapshots). */
   idsOnly?: boolean;
+  /** Restrict to these entity ids (real-time alert matching against freshly ingested rows). */
+  ids?: string[];
 };
 
 export type SearchResult = { rows: Row[]; total: number; totalCapped: boolean };
@@ -59,7 +63,7 @@ function fromClause(product: Product): SQL {
 
 export async function searchEntities(product: Product, p: SearchParams = {}): Promise<SearchResult> {
   const filter = compileFilter(product, p.filter ?? emptyFilter(), { orgId: p.orgId });
-  const text = compileQuery(product, p.q);
+  const text = p.ids ? sql`${compileQuery(product, p.q)} AND t.id IN (${p.ids.length ? inList(p.ids) : sql`NULL`})` : compileQuery(product, p.q);
   const order = compileSort(product, p.sort);
   const limit = Math.max(1, Math.min(p.limit ?? 100, 5000));
   const offset = Math.max(0, p.offset ?? 0);
@@ -102,7 +106,6 @@ async function decorate(product: Product, rows: Row[]) {
 /* Profiles                                                            */
 /* ------------------------------------------------------------------ */
 
-const inList = (ids: string[]) => sql.join(ids.map((x) => sql`${x}`), sql`, `);
 
 export async function getCompany(id: string): Promise<Row | null> {
   const [c] = await q(sql`SELECT * FROM companies WHERE id = ${id} AND deleted_at IS NULL`);

@@ -90,6 +90,9 @@ importers:
       '@founders/mocks':
         specifier: workspace:*
         version: link:../../packages/mocks
+      '@founders/pipelines':
+        specifier: workspace:*
+        version: link:../../packages/pipelines
       '@founders/seed':
         specifier: workspace:*
         version: link:../../packages/seed

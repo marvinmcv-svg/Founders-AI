@@ -162,6 +162,7 @@ export type SavedSearch = {
   sort: SortSpec | null;
   visibility: string;
   alert_cadence: string;
+  channels?: string[] | null;
   owner_id: string;
   owner_name?: string;
   created_at: string;
@@ -196,7 +197,11 @@ export type SavedSearchInput = {
   sort?: SortSpec | null;
   visibility?: "PRIVATE" | "TEAM";
   alertCadence?: "OFF" | "REALTIME" | "DAILY" | "WEEKLY";
+  channels?: AlertChannel[];
 };
+
+export const ALERT_CHANNELS = ["in_app", "email", "slack"] as const;
+export type AlertChannel = (typeof ALERT_CHANNELS)[number];
 
 export async function createSavedSearch(ctx: OrgContext, input: SavedSearchInput) {
   assertWrite(ctx);
@@ -225,7 +230,8 @@ export async function updateSavedSearch(ctx: OrgContext, searchId: string, input
       name = COALESCE(${input.name ?? null}, name),
       filter_ast = COALESCE(${filterJson}::jsonb, filter_ast),
       visibility = COALESCE(${input.visibility ?? null}, visibility),
-      alert_cadence = COALESCE(${input.alertCadence ?? null}, alert_cadence)
+      alert_cadence = COALESCE(${input.alertCadence ?? null}, alert_cadence),
+      channels = COALESCE(${input.channels ? JSON.stringify(input.channels.filter((c) => (ALERT_CHANNELS as readonly string[]).includes(c))) : null}::jsonb, channels)
     WHERE id = ${searchId} AND org_id = ${ctx.orgId}`);
   if (filterJson) await refreshSavedSearch(ctx, searchId);
   return getSavedSearch(ctx, searchId);

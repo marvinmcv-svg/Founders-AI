@@ -3,3 +3,4 @@ export * from "./workspace";
 export * from "./credits";
 export * from "./digest";
 export * from "./admin";
+export * from "./alerts";

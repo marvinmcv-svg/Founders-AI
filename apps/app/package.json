@@ -37,7 +37,8 @@
     "server-only": "^0.0.1",
     "drizzle-orm": "^0.45.4",
     "@founders/seed": "workspace:*",
-    "postgres": "^3.4.7"
+    "postgres": "^3.4.7",
+    "@founders/pipelines": "workspace:*"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.16",

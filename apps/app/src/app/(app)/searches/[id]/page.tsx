@@ -6,7 +6,7 @@ import * as repo from "@founders/core/repo";
 import { Badge, buttonClass, Card, cn, COLUMNS } from "@founders/ui";
 import { appLink, PRODUCT_PATH } from "@/components/grid/links";
 import { getCtx } from "@/lib/session";
-import { MarkRead, SearchRowActions } from "../SearchClient";
+import { AlertSettings, MarkRead, SearchRowActions } from "../SearchClient";
 
 export const metadata: Metadata = { title: "Saved search" };
 
@@ -37,7 +37,6 @@ export default async function SearchPage({ params, searchParams }: { params: Pro
       <div className="mb-2 flex flex-wrap items-center gap-3">
         <h1 className="text-[22px] font-semibold">{s.name}</h1>
         <Badge tone="neutral">{PRODUCT_META[s.product].label}</Badge>
-        <Badge tone="neutral">Alerts: {s.alert_cadence.toLowerCase()}</Badge>
         <div className="ml-auto flex items-center gap-3">
           <SearchRowActions id={id} />
           <Link href={gridHref} className={buttonClass("secondary", "sm")}>
@@ -45,7 +44,10 @@ export default async function SearchPage({ params, searchParams }: { params: Pro
           </Link>
         </div>
       </div>
-      <p className="mb-4 text-[13px] text-muted">{describeFilter(s.product, s.filter_ast) || "No filters"}</p>
+      <p className="mb-3 text-[13px] text-muted">{describeFilter(s.product, s.filter_ast) || "No filters"}</p>
+      <div className="mb-4">
+        <AlertSettings id={id} cadence={s.alert_cadence} channels={(s.channels as string[] | null) ?? ["in_app", "email"]} canEdit={repo.canWrite(ctx)} />
+      </div>
       <div className="mb-3 flex gap-1 text-[13px]">
         <Link href={`/searches/${id}`} className={cn("rounded-full px-3 py-1", view === "new" ? "bg-white/[0.1] text-ink" : "text-muted")}>
           New since last read

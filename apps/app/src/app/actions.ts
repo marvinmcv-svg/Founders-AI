@@ -219,3 +219,42 @@ export async function inviteMember(email: string, role: "member" | "admin" | "vi
   await repo.audit(ctx, "member.invite", email);
   return { id: inv.id, link: `/signup?invite=${inv.id}&email=${encodeURIComponent(email)}` };
 }
+
+/* ---------------- Alerts & integrations (Phase 4) ---------------- */
+
+export async function updateSearchAlerts(id: string, cadence: "OFF" | "REALTIME" | "DAILY" | "WEEKLY", channels: repo.AlertChannel[]) {
+  const ctx = await getCtx();
+  await repo.updateSavedSearch(ctx, id, { alertCadence: cadence, channels });
+  await repo.audit(ctx, "saved_search.alerts", id);
+  revalidatePath(`/searches/${id}`);
+  revalidatePath("/searches");
+}
+
+export async function connectSlack(url: string): Promise<{ ok: boolean; error?: string }> {
+  const ctx = await getCtx();
+  try {
+    await repo.setSlackWebhook(ctx, url.trim());
+    await repo.audit(ctx, "integration.slack.connect");
+    revalidatePath("/settings");
+    return { ok: true };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Could not save the webhook" };
+  }
+}
+
+export async function testSlackConnection(): Promise<{ ok: boolean; error?: string }> {
+  const ctx = await getCtx();
+  try {
+    await repo.testSlack(ctx);
+    return { ok: true };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Slack test failed" };
+  }
+}
+
+export async function disconnectSlack() {
+  const ctx = await getCtx();
+  await repo.removeIntegration(ctx, "SLACK");
+  await repo.audit(ctx, "integration.slack.disconnect");
+  revalidatePath("/settings");
+}

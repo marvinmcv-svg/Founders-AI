@@ -4,12 +4,15 @@ import * as repo from "@founders/core/repo";
 import { API_TRIAL_CREDITS, MCP_FREE_CALLS_PER_DAY } from "@founders/core/limits";
 import { Badge, buttonClass, Card } from "@founders/ui";
 import { getCtx } from "@/lib/session";
+import { SlackIntegration } from "./IntegrationsClient";
 import { ApiKeys, DigestPanel, InviteForm } from "./SettingsClient";
 
 export const metadata: Metadata = { title: "Settings" };
 
 export default async function Settings() {
   const ctx = await getCtx();
+  const [integrations, deliveries] = await Promise.all([repo.getIntegrations(ctx), repo.getAlertDeliveries(ctx, 12)]);
+  const slack = integrations.find((i) => i.provider === "SLACK");
   const [org, members, keys, balance, ledger, usage, statuses, digests, audit] = await Promise.all([
     repo.getOrg(ctx),
     repo.getMembers(ctx),
@@ -40,7 +43,7 @@ export default async function Settings() {
   return (
     <div className="grid gap-8 p-6 xl:grid-cols-[180px_1fr]">
       <nav className="hidden flex-col gap-1 text-[13px] xl:flex">
-        {[["workspace", "Workspace"], ["members", "Members"], ["api", "API keys"], ["credits", "Credits & usage"], ["notifications", "Notifications"], ["statuses", "Statuses"], ["privacy", "Data & privacy"], ["audit", "Audit log"]].map(([id, l]) => (
+        {[["workspace", "Workspace"], ["members", "Members"], ["api", "API keys"], ["credits", "Credits & usage"], ["notifications", "Notifications"], ["integrations", "Integrations"], ["statuses", "Statuses"], ["privacy", "Data & privacy"], ["audit", "Audit log"]].map(([id, l]) => (
           <a key={id} href={`#${id}`} className="rounded-md px-2 py-1.5 text-muted hover:bg-white/[0.05] hover:text-ink">
             {l}
           </a>
@@ -116,6 +119,25 @@ export default async function Settings() {
         </Section>
         <Section id="notifications" title="Notifications & digests" sub="Daily digest at 07:00 your time, weekly on Mondays. Email delivery turns on when Resend is configured.">
           <DigestPanel runs={digests.map((d) => ({ id: d.id, sent_at: d.sent_at, item_count: d.item_count, html: d.html }))} />
+        </Section>
+        <Section id="integrations" title="Integrations" sub="CRM, calendar and Zapier connections arrive in R3. Slack alerts are available now.">
+          <div className="flex flex-col gap-3">
+            <SlackIntegration connected={Boolean(slack)} target={slack?.target ?? null} isAdmin={isAdmin} />
+            <Card className="divide-y divide-line text-[13px]">
+              <p className="px-4 py-2.5 text-[11px] uppercase tracking-wide text-faint">Recent alert deliveries</p>
+              {deliveries.map((d) => (
+                <div key={d.id} className="flex flex-wrap items-center gap-3 px-4 py-2">
+                  <span className="text-ink">{d.name ?? "Saved search"}</span>
+                  <Badge tone="neutral">{d.channel.replace("_", "-")}</Badge>
+                  <Badge tone={d.status === "SENT" ? "positive" : d.status === "FAILED" ? "negative" : "neutral"}>{d.status.toLowerCase()}</Badge>
+                  <span className="text-muted">+{d.item_count}</span>
+                  {d.error ? <span className="text-[12px] text-faint">{d.error}</span> : null}
+                  <span className="ml-auto text-[12px] text-faint">{new Date(d.at).toLocaleString()}</span>
+                </div>
+              ))}
+              {!deliveries.length ? <p className="px-4 py-3 text-muted">No alerts delivered yet. Set a saved search to real-time to get one when matching data lands.</p> : null}
+            </Card>
+          </div>
         </Section>
         <Section id="statuses" title="Statuses" sub="Your workspace's status set, used on every grid and profile.">
           <div className="flex flex-wrap gap-2">
