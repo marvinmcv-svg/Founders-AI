@@ -16,8 +16,8 @@ Items from plan Section 0C. Each is stubbed behind an interface so work can cont
 | H10 | BLOCKED-HUMAN | R3 | Google OAuth verification + CASA | Not built (R3). |
 | H11 | BLOCKED-HUMAN | R3 | Chrome Web Store account + LinkedIn legal check | Not built (R3). |
 | H12 | BLOCKED-HUMAN | R3 | Snowflake / AWS / GCP accounts | Not built (R3). |
-| H13 | BLOCKED-HUMAN | R1 | Stripe account, prices | Credits ledger works locally; Stripe checkout not wired. |
-| H14 | BLOCKED-HUMAN | Launch | Pen test vendor, SOC 2 auditor | — |
+| H13 | BLOCKED-HUMAN | R1/R3 | Stripe account, prices | Billing is built (Phase 10, D-065/066): without `STRIPE_SECRET_KEY` the app is in **contact sales** mode (admins adjust credits and terms in `/admin`); `BILLING_SIMULATOR=1` runs the full checkout/webhook flow locally. Go-live steps: `docs/runbooks/billing-stripe.md`. |
+| H14 | BLOCKED-HUMAN | Launch | Pen test vendor, SOC 2 auditor | Engineering controls listed in `docs/launch-checklist.md` → Security; `pnpm security:audit` covers dependencies, secrets and NEXT_PUBLIC_. |
 | H15 | BLOCKED-HUMAN | R2 Phase 4 | Human-labelled evaluation samples: 200 talent signals, ~200 news items, plus review of the revenue-anchor queue | Precision/F1 reported on synthetic labels and an engineering-labelled set (`docs/progress/phase-4.md`). `/admin` queue holds extracted anchors as `pending`. |
 | H3 (R2) | BLOCKED-HUMAN | R2 Phase 4 | Working `ANTHROPIC_API_KEY` (the configured key returns 401), hosted embedding model, Resend | LLM steps use deterministic fallbacks (circuit breaker, D-025); competitors use the local hashed TF-IDF embedder; alert/digest email is stored, not sent. |
 | H2 (R2) | BLOCKED-HUMAN | R2 Phase 4 | Worker host (Railway/Fly) + Redis for weekly/monthly jobs and the Python ML service | Daily jobs run from Vercel cron (D-023); competitors, traction and ML estimates run from the CLI. |
@@ -33,3 +33,6 @@ Items from plan Section 0C. Each is stubbed behind an interface so work can cont
 | H11 (R3) | BLOCKED-HUMAN | R3 Phase 8 | Chrome Web Store account + review; legal check of the LinkedIn button | Extension builds (`STORE=1` for the store package); LinkedIn button stays off behind `extension_linkedin_panel`. |
 | H12 (R3) | BLOCKED-HUMAN | R3 Phase 8 | AWS / GCP / Snowflake accounts for bulk tests | Sinks unit-tested (SigV4 vector, JWT, statements); replay test runs on an in-memory sink. |
 | H8 (R3) | BLOCKED-HUMAN | R3 Phase 8 | Legal + privacy approval of interest-signal sources | Built end to end behind `interest_signals` (off); telemetry source locked off. |
+| H3 (R3) | BLOCKED-HUMAN | R3 Phase 10 | Resend for DSAR verification/export e-mails; Sentry; uptime monitor + paging on `/api/health` | DSAR links are recorded as "not sent" and operators verify by hand / download exports; `/status` and `/api/health` work without a monitor. |
+| H2/H12 (R3) | BLOCKED-HUMAN | R3 Phase 10 | Worker host + bucket for daily off-site `pg_dump`; Redis for a shared API rate limiter; Supabase PITR decision | `scripts/backup/*` and the restore drill run anywhere with `pg_dump`; the rate limiter is per instance. |
+| Sign-off (R3) | BLOCKED-HUMAN | Launch | Launch checklist sign-off by Eng, Legal, Security, Marketing | `docs/launch-checklist.md` |

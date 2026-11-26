@@ -59,7 +59,7 @@ test("Slack integration rejects non-Slack URLs", async ({ page }) => {
   await login(page);
   await page.goto("/settings#integrations");
   await page.getByLabel("Slack incoming webhook URL").fill("https://example.com/hook");
-  await page.getByRole("button", { name: /Connect|Replace/ }).click();
+  await page.locator("#integrations").getByRole("button", { name: /^(Connect|Replace)$/ }).click();
   await expect(page.getByRole("status")).toContainText(/not allowed|incoming webhook/i);
   await expect(page.getByText("Recent alert deliveries")).toBeVisible();
 });

@@ -5,7 +5,7 @@ import { Badge, Card } from "@founders/ui";
 import { Empty, Tabs } from "@/components/profile/bits";
 import { getCtx } from "@/lib/session";
 import { ActivateButton, FlagToggle, ReviewButtons } from "./AdminClient";
-import { AccountsTab, DsarTab, EntitiesTab, KeysTab, QaTab, TaxonomyTab } from "./tabs";
+import { AccountsTab, DsarTab, EntitiesTab, KeysTab, QaTab, StatusTab, TaxonomyTab } from "./tabs";
 import { HydrationMarker } from "./AdminActions";
 
 export const metadata: Metadata = { title: "Admin" };
@@ -48,6 +48,7 @@ export default async function Admin({ searchParams }: { searchParams: Promise<{ 
           { id: "entities", label: "Entities & merge" },
           { id: "taxonomy", label: "Taxonomy" },
           { id: "qa", label: "Signal QA" },
+          { id: "status", label: "Status" },
           { id: "pipelines", label: "Pipelines" },
           { id: "models", label: "Models" },
           { id: "flags", label: "Feature flags" },
@@ -166,6 +167,7 @@ export default async function Admin({ searchParams }: { searchParams: Promise<{ 
         {tab === "entities" ? <EntitiesTab a={a} id={sp.id} /> : null}
         {tab === "taxonomy" ? <TaxonomyTab a={a} kind={sp.kind} /> : null}
         {tab === "qa" ? <QaTab a={a} kind={sp.kind} /> : null}
+        {tab === "status" ? <StatusTab a={a} /> : null}
         {tab === "flags" ? (
           <div className="flex max-w-3xl flex-col gap-3">
             <p className="text-[13px] text-muted">Remote switches. An empty org list means every workspace. Every change is audited.</p>

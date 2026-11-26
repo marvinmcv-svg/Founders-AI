@@ -174,12 +174,13 @@ test("2FA: set up with an authenticator, sign in with a code, turn off", async (
   await loginAs(page, "teammate@foundersscz.com");
   await page.waitForURL(/\/companies/);
   await page.goto("/settings/security");
+  await page.waitForLoadState("networkidle");
   await page.getByRole("button", { name: "Set up" }).click();
   await page.getByLabel("Your password").fill("founders-demo");
   await page.getByRole("button", { name: "Continue" }).click();
   const secret = ((await page.getByTestId("totp-secret").textContent()) ?? "").replace(/\s/g, "");
   expect(secret.length).toBeGreaterThan(15);
-  await page.screenshot({ path: `${SCREENS}/phase-10-2fa-setup.png` });
+  await page.screenshot({ path: `${SCREENS}/phase-10-2fa-setup.png`, mask: [page.getByTestId("totp-secret"), page.getByTestId("backup-codes")] });
   await page.getByLabel("6-digit code").fill(totp(secret));
   await page.getByRole("button", { name: "Verify & turn on" }).click();
   await expect(page.getByText("on", { exact: true })).toBeVisible({ timeout: 30000 });
@@ -195,6 +196,7 @@ test("2FA: set up with an authenticator, sign in with a code, turn off", async (
   await page.waitForURL(/\/companies/);
 
   await page.goto("/settings/security");
+  await page.waitForLoadState("networkidle");
   await page.getByRole("button", { name: "Turn off" }).click();
   await page.getByLabel("Your password").fill("founders-demo");
   await page.getByRole("button", { name: "Turn off 2FA" }).click();
@@ -207,6 +209,7 @@ test("SSO + SCIM: SAML provider, admin domain verification, SSO redirect; SCIM t
   test.setTimeout(180_000);
   await login(page);
   await page.goto("/settings/security");
+  await page.waitForLoadState("networkidle");
   // Clean up a provider left by an earlier run.
   const stale = page.getByRole("button", { name: "Remove" });
   page.on("dialog", (d) => void d.accept());
@@ -252,6 +255,7 @@ test("SSO + SCIM: SAML provider, admin domain verification, SSO redirect; SCIM t
   // SCIM: a token from Settings provisions and deprovisions over HTTP.
   await login(page);
   await page.goto("/settings/security");
+  await page.waitForLoadState("networkidle");
   await page.getByLabel("Token name").fill("e2e IdP");
   await page.getByRole("button", { name: "New SCIM token" }).click();
   const token = ((await page.getByTestId("scim-secret").textContent()) ?? "").trim();
@@ -268,7 +272,40 @@ test("SSO + SCIM: SAML provider, admin domain verification, SSO redirect; SCIM t
 
   // Leave the workspace as it was.
   await page.goto("/settings/security");
+  await page.waitForLoadState("networkidle");
   await page.getByRole("button", { name: "Revoke" }).first().click();
   await page.getByRole("button", { name: "Remove" }).first().click();
   await expect(page.getByText("No identity provider connected.")).toBeVisible({ timeout: 30000 });
+});
+
+test("status page: public health, admin posts and resolves an incident", async ({ page, request }) => {
+  test.setTimeout(120_000);
+  const health = await request.get("/api/health");
+  expect(health.status()).toBe(200);
+  expect(((await health.json()) as { components: Record<string, string> }).components).toHaveProperty("api");
+  await login(page);
+  await go(page, "/admin?tab=status");
+  const title = `E2E: elevated API latency ${Date.now()}`;
+  await page.getByLabel("Title").fill(title);
+  await page.getByLabel("Impact").selectOption("minor");
+  await page.getByLabel(/^Components/).fill("api");
+  await page.getByLabel("First update").fill("Investigating slower responses on the REST API.");
+  await page.getByRole("button", { name: "Post" }).click();
+  await expect(page.getByText("Posted to the status page.")).toBeVisible({ timeout: 30000 });
+
+  const anon = await page.context().browser()!.newPage();
+  await anon.goto(`${new URL(page.url()).origin}/status`);
+  await expect(anon.getByRole("heading", { name: "System status" })).toBeVisible();
+  await expect(anon.getByText(title)).toBeVisible();
+  await anon.screenshot({ path: `${SCREENS}/phase-10-status-page.png`, fullPage: true });
+
+  const card = page.locator("div", { hasText: title }).filter({ has: page.getByRole("button", { name: "Update" }) }).last();
+  await card.getByLabel("Status").selectOption("resolved");
+  await card.getByLabel("Update").fill("Resolved: latency back to normal.");
+  await card.getByRole("button", { name: "Update" }).click();
+  await expect(page.getByText("Updated.")).toBeVisible({ timeout: 30000 });
+  await anon.reload();
+  // The incident no longer raises the API component (other checks, e.g. pipeline freshness, depend on the environment).
+  await expect(anon.locator("div", { hasText: title }).getByText("resolved", { exact: true }).first()).toBeVisible();
+  await anon.close();
 });

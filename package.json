@@ -23,7 +23,11 @@
     "db:reset": "pnpm --filter @founders/db reset",
     "test:e2e": "pnpm --filter @founders/e2e e2e",
     "pipelines": "pnpm --filter @founders/pipelines run run",
-    "copy:similarity": "node scripts/copy-similarity.mjs"
+    "copy:similarity": "node scripts/copy-similarity.mjs",
+    "security:audit": "node scripts/security-audit.mjs",
+    "load:api": "node --env-file=.env scripts/load/api-load.mjs",
+    "backup": "scripts/backup/backup.sh",
+    "backup:drill": "scripts/backup/restore-drill.sh"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.0",

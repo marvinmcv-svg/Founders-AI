@@ -2,7 +2,8 @@
 
 **Release:** R3 — *Workflow & scale* — **in progress.** R2 accepted by the owner on 2026-11-26 (D-051); R1 accepted earlier (D-022).
 
-**R3 in progress**
+**R3 in progress — all R3 phases built; waiting for owner acceptance.**
+- **Phase 10 — Billing, admin, compliance, hardening: done except human-only items.** Stripe seats + credit packs + metered overage (own client; live / contact-sales / simulator modes), hash-chained append-only audit log, DSAR workflow with DB-enforced suppression, self-service export / account deletion, admin console complete (accounts & credits, key approvals, data requests, entity editor & merge, taxonomy, signal QA, status incidents), SSO (OIDC/SAML) + SCIM 2.0 + 2FA with Require SSO / 2FA policies, load test (15 rps × 200 keys: p95 12 ms), CSP/HSTS, backup + restore drill, `/api/health` + `/status`, runbooks, `pnpm security:audit`, launch checklist. Plan and evidence in `docs/progress/phase-10.md`; launch checklist `docs/launch-checklist.md`.
 - **Phase 8 — Integrations: done except human-only items.** CRM ×6 (adapters, sandbox, match preview, pull/push/enrich, log, filters, badges), team network (LinkedIn export, mailbox/calendar clients + demo, warm paths, move alerts, API #64–67), bulk delivery (Parquet/CSV, full + incrementals, S3/GCS/Snowflake, replay test), Zapier app, interest signals behind the H8 flag, Chrome extension, `/integrations` page. Plan and evidence in `docs/progress/phase-8.md`.
 
 **Done in R2** (accepted)
@@ -23,9 +24,9 @@
 
 - **Phase 9 — Remaining marketing pages & content:** done except human-only items. Plan and evidence in `docs/progress/phase-9.md`. Talent, News, Revenue & Valuation, Agents, API, MCP pages; blog (Markdown, RSS, authors), Insights, Careers, comparison template (H17), OG images, sitemap, JSON-LD, consent-gated analytics, link checker, copy-similarity check.
 
-**Next:** Phase 10 — billing (Stripe seats + metered credits, H13), admin console complete, DSAR workflow, audit log, SSO/SCIM, hardening (load test 15 rps × 200 keys, backups/DR, status page, runbooks), launch checklist. Cloud: apply migrations 0007 and 0008 before deploying Phase 8.
+**Next:** owner review and acceptance of R3 (plan 0B gate; nothing after R3 starts without it). Then: sign the launch checklist (Eng, Legal, Security, Marketing), H13 Stripe setup, H14 pen test. Cloud: apply migrations 0007, 0008 and 0009 (as `founders_app`) before deploying Phases 8–10; set `PLATFORM_ADMIN_EMAILS`; keep `BILLING_SIMULATOR` unset in production.
 
-**Open R1 carry-overs** (not blocking R2 work): SEC Form D public pipeline, entity resolution, OpenSearch + indexer (outbox is ready), BullMQ workers (H2: Redis), 10M-row load test, Stripe (H13), TS SDK, Fumadocs console, Storybook, Lighthouse/axe, Turnstile (H3).
+**Open R1 carry-overs** (not blocking R2 work): SEC Form D public pipeline, entity resolution, OpenSearch + indexer (outbox is ready), BullMQ workers (H2: Redis), 10M-row load test, TS SDK, Fumadocs console, Storybook, Lighthouse/axe, Turnstile (H3).
 
 **Cloud demo, still to do** (needs the owner or a host that can reach Postgres, D-020):
 1. Set `PLATFORM_ADMIN_EMAILS` on `founders-ai-app` (owner's choice of admin emails) to open `/admin`.

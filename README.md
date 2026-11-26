@@ -32,6 +32,9 @@ Set `ANTHROPIC_API_KEY` to use Claude for plain-English search; without it a det
 
 ## Commands
 `pnpm verify` (lint, typecheck, unit tests, copy check, build) · `pnpm test:e2e` (needs `pnpm dev` running) · `pnpm db:reset` · `pnpm --filter @founders/seed fixtures` (refresh marketing mock fixtures)
+Operations (Phase 10): `pnpm security:audit` (dependency advisories, secret scan, NEXT_PUBLIC_ allow-list) · `pnpm load:api -- --base <url>/api/v1` (API load test) · `pnpm backup <dir>` / `pnpm backup:drill <dump>` (backup and restore drill) · on-call runbooks in [`docs/runbooks`](docs/runbooks) · launch checklist [`docs/launch-checklist.md`](docs/launch-checklist.md).
+
+Billing runs in **contact-sales** mode without `STRIPE_SECRET_KEY`; set `BILLING_SIMULATOR=1` locally to try seat and credit-pack checkout end to end.
 
 ## Layout
 ```

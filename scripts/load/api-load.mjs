@@ -15,7 +15,11 @@
  */
 import { createHash, randomBytes } from "node:crypto";
 import { writeFileSync } from "node:fs";
-import postgres from "postgres";
+import { createRequire } from "node:module";
+import { pathToFileURL } from "node:url";
+
+// The root has no dependencies; borrow the DB package's postgres client.
+const { default: postgres } = await import(pathToFileURL(createRequire(new URL("../../packages/db/package.json", import.meta.url)).resolve("postgres")).href);
 
 const args = Object.fromEntries(
   process.argv.slice(2).reduce((acc, a, i, all) => (a.startsWith("--") ? [...acc, [a.slice(2), all[i + 1]?.startsWith("--") || all[i + 1] === undefined ? "true" : all[i + 1]]] : acc), []),
@@ -25,6 +29,7 @@ const KEYS = Number(args.keys ?? 200);
 const RPS_PER_KEY = Number(args["rps-per-key"] ?? 15 / 200);
 const DURATION_S = Number(args.duration ?? 60);
 const LIMIT = 15; // core/limits.ts API_RATE_LIMIT_RPS
+const P95_MS = Number(args["p95-ms"] ?? 500);
 const ORG = "org_loadtest00000000000000001";
 const USER = "usr_demo000000000000000000001";
 const sql = postgres(process.env.DATABASE_URL ?? "postgres://postgres:postgres@localhost:5432/founders", { max: 4, onnotice: () => {} });
@@ -163,9 +168,10 @@ ${s.endpoints.map((e) => `| ${e.name} | ${e.n} | ${e.ok} | ${f(e.p95)} |`).join(
 
 **Rate limiter** (one key at ${LIMIT * 2} rps for 5 s, limit ${LIMIT} rps): ${accepted} accepted (≈ ${f(accepted / 5)} rps), ${limited.length} answered 429${limited.every((r) => r.retryAfter) ? " with Retry-After" : " (some without Retry-After!)"}.
 `;
-  console.log(report);
-  if (args.out) writeFileSync(args.out, report);
-  const pass = s.okRate >= 0.99 && s.errors5xx === 0 && limited.length > 0 && accepted / 5 <= LIMIT * 1.4;
+  const pass = s.okRate >= 0.99 && s.errors5xx === 0 && s.p95 <= P95_MS && s.achievedRps >= KEYS * RPS_PER_KEY * 0.95 && limited.length > 0 && accepted / 5 <= LIMIT * 1.4;
+  const verdict = `\n**Verdict: ${pass ? "PASS" : "FAIL"}** (criteria: ≥ 99 % 2xx, no 5xx, p95 ≤ ${P95_MS} ms, ≥ 95 % of the target rate achieved, limiter caps a key near ${LIMIT} rps).\n`;
+  console.log(report + verdict);
+  if (args.out) writeFileSync(args.out, report + verdict);
   console.error(pass ? "PASS" : "FAIL");
   process.exitCode = pass ? 0 : 1;
 } finally {

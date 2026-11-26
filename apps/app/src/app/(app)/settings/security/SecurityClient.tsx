@@ -69,7 +69,7 @@ export function TwoFactorPanel({ enabled }: { enabled: boolean }) {
           <p className="text-muted">Add this account to your authenticator app (on a phone, <a href={setup.uri} className="text-accent hover:underline">open it directly</a>), or type the key:</p>
           <code data-testid="totp-secret" className="w-fit rounded bg-black/40 px-3 py-2 font-mono text-[14px] tracking-wider text-accent">{setup.secret.replace(/(.{4})/g, "$1 ").trim()}</code>
           <p className="text-muted">Backup codes (each works once; store them somewhere safe):</p>
-          <div className="grid w-fit grid-cols-2 gap-x-6 gap-y-1 font-mono text-[12.5px] text-ink sm:grid-cols-4">{setup.backup.map((b) => <span key={b}>{b}</span>)}</div>
+          <div data-testid="backup-codes" className="grid w-fit grid-cols-2 gap-x-6 gap-y-1 font-mono text-[12.5px] text-ink sm:grid-cols-4">{setup.backup.map((b) => <span key={b}>{b}</span>)}</div>
           <form className="flex items-center gap-2" onSubmit={(e) => { e.preventDefault(); confirm(); }}>
             <input aria-label="6-digit code" inputMode="numeric" autoComplete="one-time-code" placeholder="123456" className={`${input} w-32 tracking-widest`} value={code} onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 6))} />
             <button className={buttonClass("primary", "sm")} disabled={pending || code.length !== 6}>Verify & turn on</button>

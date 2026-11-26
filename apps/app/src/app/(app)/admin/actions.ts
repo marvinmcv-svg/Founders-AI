@@ -115,3 +115,16 @@ export async function verifySsoDomainAction(providerId: string) {
     return "Domain marked verified.";
   });
 }
+
+export async function createIncidentAction(v: Values) {
+  return run(async (a) => {
+    await repo.createIncident(a, { title: v.title ?? "", impact: v.impact ?? "minor", components: (v.components ?? "").split(/[\s,]+/).filter(Boolean), body: v.body ?? "" });
+    return "Posted to the status page.";
+  });
+}
+export async function updateIncidentAction(id: string, v: Values) {
+  return run(async (a) => {
+    await repo.updateIncident(a, id, v.status ?? "", v.body ?? "");
+    return "Updated.";
+  });
+}

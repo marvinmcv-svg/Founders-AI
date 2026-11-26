@@ -6,7 +6,7 @@ import { Empty } from "@/components/profile/bits";
 import { ActionButton, ActionForm, MatchPicker } from "./AdminActions";
 import {
   addSuppressionAction, adjustCreditsAction, dsarCompleteAction, dsarMatchAction, dsarRejectAction, dsarVerifyAction, mergeEntitiesAction,
-  renameTaxonomyAction, reviewKeyAction, reviewSignalAction, updateAccountAction, updateEntityAction, verifySsoDomainAction,
+  renameTaxonomyAction, reviewKeyAction, reviewSignalAction, updateAccountAction, updateEntityAction, verifySsoDomainAction, createIncidentAction, updateIncidentAction,
 } from "./actions";
 
 const when = (s: string | null | undefined) => (s ? new Date(s).toLocaleString("en-US", { dateStyle: "medium", timeStyle: "short" }) : "—");
@@ -370,6 +370,41 @@ export async function QaTab({ a, kind }: { a: repo.AdminContext; kind?: string }
         ))}
         {!stats.length ? <p className="text-muted">No reviews yet.</p> : null}
       </Card>
+    </div>
+  );
+}
+
+/* ---------------- Status page incidents ---------------- */
+
+export async function StatusTab({ a }: { a: repo.AdminContext }) {
+  repo.assertPlatformAdmin(a);
+  const [s, incidents] = await Promise.all([repo.systemStatus(), repo.recentIncidents(30)]);
+  return (
+    <div className="grid gap-4 xl:grid-cols-[320px_1fr]">
+      <Card className="flex flex-col gap-2 self-start p-4 text-[12.5px]">
+        <p className="text-[13px] text-ink">Live checks <Link href="/status" className="ml-2 text-accent hover:underline">public page →</Link></p>
+        {s.components.map((c) => (
+          <div key={c.id} className="flex items-center gap-2"><Badge tone={c.state === "operational" ? "positive" : c.state === "degraded" ? "warning" : "negative"}>{c.state}</Badge><span className="text-ink">{c.name}</span><span className="ml-auto text-faint">{c.detail}</span></div>
+        ))}
+      </Card>
+      <div className="flex flex-col gap-3">
+        <Card className="flex flex-col gap-2 p-4">
+          <p className="text-[13px] text-ink">Post an incident</p>
+          <ActionForm action={createIncidentAction} submit="Post" fields={[
+            { name: "title", label: "Title", width: "w-80", required: true },
+            { name: "impact", label: "Impact", type: "select", options: ["minor", "major", "critical"], width: "w-28" },
+            { name: "components", label: `Components (${repo.STATUS_COMPONENTS.map((c) => c.id).join(", ")})`, width: "w-72", required: true },
+            { name: "body", label: "First update", type: "textarea", width: "w-[32rem]" },
+          ]} />
+        </Card>
+        {incidents.map((i) => (
+          <Card key={i.id} className="flex flex-col gap-2 p-4 text-[12.5px]">
+            <div className="flex flex-wrap items-center gap-2"><span className="text-[14px] text-ink">{i.title}</span><Badge tone={i.resolved_at ? "positive" : "warning"}>{i.status}</Badge><Badge tone="neutral">{i.impact}</Badge><span className="text-faint">{i.components.join(", ")}</span></div>
+            {[...i.updates].reverse().map((u, k) => <p key={k} className="text-muted"><span className="text-text">{u.status}</span> · {when(u.at)} — {u.body}</p>)}
+            {!i.resolved_at ? <ActionForm action={updateIncidentAction.bind(null, i.id)} submit="Update" fields={[{ name: "status", label: "Status", type: "select", options: ["investigating", "identified", "monitoring", "resolved"], width: "w-36" }, { name: "body", label: "Update", width: "w-96", required: true }]} /> : null}
+          </Card>
+        ))}
+      </div>
     </div>
   );
 }
