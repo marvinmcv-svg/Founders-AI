@@ -36,3 +36,15 @@ test("R2 links land on coming-soon, not 404", async ({ page }) => {
   expect(r?.status()).toBe(200);
   await expect(page.getByRole("heading", { name: "Coming soon" })).toBeVisible();
 });
+
+test("home links into the Founders app and ecosystem", async ({ page }) => {
+  await page.goto("/");
+  const hero = page.locator('[data-section="home.hero"]');
+  await expect(hero.getByRole("link", { name: /Open Founders AI/ })).toHaveAttribute("href", /\/signup$/);
+  const eco = page.locator('[data-section="home.ecosystem"]');
+  await expect(eco.locator('a[href="https://foundersscz.com/aplicar"]')).toHaveCount(1);
+  await expect(eco.locator('a[href="https://academy.foundersscz.com"]')).toHaveCount(1);
+  await expect(eco.locator('a[href$="/signup"]')).toHaveCount(1);
+  await expect(page.locator('[data-section="home.social"] a[href^="https://www.instagram.com/"]')).toHaveCount(7);
+  await expect(page.getByRole("banner").getByRole("link", { name: "Open the app" }).first()).toHaveAttribute("href", /\/signup$/);
+});

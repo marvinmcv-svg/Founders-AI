@@ -17,7 +17,10 @@ export async function getStatVars(): Promise<Vars> {
     const { getPlatformStats } = await import("@founders/core/repo");
     // Never let a slow or unreachable DB stall a build or a render: cap at 5s, then fall back to words.
     const s = await Promise.race([getPlatformStats(), new Promise<null>((r) => setTimeout(() => r(null), 5000))]);
-    if (!s) return { ...limits, ...fallbackVars() };
+    if (!s) {
+      console.warn("[stats] platform_stats unavailable (null or >5s); using word fallbacks");
+      return { ...limits, ...fallbackVars() };
+    }
     return {
       ...limits,
       "stats.companies": floorPlus(s.companies),
@@ -29,7 +32,8 @@ export async function getStatVars(): Promise<Vars> {
       "stats.latam_companies": floorPlus(s.latam_companies),
       "stats.countries": s.countries,
     };
-  } catch {
+  } catch (e) {
+    console.warn("[stats] platform_stats read failed:", e instanceof Error ? e.message : String(e));
     return { ...limits, ...fallbackVars() };
   }
 }
@@ -49,4 +53,9 @@ function fallbackVars(): Vars {
     "stats.latam_companies": "Many",
     "stats.countries": "many",
   };
+}
+
+/** True for formatter output like "52K+", "1.2M+" or "640" (not the word fallbacks). */
+export function isNumericStat(v: string | number | undefined): boolean {
+  return /^[\d.,]+[KMB]?\+?$/.test(String(v ?? "").trim());
 }

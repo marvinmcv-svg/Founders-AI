@@ -4,16 +4,13 @@ Structural-parity checklist (plan 2.5 / 15). Derived from the plan's Section 6 p
 
 ## `/`
 - `home.hero`
-- `home.logos`
-- `home.split`
-- `home.problem`
-- `home.data`
-- `home.signals`
-- `home.sourcing`
-- `home.monitor`
-- `home.testimonials`
-- `home.workflow`
+- `home.manifesto`
+- `home.marquee`
+- `home.ecosystem`
+- `home.product`
+- `home.stats`
 - `home.latam`
+- `home.social`
 - `home.closing`
 
 ## `/platform`

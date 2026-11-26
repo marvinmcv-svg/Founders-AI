@@ -10,7 +10,7 @@ export type HeaderProps = {
   platform: { overview: MenuItem; groups: MenuGroup[]; promo: { title: string; desc: string; cta: string; href: string } };
   integrations: MenuGroup[];
   resources: MenuGroup[];
-  links: { agents: string; api: string; login: string };
+  links: { agents: string; api: string; login: string; signup: string };
 };
 
 function ItemLink({ item, soonLabel, onClick }: { item: MenuItem; soonLabel: string; onClick?: () => void }) {
@@ -143,9 +143,9 @@ export function Header(p: HeaderProps) {
           <a href={p.links.login} className={buttonClass("ghost", "sm")}>
             {p.labels.login}
           </a>
-          <Link href="/contact" className={buttonClass("primary", "sm")}>
+          <a href={p.links.signup} className={buttonClass("primary", "sm")}>
             {p.labels.getStarted}
-          </Link>
+          </a>
         </div>
         <button className="ml-auto rounded-full p-2 text-ink lg:hidden" aria-label="Open menu" onClick={() => setMobile(true)}>
           <Menu size={22} />
@@ -181,9 +181,9 @@ export function Header(p: HeaderProps) {
             <a href={p.links.login} className={buttonClass("secondary", "md")}>
               {p.labels.login}
             </a>
-            <Link href="/contact" className={buttonClass("primary", "md")} onClick={() => setMobile(false)}>
+            <a href={p.links.signup} className={buttonClass("primary", "md")} onClick={() => setMobile(false)}>
               {p.labels.getStarted}
-            </Link>
+            </a>
           </div>
         </div>
       ) : null}

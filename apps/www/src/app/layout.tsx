@@ -54,7 +54,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
           platform={platformMenu(vars)}
           integrations={integrationsMenu()}
           resources={resourcesMenu()}
-          links={{ agents: soon("agents"), api: appUrl("/developers"), login: appUrl("/login") }}
+          links={{ agents: soon("agents"), api: appUrl("/developers"), login: appUrl("/login"), signup: appUrl("/signup") }}
         />
         <main id="main">{children}</main>
         <Footer />

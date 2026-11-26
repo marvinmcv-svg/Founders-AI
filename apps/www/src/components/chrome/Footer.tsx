@@ -14,7 +14,7 @@ export function Footer() {
     { title: t("global.footer.cols.features"), links: [[P("talent"), soon("talent-signals")], [P("news"), soon("news")], [P("revenue"), soon("revenue-valuation")], [P("valuation"), soon("revenue-valuation")], [t("global.nav.agents"), soon("agents")]] },
     { title: t("global.footer.cols.integrations"), links: [[I("crm"), soon("integrations")], [I("network"), soon("integrations")], [I("chrome"), soon("integrations")]] },
     { title: t("global.footer.cols.delivery"), links: [[I("api"), appUrl("/developers")], [I("mcp"), soon("mcp")], [I("bulk"), "/pricing#bulk"]] },
-    { title: t("global.footer.cols.company"), links: [[L("partners"), "/partners"], [L("contact"), "/contact"], [L("careers"), soon("careers")], [L("blog"), soon("blog")], [t("global.menu.resources.academy.title"), brand.urls.academy]] },
+    { title: t("global.footer.cols.company"), links: [[t("global.footer.program"), "https://foundersscz.com"], [L("partners"), "/partners"], [L("contact"), "/contact"], [L("careers"), soon("careers")], [L("blog"), soon("blog")], [t("global.menu.resources.academy.title"), brand.urls.academy]] },
     { title: t("global.footer.cols.legal"), links: [[L("privacy"), "/privacy-policy"], [L("privacyRights"), "/privacy-rights"], [L("terms"), "/terms-conditions"], [L("dpa"), "/dpa"], [L("optOut"), "/privacy-rights?type=DELETE"]] },
   ];
   const prompt = encodeURIComponent(t("global.footer.askAiPrompt", { url: brand.urls.www }));
@@ -31,6 +31,7 @@ export function Footer() {
         <div className="flex flex-col gap-4">
           <Wordmark />
           <p className="max-w-[240px] text-[13px] text-muted">{t("global.footer.tagline")}</p>
+          <p className="max-w-[240px] font-serif text-[16px] italic text-accent">{t("global.footer.mission")}</p>
           <a href={brand.social.instagram} className="text-[13px] text-muted hover:text-ink" rel="noopener noreferrer" target="_blank">
             Instagram · @founders.scz
           </a>
