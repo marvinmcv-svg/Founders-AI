@@ -8,6 +8,15 @@ Private-markets intelligence platform — marketing site, product app and public
 | Product app (+ API at `/api/v1`, docs at `/developers`) | `apps/app` | http://localhost:3001 |
 | Standalone API server (Docker/Railway) | `apps/api` | http://localhost:4000/api/v1 |
 
+## Live demo (Vercel, protected)
+| | URL |
+|---|---|
+| Marketing site | https://founders-ai-marvinmcv-svgs-projects.vercel.app |
+| Product app | https://founders-ai-app-marvinmcv-svgs-projects.vercel.app (demo login pre-filled) |
+| API docs | https://founders-ai-app-marvinmcv-svgs-projects.vercel.app/developers |
+
+Both projects use Vercel Authentication: you see them when logged into Vercel; share with others via a Vercel share link or by turning protection off. Data is synthetic (`SEED_SCALE=0.2`) in Supabase `founders-ai` (sa-east-1).
+
 ## Quick start
 ```bash
 pnpm install
