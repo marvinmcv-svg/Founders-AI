@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { getSessionCookie } from "better-auth/cookies";
 
-const PUBLIC = [/^\/login/, /^\/signup/, /^\/api\/auth/, /^\/api\/v1/, /^\/api\/admin\//, /^\/api\/cron\//, /^\/developers/, /^\/_next/, /^\/founders-mark\.jpg$/, /^\/favicon/];
+const PUBLIC = [/^\/mcp(\/|$)/, /^\/\.well-known\//, /^\/login/, /^\/signup/, /^\/api\/auth/, /^\/api\/v1/, /^\/api\/admin\//, /^\/api\/cron\//, /^\/developers/, /^\/_next/, /^\/founders-mark\.jpg$/, /^\/favicon/];
 
 /** Cheap cookie check; the real session is verified server-side in getCtx(). */
 export function middleware(req: NextRequest) {

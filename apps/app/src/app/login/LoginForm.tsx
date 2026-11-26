@@ -15,9 +15,12 @@ export function LoginForm({ next, demo }: { next: string; demo: boolean }) {
     const fd = new FormData(e.currentTarget);
     setBusy(true);
     setError(null);
-    const { error } = await authClient.signIn.email({ email: String(fd.get("email")), password: String(fd.get("password")) });
+    const { data, error } = await authClient.signIn.email({ email: String(fd.get("email")), password: String(fd.get("password")) });
     setBusy(false);
-    if (error) setError(error.message ?? "Could not sign in");
+    if (error) return setError(error.message ?? "Could not sign in");
+    // Signing in during an MCP/OAuth authorization: the server answers with the next step of that flow.
+    const oauthUrl = (data as { url?: unknown } | null)?.url;
+    if (new URLSearchParams(window.location.search).has("sig") && typeof oauthUrl === "string") window.location.href = oauthUrl;
     else router.push(next);
   }
   return (
