@@ -130,6 +130,9 @@ importers:
       '@founders/db':
         specifier: workspace:*
         version: link:../../packages/db
+      '@founders/integrations':
+        specifier: workspace:*
+        version: link:../../packages/integrations
       '@founders/mcp':
         specifier: workspace:*
         version: link:../mcp
@@ -282,6 +285,9 @@ importers:
       '@founders/db':
         specifier: workspace:*
         version: link:../../packages/db
+      '@founders/integrations':
+        specifier: workspace:*
+        version: link:../../packages/integrations
       '@founders/mocks':
         specifier: workspace:*
         version: link:../../packages/mocks
@@ -392,6 +398,9 @@ importers:
       '@founders/db':
         specifier: workspace:*
         version: link:../db
+      '@founders/integrations':
+        specifier: workspace:*
+        version: link:../integrations
       drizzle-orm:
         specifier: ^0.45.4
         version: 0.45.4(@opentelemetry/api@1.10.0)(kysely@0.29.9)(postgres@3.4.9)
@@ -430,6 +439,15 @@ importers:
       tsx:
         specifier: ^4.23.15
         version: 4.23.15
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.7(@types/node@22.20.7)(jiti@2.7.0)(lightningcss@1.33.0)(tsx@4.23.15)(yaml@2.9.1)
+
+  packages/integrations:
+    devDependencies:
+      '@types/node':
+        specifier: ^22.18.0
+        version: 22.20.7
       vitest:
         specifier: ^3.2.4
         version: 3.2.7(@types/node@22.20.7)(jiti@2.7.0)(lightningcss@1.33.0)(tsx@4.23.15)(yaml@2.9.1)

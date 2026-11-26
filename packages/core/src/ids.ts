@@ -38,6 +38,12 @@ export const ID_PREFIX = {
   artifact: "art",
   skill: "skl",
   schedule: "sks",
+  crmConnection: "crm",
+  crmSync: "csl",
+  networkSource: "nsr",
+  bulkDelivery: "blk",
+  bulkRun: "blr",
+  interestSignal: "isg",
 } as const;
 
 export type IdKind = keyof typeof ID_PREFIX;

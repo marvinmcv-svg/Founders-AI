@@ -35,6 +35,7 @@ const CHANNELS = [
   { id: "in_app", label: "In-app" },
   { id: "email", label: "Email" },
   { id: "slack", label: "Slack" },
+  { id: "crm", label: "CRM auto-push" },
 ] as const;
 
 /** Alert cadence + delivery channels for one saved search (plan 7.5). */
@@ -46,7 +47,7 @@ export function AlertSettings({ id, cadence, channels, canEdit }: { id: string; 
   const [saved, setSaved] = useState(false);
   const save = (nc: string, nch: string[]) =>
     start(async () => {
-      await updateSearchAlerts(id, nc as (typeof CADENCES)[number], nch as ("in_app" | "email" | "slack")[]);
+      await updateSearchAlerts(id, nc as (typeof CADENCES)[number], nch as ("in_app" | "email" | "slack" | "crm")[]);
       setSaved(true);
       router.refresh();
     });

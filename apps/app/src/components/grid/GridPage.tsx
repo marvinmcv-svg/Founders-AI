@@ -22,11 +22,18 @@ export async function GridPage({ product, searchParams }: { product: Product; se
     repo.getLists(ctx),
     repo.getStatuses(ctx),
   ]);
-  const rowStatuses = await repo.getEntityStatuses(ctx, res.rows.map((r) => String(r.id)));
+  const ids = res.rows.map((r) => String(r.id));
+  const crmProduct = product === "companies" || product === "people";
+  const [rowStatuses, crm, crmTarget] = await Promise.all([
+    repo.getEntityStatuses(ctx, ids),
+    crmProduct ? repo.getCrmBadges(ctx, ids) : {},
+    crmProduct ? repo.defaultCrm(ctx) : null,
+  ]);
   return (
     <EntityGrid
       product={product}
-      initial={{ ...res, statuses: rowStatuses, filter, sort, q }}
+      initial={{ ...res, statuses: rowStatuses, crm, filter, sort, q }}
+      crmTarget={crmTarget}
       lists={lists.map((l) => ({ id: l.id, name: l.name, entity_type: l.entity_type }))}
       statuses={statuses}
       canWrite={canWrite(ctx)}

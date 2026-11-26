@@ -19,6 +19,7 @@
     "@fontsource/instrument-serif": "^5.2.8",
     "@founders/agent": "workspace:*",
     "@founders/mcp": "workspace:*",
+    "@founders/integrations": "workspace:*",
     "@founders/api": "workspace:*",
     "@founders/config": "workspace:*",
     "@founders/core": "workspace:*",

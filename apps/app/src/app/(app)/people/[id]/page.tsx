@@ -7,6 +7,7 @@ import { Avatar, Badge, Chip, Favicon, SIGNAL_LABEL } from "@founders/ui";
 import { Notes, ProfileActions, RevealEmail } from "@/components/profile/Actions";
 import { Empty, Metric, Panel } from "@/components/profile/bits";
 import { getCtx } from "@/lib/session";
+import { CrmProfileCard } from "@/components/integrations/CrmBadge";
 
 type P = { params: Promise<{ id: string }> };
 
@@ -26,6 +27,7 @@ const years = (start: unknown, end: unknown) => {
 export default async function PersonProfile({ params }: P) {
   const { id } = await params;
   const ctx = await getCtx();
+  const [crmBadges, crmTarget] = await Promise.all([repo.getCrmBadges(ctx, [id]), repo.defaultCrm(ctx)]);
   const p = await repo.getPerson(id);
   if (!p) notFound();
   const [exp, edu, signals, investments, statuses, entityStatus, liked, inLists, notes] = await Promise.all([
@@ -72,6 +74,7 @@ export default async function PersonProfile({ params }: P) {
           <RevealEmail personId={id} />
         </div>
         <ProfileActions entityName={String(p.full_name)} entityType="PERSON" id={id} liked={liked} status={entityStatus[id] ?? null} statuses={statuses} inLists={inLists} />
+        <CrmProfileCard kind="PERSON" id={id} badge={crmBadges[id] ?? null} target={crmTarget} canWrite={repo.canWrite(ctx)} />
       </header>
       <div className="grid gap-4 p-6 xl:grid-cols-[1.4fr_1fr]">
         <div className="flex flex-col gap-4">

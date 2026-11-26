@@ -13,7 +13,14 @@ import * as repo from "@founders/core/repo";
 import { APP_GRID_PAGE_SIZE } from "@founders/core/limits";
 import { getCtx, ORG_COOKIE } from "@/lib/session";
 
-export type GridResult = { rows: repo.Row[]; total: number; totalCapped: boolean; statuses: Record<string, { id: string; label: string; color: string }> };
+export type GridResult = {
+  rows: repo.Row[];
+  total: number;
+  totalCapped: boolean;
+  statuses: Record<string, { id: string; label: string; color: string }>;
+  /** CRM badges (plan 7.3: "In CRM / Not synced / In but not enriched"); absent = not synced. */
+  crm: Record<string, repo.CrmBadge>;
+};
 
 function asProduct(p: string): Product {
   if (!(PRODUCTS as readonly string[]).includes(p)) throw new Error("Unknown product");
@@ -25,8 +32,9 @@ export async function runGrid(product: string, filter: Group, sort: SortSpec | n
   const p = asProduct(product);
   const v = validateFilter(p, filter);
   const res = await repo.searchEntities(p, { filter: v.ok ? v.filter : emptyFilter(), sort, q, offset, limit: APP_GRID_PAGE_SIZE, orgId: ctx.orgId });
-  const statuses = await repo.getEntityStatuses(ctx, res.rows.map((r) => String(r.id)));
-  return { ...res, statuses };
+  const ids = res.rows.map((r) => String(r.id));
+  const [statuses, crm] = await Promise.all([repo.getEntityStatuses(ctx, ids), p === "companies" || p === "people" ? repo.getCrmBadges(ctx, ids) : {}]);
+  return { ...res, statuses, crm };
 }
 
 export async function nlSearch(text: string, product?: string): Promise<NlResult> {

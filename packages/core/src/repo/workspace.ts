@@ -200,7 +200,7 @@ export type SavedSearchInput = {
   channels?: AlertChannel[];
 };
 
-export const ALERT_CHANNELS = ["in_app", "email", "slack"] as const;
+export const ALERT_CHANNELS = ["in_app", "email", "slack", "crm"] as const;
 export type AlertChannel = (typeof ALERT_CHANNELS)[number];
 
 export async function createSavedSearch(ctx: OrgContext, input: SavedSearchInput) {

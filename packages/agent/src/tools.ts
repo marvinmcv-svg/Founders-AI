@@ -438,13 +438,31 @@ const saveSearch = defineTool({
   },
 });
 
+const pushToCrm = defineTool({
+  name: "push_to_crm",
+  description: "Push companies or people to the workspace's connected CRM (create-or-update by domain / LinkedIn URL). Needs the user's confirmation.",
+  schema: z.object({ type: z.enum(["companies", "people"]), entity_ids: z.array(id).min(1).max(200) }),
+  write: true,
+  label: (i) => `Pushing ${i.entity_ids.length} record(s) to your CRM`,
+  async run(ctx, i) {
+    const target = await repo.defaultCrm(ctx.org);
+    if (!target) return { summary: "No CRM connected", data: { pushed: 0, reason: "Connect a CRM in Settings → CRM first." }, sources: [] };
+    const r = await repo.pushToCrm(ctx.org, target, i.type === "companies" ? "COMPANY" : "PERSON", i.entity_ids, "agent");
+    return {
+      summary: r.status === "FAILED" ? `CRM push failed: ${r.error ?? "unknown error"}` : `${r.counts.created ?? 0} created, ${r.counts.updated ?? 0} updated in ${target.toLowerCase()}`,
+      data: { crm: target, status: r.status, ...r.counts },
+      sources: [],
+    };
+  },
+});
+
 /* ---------------- registry ---------------- */
 
 export const TOOLS: AgentTool[] = [
   searchTool, getCompany, companyFinancials, companyCompetitors, companyNews, companyTeam, getPerson, getInvestor,
   listItems, savedSearchResults, myWorkspace, resolveEntities, networkConnections, webFetch,
   createTable, chart, saveMemo, draftEmail, exportCsv,
-  createList, addToList, saveSearch,
+  createList, addToList, saveSearch, pushToCrm,
 ] as unknown as AgentTool[];
 
 export const TOOL_BY_NAME = new Map(TOOLS.map((t) => [t.name, t]));

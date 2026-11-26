@@ -32,7 +32,8 @@
     "@founders/db": "workspace:*",
     "drizzle-orm": "^0.45.4",
     "zod": "^4.1.12",
-    "@anthropic-ai/sdk": "latest"
+    "@anthropic-ai/sdk": "latest",
+    "@founders/integrations": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^22.18.0",

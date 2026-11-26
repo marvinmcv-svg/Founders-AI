@@ -90,7 +90,7 @@ describe("composer tokens and routing", () => {
     const schemas = toolJsonSchemas();
     expect(schemas).toHaveLength(TOOLS.length);
     for (const s of schemas) expect(s.input_schema.type).toBe("object");
-    expect(TOOLS.filter((t) => t.write).map((t) => t.name).sort()).toEqual(["add_to_list", "create_list", "save_search"]);
+    expect(TOOLS.filter((t) => t.write).map((t) => t.name).sort()).toEqual(["add_to_list", "create_list", "push_to_crm", "save_search"]);
   });
 
   it("schedules are due once per local day at the chosen hour", () => {

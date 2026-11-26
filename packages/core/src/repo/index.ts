@@ -9,3 +9,4 @@ export * from "./extract";
 export * from "./api";
 export * from "./agent";
 export * from "./mcp";
+export * from "./crm";

@@ -124,7 +124,7 @@ function pinnedLookup(address: string, family: number): net.LookupFunction {
 /** SSRF-safe request. Throws EgressBlockedError for policy violations. */
 export async function egressFetch(
   rawUrl: string,
-  init: { method?: "GET" | "POST"; headers?: Record<string, string>; body?: string } = {},
+  init: { method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE"; headers?: Record<string, string>; body?: string } = {},
   opts: EgressOptions = {},
 ): Promise<EgressResponse> {
   const u = validateEgressUrl(rawUrl, opts);

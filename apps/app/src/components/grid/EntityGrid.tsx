@@ -14,6 +14,8 @@ import { pageCost } from "@founders/core/pricing";
 import { EXACT_COUNT_CAP, EXPORT_MAX_ROWS } from "@founders/core/limits";
 import { Badge, buttonClass, cn, COLUMNS, type Row } from "@founders/ui";
 import { addToList, createList, nlSearch, runGrid, saveSearch, setStatus, type GridResult } from "@/app/actions";
+import { pushEntitiesToCrm } from "@/app/integration-actions";
+import { CrmDot } from "@/components/integrations/CrmBadge";
 import { FilterBar } from "./FilterBuilder";
 import { appLink, PRODUCT_PATH } from "./links";
 
@@ -38,9 +40,11 @@ type Props = {
   lists: { id: string; name: string; entity_type: string }[];
   statuses: { id: string; label: string; color: string }[];
   canWrite: boolean;
+  /** Connected CRM that "Push to CRM" targets (null = none connected). */
+  crmTarget?: string | null;
 };
 
-export function EntityGrid({ product, initial, lists, statuses, canWrite }: Props) {
+export function EntityGrid({ product, initial, lists, statuses, canWrite, crmTarget = null }: Props) {
   const router = useRouter();
   const meta = PRODUCT_META[product];
   const entity = ENTITY[product];
@@ -51,6 +55,8 @@ export function EntityGrid({ product, initial, lists, statuses, canWrite }: Prop
   const [total, setTotal] = useState(initial.total);
   const [capped, setCapped] = useState(initial.totalCapped);
   const [rowStatus, setRowStatus] = useState(initial.statuses);
+  const [crm, setCrm] = useState(initial.crm);
+  const [pushing, setPushing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -104,6 +110,7 @@ export function EntityGrid({ product, initial, lists, statuses, canWrite }: Prop
         setTotal(r.total);
         setCapped(r.totalCapped);
         setRowStatus(r.statuses);
+        setCrm(r.crm);
         setSelected(new Set());
         setError(null);
         scrollRef.current?.scrollTo({ top: 0 });
@@ -123,6 +130,7 @@ export function EntityGrid({ product, initial, lists, statuses, canWrite }: Prop
       const r = await runGrid(product, filter, sort, q, rows.length);
       setRows((prev) => [...prev, ...r.rows]);
       setRowStatus((prev) => ({ ...prev, ...r.statuses }));
+      setCrm((prev) => ({ ...prev, ...r.crm }));
     } finally {
       setLoadingMore(false);
     }
@@ -291,6 +299,23 @@ export function EntityGrid({ product, initial, lists, statuses, canWrite }: Prop
               <button className={buttonClass("secondary", "sm")} onClick={() => setDialog("status")}>
                 Set status
               </button>
+              {crmTarget && (entity === "COMPANY" || entity === "PERSON") ? (
+                <button
+                  className={buttonClass("secondary", "sm")}
+                  disabled={pushing}
+                  onClick={async () => {
+                    setPushing(true);
+                    const ids = [...selected];
+                    const r = await pushEntitiesToCrm(entity, ids);
+                    setPushing(false);
+                    if (!r.ok) return setToast(r.error);
+                    setToast(`${r.data.created} created, ${r.data.updated} updated in ${r.data.provider.toLowerCase()}${r.data.errors ? ` · ${r.data.errors} skipped` : ""}`);
+                    setCrm((prev) => ({ ...prev, ...Object.fromEntries(ids.map((id) => [id, { ...(prev[id] ?? { providers: [r.data.provider], owner: null, stage: null, openDeals: 0, lastActivity: null }), status: "IN_CRM" as const }])) }));
+                  }}
+                >
+                  {pushing ? <Loader2 size={13} className="animate-spin" /> : null} Push to CRM
+                </button>
+              ) : null}
             </>
           ) : null}
           <button className={buttonClass("secondary", "sm")} onClick={() => setDialog("export")}>
@@ -368,14 +393,17 @@ export function EntityGrid({ product, initial, lists, statuses, canWrite }: Prop
                   </div>
                   {entity ? (
                     <div className="px-3">
-                      {st ? (
-                        <span className="inline-flex items-center gap-1.5 rounded-full border border-line px-2 py-0.5 text-[11px]" style={{ color: st.color }}>
-                          <span className="h-1.5 w-1.5 rounded-full" style={{ background: st.color }} />
-                          {st.label}
-                        </span>
-                      ) : (
-                        <span className="text-faint">—</span>
-                      )}
+                      <span className="flex items-center gap-1.5">
+                        {st ? (
+                          <span className="inline-flex min-w-0 items-center gap-1.5 truncate rounded-full border border-line px-2 py-0.5 text-[11px]" style={{ color: st.color }}>
+                            <span className="h-1.5 w-1.5 shrink-0 rounded-full" style={{ background: st.color }} />
+                            {st.label}
+                          </span>
+                        ) : (
+                          <span className="text-faint">—</span>
+                        )}
+                        {crm[id] ? <CrmDot badge={crm[id]} /> : null}
+                      </span>
                     </div>
                   ) : null}
                   {columns.map((c) => (

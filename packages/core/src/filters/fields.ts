@@ -43,11 +43,48 @@ export type FieldDef = {
   searchable?: boolean;
   /** When true, values like "1-10" bands etc. are matched case-sensitively as-is. */
   description?: string;
+  /**
+   * Org-scoped relation (plan 7.4 "CRM / Network" groups). `column` is then an expression on the
+   * relation alias (`cr` = crm_records, `ne` = per-entity network aggregate) and the compiler wraps
+   * the condition in `<idColumn> IN (subquery filtered by org_id)`. Without an org it matches nothing.
+   */
+  scope?: { kind: "crm" | "network"; entity: "COMPANY" | "PERSON"; idColumn: string };
 };
 
 const opts = (xs: readonly string[], labels?: Record<string, string>): Option[] =>
   xs.map((x) => ({ value: x, label: labels?.[x] ?? x }));
 const nodeOpts = (xs: { id: string; name: string }[]): Option[] => xs.map((x) => ({ value: x.id, label: x.name }));
+
+export const CRM_STATUS_OPTIONS: Option[] = [
+  { value: "IN_CRM", label: "In CRM" },
+  { value: "NOT_SYNCED", label: "Not synced" },
+  { value: "NOT_ENRICHED", label: "In CRM, not enriched" },
+];
+const CRM_PROVIDER_OPTIONS = opts(["ATTIO", "AFFINITY", "SALESFORCE", "HUBSPOT", "PIPEDRIVE", "AIRTABLE"]);
+
+function crmFields(entity: "COMPANY" | "PERSON"): FieldDef[] {
+  const scope = { kind: "crm" as const, entity, idColumn: "t.id" };
+  return [
+    { key: "crm_status", label: "CRM status", group: "CRM", type: "enum", column: "cr.external_id", options: CRM_STATUS_OPTIONS, scope },
+    { key: "crm_provider", label: "CRM", group: "CRM", type: "enum", column: "cr.provider", options: CRM_PROVIDER_OPTIONS, scope },
+    { key: "crm_owner", label: "CRM owner", group: "CRM", type: "text", column: "cr.owner", scope },
+    { key: "crm_stage", label: "CRM lifecycle / deal stage", group: "CRM", type: "text", column: "cr.stage", scope },
+    { key: "crm_last_activity", label: "CRM last activity", group: "CRM", type: "date", column: "cr.last_activity", scope },
+    ...(entity === "COMPANY"
+      ? [{ key: "crm_open_deals", label: "CRM open deals", group: "CRM", type: "number" as const, column: "cr.open_deals", scope }]
+      : []),
+  ];
+}
+
+function networkFields(entity: "COMPANY" | "PERSON"): FieldDef[] {
+  const scope = { kind: "network" as const, entity, idColumn: "t.id" };
+  return [
+    { key: "network_connected", label: entity === "COMPANY" ? "Team has connections here" : "In team network", group: "Network", type: "boolean", column: "TRUE", scope },
+    { key: "network_team_connections", label: "Team members connected", group: "Network", type: "number", column: "ne.team_connections", scope },
+    { key: "network_strength", label: "Strongest connection (0–100)", group: "Network", type: "number", column: "ne.strength", scope },
+    { key: "network_last_interaction", label: "Last interaction", group: "Network", type: "date", column: "ne.last_interaction_at", scope },
+  ];
+}
 
 export const OPERATORS_BY_TYPE: Record<FieldType, Operator[]> = {
   text: ["contains", "is", "is_not", "starts_with", "exists", "not_exists"],
@@ -120,6 +157,8 @@ const companyFields: FieldDef[] = [
   { key: "highlights", label: "Highlights", group: "Highlights", type: "multi", column: "t.highlights", options: opts(COMPANY_HIGHLIGHTS, HIGHLIGHT_LABELS) },
   { key: "rank", label: "Rank", group: "General", type: "number", column: "t.rank", sortable: true },
   { key: "list", label: "List", group: "Lists", type: "list", column: "t.id" },
+  ...crmFields("COMPANY"),
+  ...networkFields("COMPANY"),
 ];
 
 const peopleFields: FieldDef[] = [
@@ -137,6 +176,8 @@ const peopleFields: FieldDef[] = [
   { key: "connections", label: "Connections", group: "Social", type: "number", column: "t.connections", sortable: true },
   { key: "talent_signal_count", label: "Talent Signals", group: "Signals", type: "number", column: "t.talent_signal_count", sortable: true },
   { key: "list", label: "List", group: "Lists", type: "list", column: "t.id" },
+  ...crmFields("PERSON"),
+  ...networkFields("PERSON"),
 ];
 
 const investorFields: FieldDef[] = [

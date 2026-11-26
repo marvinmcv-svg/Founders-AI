@@ -16,6 +16,7 @@ import { sendDigest } from "./digest";
 import { getRowsByIds, rawQuery as q, searchEntities } from "./entities";
 import { ForbiddenError, type OrgContext } from "./workspace";
 import { enqueueWebhookEvent, orgsSubscribedTo } from "./webhooks";
+import { autoPushNewResults } from "./crm";
 
 export const SLACK_HOSTS = ["hooks.slack.com"];
 
@@ -166,6 +167,19 @@ async function deliver(s: SearchRow, newIds: string[], post: Poster): Promise<Re
         await record("slack", "FAILED", null, e instanceof Error ? e.message : String(e));
         bump("slack_failed");
       }
+    }
+  }
+  // CRM auto-push (plan 7.6 channel "CRM auto-push"): per search, or workspace-wide in the CRM push settings.
+  if (s.product === "companies" || s.product === "people") {
+    try {
+      const r = await autoPushNewResults(s.org_id, s.owner_id, s.product === "companies" ? "COMPANY" : "PERSON", newIds, { explicit: channels.includes("crm") });
+      if (r) {
+        await record("crm", r.status === "FAILED" ? "FAILED" : "SENT", null, r.error ?? null);
+        bump(r.status === "FAILED" ? "crm_failed" : "crm");
+      }
+    } catch (e) {
+      await record("crm", "FAILED", null, e instanceof Error ? e.message : String(e));
+      bump("crm_failed");
     }
   }
   return counts;

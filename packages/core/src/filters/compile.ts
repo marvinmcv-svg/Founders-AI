@@ -37,10 +37,61 @@ function escapeLike(s: string): string {
   return s.replace(/[\\%_]/g, (m) => `\\${m}`);
 }
 
+/** Per-entity aggregate of the org's network edges (alias `ne`). */
+function networkAggregate(entity: "COMPANY" | "PERSON", orgId: string): SQL {
+  return entity === "PERSON"
+    ? sql`SELECT e.person_id AS entity_id, max(e.strength) AS strength, count(DISTINCT e.user_id)::int AS team_connections, max(e.last_interaction_at) AS last_interaction_at
+        FROM network_edges e WHERE e.org_id = ${orgId} GROUP BY e.person_id`
+    : sql`SELECT p.current_company_id AS entity_id, max(e.strength) AS strength, count(DISTINCT e.user_id)::int AS team_connections, max(e.last_interaction_at) AS last_interaction_at
+        FROM network_edges e JOIN people p ON p.id = e.person_id WHERE e.org_id = ${orgId} AND p.current_company_id IS NOT NULL GROUP BY p.current_company_id`;
+}
+
+/** Org-scoped CRM / network conditions: always bounded by `org_id`, never by anything the client sends. */
+function compileScoped(field: FieldDef, c: Condition, ctx: CompileContext): SQL {
+  const scope = field.scope as NonNullable<FieldDef["scope"]>;
+  const id = sql.raw(scope.idColumn);
+  if (!ctx.orgId) return FALSE;
+  const crmSub = (inner: SQL) =>
+    sql`SELECT cr.entity_id FROM crm_records cr WHERE cr.org_id = ${ctx.orgId} AND cr.entity_type = ${scope.entity} AND cr.entity_id IS NOT NULL AND ${inner}`;
+
+  if (scope.kind === "crm" && field.key === "crm_status") {
+    const states = arr(c.value).map(String);
+    if (!states.length) return TRUE;
+    const parts = states.map((s) =>
+      s === "IN_CRM"
+        ? sql`${id} IN (${crmSub(TRUE)})`
+        : s === "NOT_ENRICHED"
+          ? sql`${id} IN (${crmSub(sql`cr.enriched_at IS NULL`)})`
+          : sql`${id} NOT IN (${crmSub(TRUE)})`,
+    );
+    const any = sql`(${sql.join(parts, sql` OR `)})`;
+    return c.operator === "none_of" ? sql`NOT ${any}` : any;
+  }
+  if (field.type === "boolean") {
+    const sub = scope.kind === "crm" ? crmSub(TRUE) : sql`SELECT ne.entity_id FROM (${networkAggregate(scope.entity, ctx.orgId)}) ne`;
+    return c.operator === "is_false" ? sql`${id} NOT IN (${sub})` : sql`${id} IN (${sub})`;
+  }
+  const inner = compileOp(field, sql.raw(field.column), c);
+  return scope.kind === "crm"
+    ? sql`${id} IN (${crmSub(inner)})`
+    : sql`${id} IN (SELECT ne.entity_id FROM (${networkAggregate(scope.entity, ctx.orgId)}) ne WHERE ${inner})`;
+}
+
 function compileCondition(product: Product, c: Condition, ctx: CompileContext): SQL {
   const field = getField(product, c.field);
   if (!field) return FALSE;
-  const col = sql.raw(field.column);
+  if (field.scope) return compileScoped(field, c, ctx);
+  if (c.operator === "in_list" || c.operator === "not_in_list") {
+    const col = sql.raw(field.column);
+    if (!ctx.orgId) return c.operator === "in_list" ? FALSE : TRUE;
+    const sub = sql`SELECT li.entity_id FROM list_items li JOIN lists l ON l.id = li.list_id
+      WHERE li.list_id = ${String(c.value)} AND l.org_id = ${ctx.orgId} AND l.deleted_at IS NULL`;
+    return c.operator === "in_list" ? sql`${col} IN (${sub})` : sql`${col} NOT IN (${sub})`;
+  }
+  return compileOp(field, sql.raw(field.column), c);
+}
+
+function compileOp(field: FieldDef, col: SQL, c: Condition): SQL {
   const v = c.value;
   const isArrayCol = field.type === "multi";
 
@@ -96,13 +147,6 @@ function compileCondition(product: Product, c: Condition, ctx: CompileContext): 
       return isArrayCol ? sql`cardinality(${col}) > 0` : sql`${col} IS NOT NULL`;
     case "not_exists":
       return isArrayCol ? sql`cardinality(${col}) = 0` : sql`${col} IS NULL`;
-    case "in_list":
-    case "not_in_list": {
-      if (!ctx.orgId) return c.operator === "in_list" ? FALSE : TRUE;
-      const sub = sql`SELECT li.entity_id FROM list_items li JOIN lists l ON l.id = li.list_id
-        WHERE li.list_id = ${String(v)} AND l.org_id = ${ctx.orgId} AND l.deleted_at IS NULL`;
-      return c.operator === "in_list" ? sql`${col} IN (${sub})` : sql`${col} NOT IN (${sub})`;
-    }
     default:
       return FALSE;
   }

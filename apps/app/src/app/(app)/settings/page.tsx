@@ -8,13 +8,19 @@ import { McpInstall } from "@/components/mcp/McpInstall";
 import { McpSettings } from "@/components/mcp/McpSettings";
 import { MCP_RESOURCE } from "@/lib/auth";
 import { SlackIntegration } from "./IntegrationsClient";
+import { CrmIntegrations } from "@/components/integrations/CrmIntegrations";
 import { ApiKeys, DigestPanel, InviteForm } from "./SettingsClient";
 
 export const metadata: Metadata = { title: "Settings" };
 
 export default async function Settings() {
   const ctx = await getCtx();
-  const [integrations, deliveries] = await Promise.all([repo.getIntegrations(ctx), repo.getAlertDeliveries(ctx, 12)]);
+  const [integrations, deliveries, crmConnections, crmLog] = await Promise.all([
+    repo.getIntegrations(ctx),
+    repo.getAlertDeliveries(ctx, 12),
+    repo.listCrmConnections(ctx),
+    repo.getCrmLog(ctx, 15),
+  ]);
   const slack = integrations.find((i) => i.provider === "SLACK");
   const [org, members, keys, balance, ledger, usage, statuses, digests, audit] = await Promise.all([
     repo.getOrg(ctx),
@@ -47,7 +53,7 @@ export default async function Settings() {
   return (
     <div className="grid gap-8 p-6 xl:grid-cols-[180px_1fr]">
       <nav className="hidden flex-col gap-1 text-[13px] xl:flex">
-        {[["workspace", "Workspace"], ["members", "Members"], ["api", "API keys"], ["mcp", "MCP"], ["credits", "Credits & usage"], ["notifications", "Notifications"], ["integrations", "Integrations"], ["statuses", "Statuses"], ["privacy", "Data & privacy"], ["audit", "Audit log"]].map(([id, l]) => (
+        {[["workspace", "Workspace"], ["members", "Members"], ["api", "API keys"], ["mcp", "MCP"], ["credits", "Credits & usage"], ["notifications", "Notifications"], ["crm", "CRM"], ["integrations", "Alerts & automation"], ["statuses", "Statuses"], ["privacy", "Data & privacy"], ["audit", "Audit log"]].map(([id, l]) => (
           <a key={id} href={`#${id}`} className="rounded-md px-2 py-1.5 text-muted hover:bg-white/[0.05] hover:text-ink">
             {l}
           </a>
@@ -128,7 +134,10 @@ export default async function Settings() {
         <Section id="notifications" title="Notifications & digests" sub="Daily digest at 07:00 your time, weekly on Mondays. Email delivery turns on when Resend is configured.">
           <DigestPanel runs={digests.map((d) => ({ id: d.id, sent_at: d.sent_at, item_count: d.item_count, html: d.html }))} />
         </Section>
-        <Section id="integrations" title="Integrations" sub="CRM, calendar and Zapier connections arrive in R3. Slack alerts are available now.">
+        <Section id="crm" title="CRM" sub="Attio, Affinity, Salesforce, HubSpot, Pipedrive and Airtable: pull with match preview, push from any grid or profile, scheduled enrichment.">
+          <CrmIntegrations connections={crmConnections} log={crmLog} isAdmin={isAdmin} />
+        </Section>
+        <Section id="integrations" title="Alerts & automation" sub="Slack channel alerts, webhooks and Zapier.">
           <div className="flex flex-col gap-3">
             <SlackIntegration connected={Boolean(slack)} target={slack?.target ?? null} isAdmin={isAdmin} />
             <Card className="divide-y divide-line text-[13px]">

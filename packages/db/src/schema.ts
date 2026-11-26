@@ -1015,6 +1015,8 @@ export const webhooks = pgTable(
     disabledReason: text("disabled_reason"),
     /** Start of the current unbroken failure streak; auto-disable after 24 h (plan 11 security). */
     failingSince: ts("failing_since"),
+    /** Who created it: `api` (customer endpoint) or `zapier` (REST-hook subscription, plan 13.4). */
+    source: text("source").notNull().default("api"),
     createdBy: text("created_by").notNull(),
     createdAt: createdAt(),
   },
@@ -1360,4 +1362,209 @@ export const oauthConsent = pgTable(
 export const oauthClientAssertion = pgTable("oauth_client_assertion", {
   id: text("id").primaryKey(),
   expiresAt: ts("expires_at").notNull(),
+});
+
+/* ------------------------------------------------------------------ */
+/* Phase 8 (R3): CRM sync, network, bulk delivery, interest, flags     */
+/* ------------------------------------------------------------------ */
+
+export const CRM_PROVIDERS = ["ATTIO", "AFFINITY", "SALESFORCE", "HUBSPOT", "PIPEDRIVE", "AIRTABLE"] as const;
+export type CrmProvider = (typeof CRM_PROVIDERS)[number];
+
+/**
+ * One CRM connection per org and provider (plan 13.1). `auth` holds the encrypted credentials
+ * (OAuth tokens once the marketplace apps exist, H9; an API token, or nothing in SANDBOX mode).
+ */
+export const crmConnections = pgTable(
+  "crm_connections",
+  {
+    id: text("id").primaryKey(),
+    orgId: text("org_id").notNull(),
+    provider: text("provider").notNull(),
+    mode: text("mode").notNull().default("SANDBOX"), // SANDBOX | TOKEN | OAUTH
+    auth: text("auth"), // encrypted JSON
+    pullConfig: jsonb("pull_config").$type<Record<string, unknown>>(),
+    pushConfig: jsonb("push_config").$type<Record<string, unknown>>(),
+    schedule: text("schedule").notNull().default("OFF"), // OFF | DAILY | WEEKLY
+    status: text("status").notNull().default("ACTIVE"), // ACTIVE | ERROR | PAUSED
+    lastError: text("last_error"),
+    pullCursor: text("pull_cursor"),
+    lastPullAt: ts("last_pull_at"),
+    lastPushAt: ts("last_push_at"),
+    createdBy: text("created_by").notNull(),
+    createdAt: createdAt(),
+  },
+  (t) => [uniqueIndex("crm_connections_org_provider_uq").on(t.orgId, t.provider)],
+);
+
+/** CRM objects pulled into the workspace and matched to our entities. */
+export const crmRecords = pgTable(
+  "crm_records",
+  {
+    orgId: text("org_id").notNull(),
+    provider: text("provider").notNull(),
+    object: text("object").notNull(), // COMPANY | PERSON | DEAL
+    externalId: text("external_id").notNull(),
+    name: text("name"),
+    domain: text("domain"),
+    linkedinUrl: text("linkedin_url"),
+    entityType: text("entity_type"), // COMPANY | PERSON (null = unmatched)
+    entityId: text("entity_id"),
+    matchMethod: text("match_method"), // DOMAIN | LINKEDIN | NAME | PUSHED
+    owner: text("owner"),
+    stage: text("stage"),
+    lastActivity: ts("last_activity"),
+    openDeals: integer("open_deals").notNull().default(0),
+    enrichedAt: ts("enriched_at"),
+    raw: jsonb("raw").$type<Record<string, unknown>>(),
+    updatedAt: ts("updated_at").notNull().defaultNow(),
+  },
+  (t) => [
+    primaryKey({ columns: [t.orgId, t.provider, t.object, t.externalId] }),
+    index("crm_records_entity_idx").on(t.orgId, t.entityId),
+  ],
+);
+
+export const crmSyncLog = pgTable(
+  "crm_sync_log",
+  {
+    id: text("id").primaryKey(),
+    orgId: text("org_id").notNull(),
+    provider: text("provider").notNull(),
+    direction: text("direction").notNull(), // PULL | PUSH | ENRICH
+    trigger: text("trigger").notNull().default("manual"), // manual | schedule | api | search
+    entityCount: integer("entity_count").notNull().default(0),
+    counts: jsonb("counts").$type<Record<string, number>>(),
+    status: text("status").notNull(), // SUCCEEDED | PARTIAL | FAILED
+    error: text("error"),
+    actor: text("actor"),
+    at: ts("at").notNull().defaultNow(),
+  },
+  (t) => [index("crm_sync_log_org_idx").on(t.orgId, t.at)],
+);
+
+/**
+ * Remote side of SANDBOX connections: a per-org fake CRM that speaks each provider's object shapes,
+ * so the demo and the round-trip tests exercise the real adapter code without vendor accounts (H9).
+ */
+export const crmSandboxObjects = pgTable(
+  "crm_sandbox_objects",
+  {
+    orgId: text("org_id").notNull(),
+    provider: text("provider").notNull(),
+    object: text("object").notNull(), // provider-native object name
+    externalId: text("external_id").notNull(),
+    data: jsonb("data").$type<Record<string, unknown>>().notNull(),
+    updatedAt: ts("updated_at").notNull().defaultNow(),
+  },
+  (t) => [primaryKey({ columns: [t.orgId, t.provider, t.object, t.externalId] })],
+);
+
+/** Per-user network sources (plan 13.2). Mail/calendar tokens are encrypted; content is never stored. */
+export const networkSources = pgTable(
+  "network_sources",
+  {
+    id: text("id").primaryKey(),
+    orgId: text("org_id").notNull(),
+    userId: text("user_id").notNull(),
+    provider: text("provider").notNull(), // LINKEDIN_CSV | GMAIL | OUTLOOK | GCAL | MSCAL
+    status: text("status").notNull().default("ACTIVE"),
+    auth: text("auth"),
+    stats: jsonb("stats").$type<Record<string, number>>(),
+    lastSync: ts("last_sync"),
+    createdAt: createdAt(),
+  },
+  (t) => [uniqueIndex("network_sources_user_provider_uq").on(t.orgId, t.userId, t.provider)],
+);
+
+/** One edge per (user, person); per-channel evidence feeds the strength score. */
+export const networkEdges = pgTable(
+  "network_edges",
+  {
+    orgId: text("org_id").notNull(),
+    userId: text("user_id").notNull(),
+    personId: text("person_id").notNull(),
+    strength: real("strength").notNull(),
+    lastInteractionAt: ts("last_interaction_at"),
+    sources: text("sources").array().notNull().default(sql`'{}'::text[]`),
+    evidence: jsonb("evidence").$type<Record<string, { count: number; last: string | null }>>().notNull(),
+    /** The person's company when the edge was last confirmed; drives "hired from your network" alerts. */
+    companyIdAtSync: text("company_id_at_sync"),
+    updatedAt: ts("updated_at").notNull().defaultNow(),
+  },
+  (t) => [
+    primaryKey({ columns: [t.orgId, t.userId, t.personId] }),
+    index("network_edges_person_idx").on(t.orgId, t.personId),
+  ],
+);
+
+/** Bulk delivery projects (plan 13.5). Sink credentials are encrypted. */
+export const bulkDeliveries = pgTable(
+  "bulk_deliveries",
+  {
+    id: text("id").primaryKey(),
+    orgId: text("org_id").notNull(),
+    name: text("name").notNull(),
+    datasets: text("datasets").array().notNull(),
+    fields: jsonb("fields").$type<Record<string, string[]>>(),
+    format: text("format").notNull().default("PARQUET"), // CSV | PARQUET
+    sink: text("sink").notNull(), // S3 | GCS | SNOWFLAKE | LOCAL
+    sinkConfig: text("sink_config").notNull(), // encrypted JSON
+    cadence: text("cadence").notNull().default("DAILY"), // DAILY | WEEKLY | MANUAL
+    status: text("status").notNull().default("ACTIVE"),
+    watermark: ts("watermark"),
+    lastOutboxId: bigint("last_outbox_id", { mode: "number" }),
+    lastRun: ts("last_run"),
+    createdBy: text("created_by").notNull(),
+    createdAt: createdAt(),
+  },
+  (t) => [index("bulk_deliveries_org_idx").on(t.orgId)],
+);
+
+export const bulkRuns = pgTable(
+  "bulk_runs",
+  {
+    id: text("id").primaryKey(),
+    deliveryId: text("delivery_id").notNull(),
+    orgId: text("org_id").notNull(),
+    kind: text("kind").notNull(), // FULL | INCREMENTAL
+    status: text("status").notNull(), // RUNNING | SUCCEEDED | FAILED
+    manifest: jsonb("manifest").$type<Record<string, unknown>>(),
+    error: text("error"),
+    startedAt: ts("started_at").notNull().defaultNow(),
+    finishedAt: ts("finished_at"),
+  },
+  (t) => [index("bulk_runs_delivery_idx").on(t.deliveryId, t.startedAt)],
+);
+
+/** Interest signals (plan 8, 9.4). Only public-evidence sources; telemetry is never a source here. */
+export const interestSignals = pgTable(
+  "interest_signals",
+  {
+    id: text("id").primaryKey(),
+    targetCompanyId: text("target_company_id"),
+    targetPersonId: text("target_person_id"),
+    investorId: text("investor_id"),
+    investorType: text("investor_type").notNull(), // VC | PE | CVC | ANGEL | STRATEGIC
+    score: integer("score").notNull(),
+    signalDate: date("signal_date").notNull(),
+    sourceType: text("source_type").notNull(), // SOCIAL_FOLLOW | PUBLIC_CONTENT | EVENT | FILING
+    evidence: text("evidence"),
+    fundingContext: jsonb("funding_context").$type<Record<string, unknown>>(),
+    createdAt: createdAt(),
+  },
+  (t) => [
+    index("interest_signals_company_idx").on(t.targetCompanyId, t.signalDate),
+    index("interest_signals_date_idx").on(t.signalDate),
+  ],
+);
+
+/** Remote feature flags (extension LinkedIn script, interest signals). `orgs` = allow-list; empty = everyone. */
+export const featureFlags = pgTable("feature_flags", {
+  key: text("key").primaryKey(),
+  enabled: boolean("enabled").notNull().default(false),
+  orgs: text("orgs").array().notNull().default(sql`'{}'::text[]`),
+  note: text("note"),
+  updatedBy: text("updated_by"),
+  updatedAt: ts("updated_at").notNull().defaultNow(),
 });
