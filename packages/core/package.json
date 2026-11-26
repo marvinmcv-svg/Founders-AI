@@ -14,7 +14,11 @@
     "./repo": "./src/repo/index.ts",
     "./ids": "./src/ids.ts",
     "./estimates": "./src/estimates.ts",
-    "./filters/compile": "./src/filters/compile.ts"
+    "./filters/compile": "./src/filters/compile.ts",
+    "./signals/*": "./src/signals/*.ts",
+    "./egress": "./src/egress.ts",
+    "./crypto": "./src/crypto.ts",
+    "./llm": "./src/llm.ts"
   },
   "scripts": {
     "typecheck": "tsc -p tsconfig.json",

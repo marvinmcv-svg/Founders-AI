@@ -1,0 +1,29 @@
+{
+  "name": "@founders/pipelines",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./runner": "./src/runner.ts"
+  },
+  "scripts": {
+    "run": "tsx src/cli.ts",
+    "typecheck": "tsc -p tsconfig.json",
+    "lint": "eslint src",
+    "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "@founders/config": "workspace:*",
+    "@founders/core": "workspace:*",
+    "@founders/db": "workspace:*",
+    "drizzle-orm": "^0.45.4",
+    "postgres": "^3.4.7"
+  },
+  "devDependencies": {
+    "@types/node": "^22.18.0",
+    "dotenv": "^17.2.3",
+    "tsx": "^4.23.15",
+    "vitest": "^3.2.4"
+  }
+}

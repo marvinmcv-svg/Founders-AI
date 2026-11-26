@@ -13,8 +13,18 @@ function getClient(): Anthropic | null {
   return client;
 }
 
+/**
+ * Circuit breaker: an auth/permission failure means every later call fails the same way, so the
+ * process stops calling Claude and every caller uses its deterministic fallback.
+ */
+let disabledReason: string | null = null;
+
 export function llmAvailable(): boolean {
-  return Boolean(process.env.ANTHROPIC_API_KEY);
+  return Boolean(process.env.ANTHROPIC_API_KEY) && !disabledReason;
+}
+
+export function llmStatus(): { available: boolean; model: string; reason: string | null } {
+  return { available: llmAvailable(), model: LLM_MODEL, reason: process.env.ANTHROPIC_API_KEY ? disabledReason : "ANTHROPIC_API_KEY not set" };
 }
 
 /**
@@ -30,8 +40,10 @@ export async function structuredCall<T>(opts: {
   effort?: "low" | "medium" | "high";
 }): Promise<T | null> {
   const c = getClient();
-  if (!c) return null;
-  const res = await c.beta.messages.create({
+  if (!c || disabledReason) return null;
+  let res;
+  try {
+    res = await c.beta.messages.create({
     model: LLM_MODEL,
     max_tokens: opts.maxTokens ?? 4000,
     betas: ["server-side-fallback-2026-07-01"],
@@ -39,7 +51,14 @@ export async function structuredCall<T>(opts: {
     system: opts.system,
     output_config: { effort: opts.effort ?? "low", format: { type: "json_schema", schema: opts.schema } },
     messages: [{ role: "user", content: opts.user }],
-  });
+    });
+  } catch (err) {
+    // Never let an LLM outage break a pipeline or a page: callers fall back to rules.
+    if (err instanceof Anthropic.AuthenticationError || err instanceof Anthropic.PermissionDeniedError) {
+      disabledReason = `${err.status} ${err.name}`;
+    }
+    return null;
+  }
   if (res.stop_reason === "refusal" || res.stop_reason === "max_tokens") return null;
   const text = res.content.flatMap((b) => (b.type === "text" ? [b.text] : [])).join("");
   try {

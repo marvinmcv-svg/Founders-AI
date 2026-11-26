@@ -1,4 +1,5 @@
 /** Name parts for the synthetic universe. All combinations are invented — no real people or companies. */
+import { MAJOR_EMPLOYERS } from "@founders/core/taxonomy";
 
 export const FIRST_NAMES: Record<string, string[]> = {
   es: [
@@ -163,10 +164,7 @@ export const TITLES_BY_DEPT: Record<string, string[]> = {
   People: ["Recruiter", "People Partner", "Head of People"],
 };
 
-export const BIG_EMPLOYERS = [
-  "Mercantil Pagos", "Andes Telecom Group", "Pampa Retail Holdings", "Rio Payments S.A.", "Cordillera Bank",
-  "Northwind Software", "Globex Cloud", "Initech Systems", "Umbrella Logistics", "Soylent Foods International",
-];
+export const BIG_EMPLOYERS = [...MAJOR_EMPLOYERS];
 
 export const PUBLISHERS = [
   "El Deber Economía", "Página Siete Negocios", "LatAm Tech Wire", "Andes Startup Journal", "Valor Startups", "Bloque Fintech",

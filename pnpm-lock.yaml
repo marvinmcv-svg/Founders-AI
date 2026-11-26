@@ -324,6 +324,37 @@ importers:
         specifier: ^19.2.0
         version: 19.3.1
 
+  packages/pipelines:
+    dependencies:
+      '@founders/config':
+        specifier: workspace:*
+        version: link:../config
+      '@founders/core':
+        specifier: workspace:*
+        version: link:../core
+      '@founders/db':
+        specifier: workspace:*
+        version: link:../db
+      drizzle-orm:
+        specifier: ^0.45.4
+        version: 0.45.4(@opentelemetry/api@1.10.0)(kysely@0.29.9)(postgres@3.4.9)
+      postgres:
+        specifier: ^3.4.7
+        version: 3.4.9
+    devDependencies:
+      '@types/node':
+        specifier: ^22.18.0
+        version: 22.20.7
+      dotenv:
+        specifier: ^17.2.3
+        version: 17.4.2
+      tsx:
+        specifier: ^4.23.15
+        version: 4.23.15
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.7(@types/node@22.20.7)(jiti@2.7.0)(lightningcss@1.33.0)(tsx@4.23.15)(yaml@2.9.1)
+
   packages/seed:
     dependencies:
       '@founders/core':

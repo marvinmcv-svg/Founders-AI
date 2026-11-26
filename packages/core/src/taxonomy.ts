@@ -183,6 +183,15 @@ export const PEOPLE_HIGHLIGHTS = [
   "Repeat Co-founders",
 ] as const;
 
+/**
+ * Reference list of major employers ("Major Tech Experience" highlight). Synthetic names for the
+ * seed universe; replaced by a curated list (e.g. top employers by headcount) with real data (H5).
+ */
+export const MAJOR_EMPLOYERS = [
+  "Mercantil Pagos", "Andes Telecom Group", "Pampa Retail Holdings", "Rio Payments S.A.", "Cordillera Bank",
+  "Northwind Software", "Globex Cloud", "Initech Systems", "Umbrella Logistics", "Soylent Foods International",
+] as const;
+
 export const INVESTOR_HIGHLIGHTS = ["Tier-1", "Lead investor", "Active", "Unicorn backer", "High follow-on rate"] as const;
 
 export const HIGHLIGHT_LABELS: Record<string, string> = {

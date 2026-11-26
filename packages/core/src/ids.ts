@@ -25,6 +25,11 @@ export const ID_PREFIX = {
   school: "sch",
   experience: "exp",
   dsar: "dsr",
+  run: "run",
+  integration: "int",
+  delivery: "dlv",
+  change: "chg",
+  newsRaw: "nwr",
 } as const;
 
 export type IdKind = keyof typeof ID_PREFIX;

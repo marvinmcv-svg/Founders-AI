@@ -25,6 +25,17 @@ const ts = (name: string) => timestamp(name, { withTimezone: true, mode: "date" 
 const createdAt = () => ts("created_at").notNull().defaultNow();
 const usd = (name: string) => bigint(name, { mode: "number" });
 
+export type ReviewSource = "g2" | "trustpilot" | "chrome_web_store" | "app_store" | "google_play";
+export type ReviewsDetail = Partial<
+  Record<ReviewSource, { products: { name: string; rating: number; count: number }[]; rating: number; count: number; history: { month: string; rating: number; count: number }[]; fetched_at: string }>
+>;
+export type TractionSnapshot = {
+  traffic_sources: Record<string, number>; // share 0-1: direct, search, social, referral, paid, email
+  countries: { country: string; share: number }[];
+  fetched_at: string;
+  source: string;
+};
+
 export type Provenance = Record<string, { source: string; fetched_at: string; redistributable: boolean }>;
 
 /* ------------------------------------------------------------------ */
@@ -216,6 +227,10 @@ export const companies = pgTable(
     contactEmail: text("contact_email"),
     socials: jsonb("socials").$type<Record<string, string>>(),
     reviews: jsonb("reviews").$type<Record<string, { rating: number; count: number }>>(),
+    /** Review sites detail (Reviews tab): per source → products, rating, count, history. */
+    reviewsDetail: jsonb("reviews_detail").$type<ReviewsDetail>(),
+    /** Traffic sources, country mix, app-store snapshot (Traction Metrics tab). */
+    traction: jsonb("traction").$type<TractionSnapshot>(),
     embedding: vector("embedding", { dimensions: 256 }),
     provenance: jsonb("provenance").$type<Provenance>(),
     deletedAt: ts("deleted_at"),
@@ -263,6 +278,7 @@ export const companyCompetitors = pgTable(
     competitorId: text("competitor_id").notNull(),
     overlapScore: real("overlap_score").notNull(),
     reason: text("reason"),
+    modelVersion: text("model_version").notNull().default("v0-taxonomy"),
     computedAt: ts("computed_at").notNull().defaultNow(),
   },
   (t) => [primaryKey({ columns: [t.companyId, t.competitorId] })],
@@ -299,7 +315,13 @@ export const revenueDisclosures = pgTable(
     publisher: text("publisher"),
     publishedAt: ts("published_at"),
     verifiedBy: text("verified_by"),
-    status: text("status").notNull().default("verified"),
+    status: text("status").notNull().default("verified"), // pending | verified | rejected
+    /** Where the anchor came from: seed | news_extraction | manual. */
+    origin: text("origin").notNull().default("seed"),
+    newsSignalId: text("news_signal_id"),
+    evidence: text("evidence"),
+    reviewedAt: ts("reviewed_at"),
+    createdAt: ts("created_at").defaultNow(),
   },
   (t) => [index("revenue_disclosures_company_idx").on(t.companyId)],
 );
@@ -325,6 +347,7 @@ export const newsSignals = pgTable(
     isMajor: boolean("is_major").notNull().default(false),
     figures: jsonb("figures"),
     publishedAt: ts("published_at").notNull(),
+    modelVersion: text("model_version").notNull().default("v0-seed"),
   },
   (t) => [index("news_signals_company_idx").on(t.companyId, t.publishedAt)],
 );
@@ -544,6 +567,10 @@ export const talentSignals = pgTable(
     newCompanyId: text("new_company_id"),
     prevCompanyIds: text("prev_company_ids").array().notNull().default(sql`'{}'::text[]`),
     sources: jsonb("sources").$type<{ kind: string; url?: string }[]>(),
+    /** Structured facts the summary was generated from (no-hallucination contract, plan 9.3). */
+    facts: jsonb("facts").$type<Record<string, unknown>>(),
+    modelVersion: text("model_version").notNull().default("v0-seed"),
+    createdAt: ts("created_at").defaultNow(),
   },
   (t) => [
     index("talent_signals_person_idx").on(t.personId),
@@ -824,4 +851,140 @@ export const companyMetricsDaily = pgTable(
     value: real("value").notNull(),
   },
   (t) => [primaryKey({ columns: [t.companyId, t.metric, t.date] })],
+);
+
+/* ------------------------------------------------------------------ */
+/* Phase 4 (R2): pipelines, outbox, signals history, alerts            */
+/* ------------------------------------------------------------------ */
+
+/** One row per pipeline job execution (plan 9.2: counts/errors per run). */
+export const pipelineRuns = pgTable(
+  "pipeline_runs",
+  {
+    id: text("id").primaryKey(),
+    job: text("job").notNull(),
+    status: text("status").notNull(), // RUNNING | SUCCEEDED | FAILED
+    trigger: text("trigger").notNull().default("manual"), // manual | cron | api
+    counts: jsonb("counts").$type<Record<string, number>>(),
+    error: text("error"),
+    startedAt: ts("started_at").notNull().defaultNow(),
+    finishedAt: ts("finished_at"),
+  },
+  (t) => [index("pipeline_runs_job_idx").on(t.job, t.startedAt)],
+);
+
+/**
+ * Transactional outbox (plan 8): every pipeline write that can change search results appends
+ * here. Consumers: real-time alerts (now) and the OpenSearch indexer (when H2 lands).
+ */
+export const outboxEvents = pgTable(
+  "outbox_events",
+  {
+    id: bigint("id", { mode: "number" }).primaryKey().generatedAlwaysAsIdentity(),
+    product: text("product").notNull(), // companies | people | talent_signals | news_signals | ...
+    entityId: text("entity_id").notNull(),
+    kind: text("kind").notNull(), // CREATED | UPDATED
+    at: ts("at").notNull().defaultNow(),
+    alertsProcessedAt: ts("alerts_processed_at"),
+  },
+  (t) => [index("outbox_alerts_pending_idx").on(t.id).where(sql`alerts_processed_at IS NULL`)],
+);
+
+/** Highlight history so `new_highlights` = highlights added in the last 30 days (plan 7.4). */
+export const highlightEvents = pgTable(
+  "highlight_events",
+  {
+    entityId: text("entity_id").notNull(),
+    entityType: text("entity_type").notNull(), // COMPANY | PERSON | INVESTOR
+    highlight: text("highlight").notNull(),
+    addedAt: ts("added_at").notNull().defaultNow(),
+    removedAt: ts("removed_at"),
+  },
+  (t) => [
+    primaryKey({ columns: [t.entityId, t.highlight, t.addedAt] }),
+    index("highlight_events_open_idx").on(t.entityId).where(sql`removed_at IS NULL`),
+  ],
+);
+
+/** Bronze layer of the person change feed (plan 9.3 input). */
+export const personChanges = pgTable(
+  "person_changes",
+  {
+    id: text("id").primaryKey(),
+    personId: text("person_id").notNull(),
+    source: text("source").notNull(),
+    observedAt: ts("observed_at").notNull(),
+    before: jsonb("before").notNull(),
+    after: jsonb("after").notNull(),
+    /** Ground truth from synthetic feeds only (evaluation); null for real providers. */
+    label: text("label"),
+    processedAt: ts("processed_at"),
+    signalId: text("signal_id"),
+  },
+  (t) => [index("person_changes_pending_idx").on(t.observedAt).where(sql`processed_at IS NULL`)],
+);
+
+/** Bronze layer of the news feed (plan 9.5 input). */
+export const newsRaw = pgTable(
+  "news_raw",
+  {
+    id: text("id").primaryKey(),
+    source: text("source").notNull(),
+    url: text("url").notNull(),
+    publisher: text("publisher").notNull(),
+    title: text("title").notNull(),
+    body: text("body").notNull(),
+    publishedAt: ts("published_at").notNull(),
+    simhash: text("simhash").notNull(), // 64-bit hex
+    status: text("status").notNull().default("NEW"), // NEW | DUPLICATE | LINKED | UNLINKED
+    duplicateOf: text("duplicate_of"),
+    label: jsonb("label"),
+    fetchedAt: ts("fetched_at").notNull().defaultNow(),
+  },
+  (t) => [uniqueIndex("news_raw_url_uq").on(t.url), index("news_raw_status_idx").on(t.status)],
+);
+
+/** Per-org integrations (Slack incoming webhook now; OAuth apps in R3/H9). Secrets are AES-GCM encrypted. */
+export const orgIntegrations = pgTable(
+  "org_integrations",
+  {
+    id: text("id").primaryKey(),
+    orgId: text("org_id").notNull(),
+    provider: text("provider").notNull(), // SLACK | WEBHOOK
+    label: text("label"),
+    secret: text("secret").notNull(), // encrypted
+    status: text("status").notNull().default("ACTIVE"),
+    createdBy: text("created_by").notNull(),
+    createdAt: createdAt(),
+  },
+  (t) => [uniqueIndex("org_integrations_org_provider_uq").on(t.orgId, t.provider)],
+);
+
+export const alertDeliveries = pgTable(
+  "alert_deliveries",
+  {
+    id: text("id").primaryKey(),
+    orgId: text("org_id").notNull(),
+    searchId: text("search_id"),
+    userId: text("user_id"),
+    channel: text("channel").notNull(), // in_app | email | slack
+    status: text("status").notNull(), // SENT | STORED | FAILED | SKIPPED
+    itemCount: integer("item_count").notNull(),
+    error: text("error"),
+    at: ts("at").notNull().defaultNow(),
+  },
+  (t) => [index("alert_deliveries_org_idx").on(t.orgId, t.at)],
+);
+
+/** Registry of model versions (plan 9.6: UI/API expose it; rollback = repoint `active`). */
+export const modelVersions = pgTable(
+  "model_versions",
+  {
+    version: text("version").primaryKey(),
+    kind: text("kind").notNull(), // REVENUE | TALENT_SCORE | COMPETITORS | NEWS
+    active: boolean("active").notNull().default(false),
+    metrics: jsonb("metrics").$type<Record<string, unknown>>(),
+    createdAt: createdAt(),
+  },
+  (t) => [index("model_versions_kind_idx").on(t.kind)],
 );
