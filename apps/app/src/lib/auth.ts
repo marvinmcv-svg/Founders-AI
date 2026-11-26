@@ -6,6 +6,7 @@ import { jwt, organization } from "better-auth/plugins";
 import { cimd } from "@better-auth/cimd";
 import { mcp } from "@better-auth/mcp";
 import { egressFetch } from "@founders/core/egress";
+import { ORG_CLAIM } from "@founders/mcp/claims";
 import { sql } from "drizzle-orm";
 import { getDb, schema } from "@founders/db";
 
@@ -95,13 +96,17 @@ export const auth = betterAuth({
       postLogin: {
         page: "/oauth/consent",
         shouldRedirect: () => false,
-        consentReferenceId: ({ session }) => {
-          const org = (session as Record<string, unknown>).activeOrganizationId;
-          if (typeof org !== "string" || !org) throw new APIError("BAD_REQUEST", { message: "Pick a workspace before connecting." });
-          return org;
+        // The session's active workspace (set on the consent page), else the user's first workspace.
+        consentReferenceId: async ({ session, user }) => {
+          const active = (session as Record<string, unknown>).activeOrganizationId;
+          const rows = (await getDb().execute(sql`SELECT organization_id FROM member WHERE user_id = ${user.id} ORDER BY created_at`)) as unknown as { organization_id: string }[];
+          const orgs = rows.map((r) => r.organization_id);
+          if (typeof active === "string" && orgs.includes(active)) return active;
+          if (!orgs[0]) throw new APIError("FORBIDDEN", { message: "Your account is not in a workspace yet." });
+          return orgs[0];
         },
       },
-      customAccessTokenClaims: ({ referenceId }) => (referenceId ? { "https://founders.ai/org": referenceId } : {}),
+      customAccessTokenClaims: ({ referenceId }) => (referenceId ? { [ORG_CLAIM]: referenceId } : {}),
     }),
     cimd({ fetchClientMetadataResource: fetchClientMetadataViaEgress, metadataProfile: "mcp-2026-07-28" }),
     nextCookies(),

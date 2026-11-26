@@ -8,3 +8,4 @@ export * from "./webhooks";
 export * from "./extract";
 export * from "./api";
 export * from "./agent";
+export * from "./mcp";

@@ -130,6 +130,9 @@ importers:
       '@founders/db':
         specifier: workspace:*
         version: link:../../packages/db
+      '@founders/mcp':
+        specifier: workspace:*
+        version: link:../mcp
       '@founders/mocks':
         specifier: workspace:*
         version: link:../../packages/mocks
@@ -215,6 +218,43 @@ importers:
       tailwindcss:
         specifier: ^4.1.16
         version: 4.3.5
+
+  apps/mcp:
+    dependencies:
+      '@founders/api':
+        specifier: workspace:*
+        version: link:../api
+      '@founders/config':
+        specifier: workspace:*
+        version: link:../../packages/config
+      '@founders/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+      '@founders/db':
+        specifier: workspace:*
+        version: link:../../packages/db
+      '@modelcontextprotocol/server':
+        specifier: 2.4.0
+        version: 2.4.0
+      drizzle-orm:
+        specifier: ^0.45.4
+        version: 0.45.4(@opentelemetry/api@1.10.0)(kysely@0.29.9)(postgres@3.4.9)
+      zod:
+        specifier: ^4.1.12
+        version: 4.6.7
+    devDependencies:
+      '@types/node':
+        specifier: ^22.18.0
+        version: 22.20.7
+      dotenv:
+        specifier: ^17.2.3
+        version: 17.4.2
+      tsx:
+        specifier: ^4.23.15
+        version: 4.23.15
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.7(@types/node@22.20.7)(jiti@2.7.0)(lightningcss@1.33.0)(tsx@4.23.15)(yaml@2.9.1)
 
   apps/www:
     dependencies:

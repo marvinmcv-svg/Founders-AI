@@ -1,0 +1,33 @@
+{
+  "name": "@founders/mcp",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "MCP server (plan 12): 29 tools over Streamable HTTP. Mounted in the app at /mcp; src/node.ts is the standalone entry.",
+  "exports": {
+    ".": "./src/index.ts",
+    "./claims": "./src/claims.ts"
+  },
+  "scripts": {
+    "dev": "tsx watch src/node.ts",
+    "start": "tsx src/node.ts",
+    "typecheck": "tsc -p tsconfig.json",
+    "lint": "eslint src test",
+    "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "@founders/api": "workspace:*",
+    "@founders/config": "workspace:*",
+    "@founders/core": "workspace:*",
+    "@founders/db": "workspace:*",
+    "@modelcontextprotocol/server": "2.4.0",
+    "drizzle-orm": "^0.45.4",
+    "zod": "^4.1.12"
+  },
+  "devDependencies": {
+    "@types/node": "^22.18.0",
+    "dotenv": "^17.2.3",
+    "tsx": "^4.23.15",
+    "vitest": "^3.2.4"
+  }
+}
