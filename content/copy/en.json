@@ -1199,5 +1199,435 @@
       "h2": "Every private company, with a number and a range.",
       "body": "Open Founders AI and see modeled revenue and valuation on every profile."
     }
+  },
+  "agents": {
+    "meta": {
+      "title": "Agents",
+      "description": "An AI analyst for private markets: it searches our data and the web, runs reusable skills, and asks before it changes anything."
+    },
+    "hero": {
+      "eyebrow": "Agents",
+      "h1": "Your AI analyst for",
+      "h1Accent": "private markets.",
+      "sub": "Ask in plain English. The Founders agent searches companies, people, investors and deals, reads the web, and hands back a brief with a source on every fact.",
+      "rotator": [
+        "Equipped with skills",
+        "Personalized to you",
+        "Plugged into live data",
+        "Reads the web"
+      ]
+    },
+    "pillars": {
+      "eyebrow": "Agents",
+      "h2": "Four things that make it useful on day one.",
+      "cards": [
+        {
+          "title": "Equip with skills",
+          "body": "Run a curated skill like a company brief or market map, or write your own."
+        },
+        {
+          "title": "Personalize it",
+          "body": "Tell it your thesis, stages and countries once; it applies them every time."
+        },
+        {
+          "title": "Plugged into live data",
+          "body": "It works from the same companies, people, investors and signals you see in the app."
+        },
+        {
+          "title": "Web search when needed",
+          "body": "It reads public pages to fill gaps, and cites them like everything else."
+        }
+      ]
+    },
+    "datasets": {
+      "eyebrow": "Use cases",
+      "h2": "Hand it the work you'd give a junior analyst.",
+      "lede": "Every answer is grounded in {stats.companies} companies, {stats.people} people and {stats.investors} investors.",
+      "cards": [
+        {
+          "title": "Sourcing",
+          "body": "Find companies that match a thesis and rank them by momentum."
+        },
+        {
+          "title": "Diligence",
+          "body": "Pull traction, funding, team and competitors into one brief."
+        },
+        {
+          "title": "Market maps",
+          "body": "Lay out a segment by sub-sector, stage and country."
+        },
+        {
+          "title": "Monitoring",
+          "body": "Summarise what changed across a list since you last looked."
+        },
+        {
+          "title": "Talent",
+          "body": "Spot stealth founders and operators about to build."
+        },
+        {
+          "title": "Competitive intel",
+          "body": "Compare a company with its closest rivals, side by side."
+        }
+      ]
+    },
+    "skills": {
+      "eyebrow": "Skills",
+      "h2": "Write it once. Run it every week.",
+      "lede": "Skills are saved, step-by-step workflows. Start from ours, write your own, and share them with your team.",
+      "cards": [
+        {
+          "title": "Create your own",
+          "body": "Name it, list the steps, save it. Run it from any chat with a slash command."
+        },
+        {
+          "title": "Share with your team",
+          "body": "Publish a skill to your workspace so everyone works the same way."
+        },
+        {
+          "title": "Curated skills",
+          "body": "{limits.skills} ready-made skills, from company briefs to stealth radar."
+        }
+      ],
+      "library": [
+        {
+          "slug": "/company-brief",
+          "desc": "One-page brief on any company"
+        },
+        {
+          "slug": "/diligence-brief",
+          "desc": "Traction, team, risks and open questions"
+        },
+        {
+          "slug": "/market-map",
+          "desc": "A segment laid out by sub-sector and stage"
+        },
+        {
+          "slug": "/thesis-screen",
+          "desc": "Companies that fit your thesis, ranked"
+        },
+        {
+          "slug": "/stealth-radar",
+          "desc": "Operators about to build"
+        },
+        {
+          "slug": "/weekly-brief",
+          "desc": "What changed in your world this week"
+        }
+      ],
+      "libraryTitle": "Skill library"
+    },
+    "context": {
+      "eyebrow": "Context",
+      "h2": "It learns how you work.",
+      "lede": "Save instructions once, such as your thesis, your favourite metrics and the format you like, and the agent applies them to every answer.",
+      "cards": [
+        {
+          "title": "Personal instructions",
+          "body": "Your thesis, stages, countries and tone, applied automatically."
+        },
+        {
+          "title": "Schedules",
+          "body": "Run a skill every week and get the result in the app or in Slack."
+        },
+        {
+          "title": "Asks before it writes",
+          "body": "Creating a list or a saved search always needs your confirmation."
+        }
+      ]
+    },
+    "mcp": {
+      "eyebrow": "MCP",
+      "h2": "Prefer your own AI? Bring our data to it.",
+      "lede": "Connect Claude, ChatGPT, Cursor and other MCP clients to the same {limits.mcpTools} tools the agent uses.",
+      "cta": "See the MCP server"
+    },
+    "closing": {
+      "h2": "Ask your agent first. Walk in with the brief.",
+      "body": "Open Founders AI, pick a skill and get a sourced brief in minutes."
+    },
+    "demo": {
+      "sidebar": [
+        "Today",
+        "Yesterday",
+        "Last week"
+      ],
+      "threads": [
+        "Seed fintech in Bolivia",
+        "Brief: Paxo Go",
+        "Stealth founders, ex-fintech"
+      ],
+      "prompt": "/company-brief Paxo Go",
+      "steps": [
+        "Read company profile",
+        "Read revenue & valuation estimates",
+        "Read funding rounds",
+        "Read team & talent moves",
+        "Read latest news",
+        "List closest competitors"
+      ],
+      "answer": [
+        "Snapshot — quick commerce for travelers, Montevideo, ~190 people, growing headcount 22% in 3 months.",
+        "Funding — Series C, last round led by a regional fund.",
+        "Competitors — four close matches across Uruguay, Brazil and Mexico."
+      ],
+      "sources": "6 sources"
+    }
+  },
+  "apiPage": {
+    "meta": {
+      "title": "API",
+      "description": "A private markets API: {limits.endpoints} REST endpoints for companies, people, investors, deals and signals, behind one key."
+    },
+    "hero": {
+      "eyebrow": "API",
+      "h1": "Your programmatic edge in",
+      "h1Accent": "private markets.",
+      "sub": "The data behind Founders AI, as {limits.endpoints} REST endpoints: enrichment, search, signals and estimates, with misses that never cost a credit.",
+      "docs": "View documentation"
+    },
+    "coverage": {
+      "eyebrow": "Coverage",
+      "h2": "One key. The whole market.",
+      "companies": "Companies",
+      "people": "People",
+      "investors": "Investors",
+      "transactions": "Transactions"
+    },
+    "endpoints": {
+      "eyebrow": "Endpoints",
+      "h2": "{limits.endpoints} endpoints behind one API key.",
+      "lede": "Built for real workloads, with limits you can plan around.",
+      "cards": [
+        {
+          "title": "Charged per match",
+          "body": "Lookups are billed per matched result; misses are free."
+        },
+        {
+          "title": "Bulk calls",
+          "body": "Up to {limits.bulk} lookups in one request."
+        },
+        {
+          "title": "{limits.rps} requests a second",
+          "body": "Per key, with clear rate-limit headers."
+        },
+        {
+          "title": "Big pages",
+          "body": "Up to {limits.pageSize} records per page."
+        }
+      ]
+    },
+    "explorer": {
+      "eyebrow": "Try it",
+      "h2": "See exactly what comes back.",
+      "lede": "Pick a request and read the response before you write a line of code.",
+      "samples": {
+        "company": "Company enrichment",
+        "resolve": "Find a company ID",
+        "person": "Person enrichment",
+        "talent": "Talent signals",
+        "revenue": "Revenue estimate",
+        "competitors": "Similar companies",
+        "search": "Plain-English search",
+        "saved": "Saved search results"
+      }
+    },
+    "capabilities": {
+      "eyebrow": "Capabilities",
+      "h2": "More than lookups.",
+      "cards": [
+        {
+          "title": "Signals as feeds",
+          "body": "Talent, news and revenue signals as paginated endpoints."
+        },
+        {
+          "title": "Plain-English search",
+          "body": "POST a sentence, get structured filters and results back."
+        },
+        {
+          "title": "Saved searches",
+          "body": "Create searches by API and poll their new results."
+        },
+        {
+          "title": "Revenue & valuation",
+          "body": "Estimates with ranges and confidence on demand."
+        },
+        {
+          "title": "Webhooks",
+          "body": "Get pushed when a saved search finds something new."
+        },
+        {
+          "title": "Misses are free",
+          "body": "You never pay for a lookup we can't match."
+        },
+        {
+          "title": "Entity extraction",
+          "body": "Send text, get back the companies and people in it."
+        },
+        {
+          "title": "Built for agents",
+          "body": "An OpenAPI spec and Markdown docs that AI tools can read."
+        }
+      ]
+    },
+    "start": {
+      "eyebrow": "Getting started",
+      "h2": "From key to first call in minutes.",
+      "lede": "Every new key comes with {limits.trialCredits} free credits.",
+      "cards": [
+        {
+          "title": "Create a key",
+          "body": "Open Founders AI and create a key under Developers."
+        },
+        {
+          "title": "Test a request",
+          "body": "Call /companies/resolve with a domain. It's free."
+        },
+        {
+          "title": "Integrate",
+          "body": "Use the Python SDK or plain HTTP from any language."
+        }
+      ]
+    },
+    "closing": {
+      "h2": "Build on the private-markets API made in Latin America.",
+      "body": "Create a key, make your first call, and see the same data our app runs on."
+    }
+  },
+  "mcpPage": {
+    "meta": {
+      "title": "MCP",
+      "description": "Founders AI over MCP: {limits.mcpTools} tools that bring live private-market data into Claude, ChatGPT, Cursor and more. {limits.mcpFree} free calls a day."
+    },
+    "hero": {
+      "eyebrow": "MCP server",
+      "h1": "Make your AI fluent in",
+      "h1Accent": "private markets.",
+      "sub": "Connect any MCP client to {limits.mcpTools} tools for companies, people, investors, lists and saved searches. {limits.mcpFree} free calls a day per user."
+    },
+    "why": {
+      "eyebrow": "Why MCP",
+      "h2": "Live data behind every answer.",
+      "ticker": [
+        "Works with Claude, ChatGPT and Cursor",
+        "{limits.mcpFree} free calls a day",
+        "{limits.mcpTools} read and write tools"
+      ],
+      "cards": [
+        {
+          "title": "Live, not trained-in",
+          "body": "Answers come from today's data, not a model's memory."
+        },
+        {
+          "title": "Read and write",
+          "body": "{limits.mcpReadTools} read tools and {limits.mcpWriteTools} write tools. Writes always ask first."
+        },
+        {
+          "title": "What's new since last read",
+          "body": "Saved searches return only results you haven't seen."
+        },
+        {
+          "title": "Tools that chain",
+          "body": "Find a company, pull its rivals, add them to a list, in one request."
+        }
+      ]
+    },
+    "tools": {
+      "eyebrow": "Tools",
+      "h2": "{limits.mcpTools} tools. Each one does a whole job.",
+      "lede": "Grouped by what you're trying to do. Free tools are marked.",
+      "free": "Free",
+      "groups": {
+        "resolve": "Resolve & search",
+        "company": "Company intelligence",
+        "people": "People",
+        "investors": "Investors",
+        "lists": "Lists",
+        "searches": "Saved searches"
+      }
+    },
+    "workflows": {
+      "eyebrow": "Workflows",
+      "h2": "What people actually ask.",
+      "cards": [
+        {
+          "title": "Search in plain English",
+          "body": "\"Seed fintechs in Bolivia hiring engineers\" becomes a filtered search."
+        },
+        {
+          "title": "Track with saved searches",
+          "body": "Save it once; ask again next week for only what's new."
+        },
+        {
+          "title": "Build target lists",
+          "body": "Ask it to add the best matches to a list, then confirm."
+        },
+        {
+          "title": "Deep dive on anything",
+          "body": "Profile, funding, team, news and competitors in one answer."
+        }
+      ],
+      "permission": {
+        "title": "Your AI wants to run a write tool",
+        "kind": "Write",
+        "deny": "Deny",
+        "allow": "Allow once"
+      }
+    },
+    "connect": {
+      "eyebrow": "Connect",
+      "h2": "Three steps, no code.",
+      "lede": "Add the server URL to your client, sign in with your Founders AI account, and ask.",
+      "cards": [
+        {
+          "title": "Add the connector",
+          "body": "Paste the server URL into your AI client."
+        },
+        {
+          "title": "Sign in",
+          "body": "Approve access with your Founders AI account."
+        },
+        {
+          "title": "Ask",
+          "body": "Your client now has live private-market data."
+        }
+      ],
+      "copy": "Copy",
+      "copied": "Copied",
+      "guide": "Read the install guide"
+    },
+    "usage": {
+      "eyebrow": "Usage",
+      "h2": "Free to start, fair at scale.",
+      "cards": [
+        {
+          "title": "{limits.mcpFree} free calls a day",
+          "body": "Per user, every day, on any plan."
+        },
+        {
+          "title": "Essentials are always free",
+          "body": "Finding companies, people and investors, lists and saved searches never cost credits."
+        },
+        {
+          "title": "Scales with team credits",
+          "body": "Admins can let heavy users continue on workspace credits."
+        }
+      ]
+    },
+    "closing": {
+      "h2": "Give your AI the whole market.",
+      "body": "Connect your client in a minute and ask your first question with live data."
+    },
+    "demo": {
+      "prompt": "Which seed-stage fintechs in Bolivia are hiring fastest? Add the top three to a list.",
+      "calls": [
+        "search · fintech · Bolivia · seed",
+        "get_company_people × 3",
+        "create_list · needs approval"
+      ],
+      "answer": [
+        "Three matches stand out by 3-month headcount growth, each with a new engineering lead.",
+        "I've prepared a list called \"Bolivia fintech — hiring\". Approve it and I'll create it."
+      ]
+    }
   }
 }

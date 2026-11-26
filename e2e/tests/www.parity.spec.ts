@@ -32,7 +32,7 @@ test("demo form rejects free mail and accepts work email", async ({ page }) => {
 });
 
 test("R2 links land on coming-soon, not 404", async ({ page }) => {
-  const r = await page.goto("/soon/agents");
+  const r = await page.goto("/soon/integrations");
   expect(r?.status()).toBe(200);
   await expect(page.getByRole("heading", { name: "Coming soon" })).toBeVisible();
 });
@@ -47,4 +47,21 @@ test("home links into the Founders app and ecosystem", async ({ page }) => {
   await expect(eco.locator('a[href$="/signup"]')).toHaveCount(1);
   await expect(page.locator('[data-section="home.social"] a[href^="https://www.instagram.com/"]')).toHaveCount(7);
   await expect(page.getByRole("banner").getByRole("link", { name: "Open the app" }).first()).toHaveAttribute("href", /\/signup$/);
+});
+
+test("retired coming-soon URLs redirect to the shipped pages", async ({ page }) => {
+  for (const [from, to] of [["/soon/talent-signals", "/signals/talent"], ["/soon/news", "/news"], ["/soon/revenue-valuation", "/revenue-valuation"], ["/soon/agents", "/agents"], ["/soon/mcp", "/mcp"]]) {
+    const r = await page.goto(from!);
+    expect(r?.status()).toBe(200);
+    expect(new URL(page.url()).pathname).toBe(to);
+  }
+});
+
+test("API explorer switches samples and MCP URL is shown", async ({ page }) => {
+  await page.goto("/api");
+  await page.getByRole("tab", { name: /Revenue estimate/ }).click();
+  await expect(page.locator('[data-section="api.explorer"]')).toContainText("est_revenue_usd");
+  await page.goto("/mcp");
+  await expect(page.locator('[data-section="mcp.connect"] code')).toContainText("/mcp");
+  await expect(page.locator('[data-section="mcp.tools"]')).toContainText("get_company_profile");
 });

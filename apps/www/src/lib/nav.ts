@@ -52,9 +52,9 @@ export function integrationsMenu(): MenuGroup[] {
     {
       label: t("global.menu.integrations.deliveryGroup"),
       items: [
-        { ...m("api"), href: appUrl("/developers") },
+        { ...m("api"), href: "/api" },
         { ...m("bulk"), href: "/pricing#bulk" },
-        { ...m("mcp"), href: soon("mcp"), badge: "soon" },
+        { ...m("mcp"), href: "/mcp", badge: "new" },
       ],
     },
   ];

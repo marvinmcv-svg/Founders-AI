@@ -57,7 +57,7 @@ export default async function News() {
           ["GET", "/news-signals"],
           ["POST", "/companies/resolve"],
           ["GET", "/companies/{companyId}/competitors"],
-          ["GET", "/lists/{listId}"],
+          ["GET", "/lists/companies/{listId}/results"],
         ]}
         samplePath={`/companies/${String(c.id)}/news-signals`}
         sampleJson={JSON.stringify(sample, null, 2)}

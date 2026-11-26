@@ -17,6 +17,8 @@ const nextConfig: NextConfig = {
       { source: "/soon/talent-signals", destination: "/signals/talent", permanent: true },
       { source: "/soon/news", destination: "/news", permanent: true },
       { source: "/soon/revenue-valuation", destination: "/revenue-valuation", permanent: true },
+      { source: "/soon/agents", destination: "/agents", permanent: true },
+      { source: "/soon/mcp", destination: "/mcp", permanent: true },
     ];
   },
   async headers() {

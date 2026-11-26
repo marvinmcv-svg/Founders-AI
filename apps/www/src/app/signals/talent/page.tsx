@@ -47,7 +47,7 @@ export default async function TalentSignals() {
           ["GET", "/talent"],
           ["GET", "/talent/{signalId}"],
           ["GET", "/people/{personId}/talent-signals"],
-          ["GET", "/searches/{searchId}"],
+          ["GET", "/searches/talent/{searchId}/results"],
         ]}
         samplePath="/talent?min_score=8"
         sampleJson={JSON.stringify({ data: [sig], next_cursor: "c_2" }, null, 2)}

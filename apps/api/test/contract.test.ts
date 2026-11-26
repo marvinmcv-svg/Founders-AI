@@ -7,7 +7,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { sql } from "drizzle-orm";
 import { getSql } from "@founders/db";
 import * as repo from "@founders/core/repo";
-import { API_RATE_LIMIT_RPS } from "@founders/core/limits";
+import { API_ENDPOINT_COUNT, API_RATE_LIMIT_RPS } from "@founders/core/limits";
 import { app, ENDPOINTS } from "../src/app";
 import { openApiDocument } from "../src/kit";
 import { SPEC_ROUTES } from "./spec";
@@ -20,6 +20,7 @@ const registered = ENDPOINTS.map((e) => `${e.method.toUpperCase()} ${e.path.repl
 describe("route table", () => {
   it("registers all 74 routes of plan Section 11 (plus the documented investor-list extensions)", () => {
     expect(SPEC_ROUTES.length).toBe(74);
+    expect(SPEC_ROUTES.length).toBe(API_ENDPOINT_COUNT);
     expect(new Set(registered).size).toBe(registered.length);
     const spec = new Set(SPEC_ROUTES.map(norm));
     expect(SPEC_ROUTES.filter((r) => !registered.map(norm).includes(norm(r)))).toEqual([]);

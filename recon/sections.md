@@ -106,3 +106,30 @@ Structural-parity checklist (plan 2.5 / 15). Derived from the plan's Section 6 p
 - `revenue.model`
 - `revenue.delivery`
 - `revenue.closing`
+
+## `/agents`
+- `agents.hero`
+- `agents.pillars`
+- `agents.datasets`
+- `agents.skills`
+- `agents.context`
+- `agents.mcp`
+- `agents.closing`
+
+## `/api`
+- `api.hero`
+- `api.coverage`
+- `api.endpoints`
+- `api.explorer`
+- `api.capabilities`
+- `api.start`
+- `api.closing`
+
+## `/mcp`
+- `mcp.hero`
+- `mcp.why`
+- `mcp.tools`
+- `mcp.workflows`
+- `mcp.connect`
+- `mcp.usage`
+- `mcp.closing`

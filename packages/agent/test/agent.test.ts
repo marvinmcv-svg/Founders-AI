@@ -15,6 +15,7 @@ import { classify, stripActions } from "../src/engine/rules";
 import { ask, resumeTurn } from "../src/runtime";
 import { scheduleDue } from "../src/schedules";
 import { CURATED_SKILLS } from "../src/skills";
+import { AGENT_CURATED_SKILL_COUNT } from "@founders/core/limits";
 import { TOOLS, toolJsonSchemas } from "../src/tools";
 
 const A: repo.OrgContext = { orgId: "org_demo000000000000000000001", userId: "usr_agent_test_0000000001", role: "owner" };
@@ -84,6 +85,7 @@ describe("composer tokens and routing", () => {
   });
 
   it("ships the 12 curated skills and tool schemas the model can read", () => {
+    expect(CURATED_SKILLS).toHaveLength(AGENT_CURATED_SKILL_COUNT);
     expect(CURATED_SKILLS.map((s) => s.slug)).toEqual(["company-brief", "diligence-brief", "founder-check", "fund-intel", "competitor-map", "market-map", "thesis-screen", "weekly-brief", "stealth-radar", "portfolio-pulse", "warm-intro-paths", "lp-update-pull"]);
     const schemas = toolJsonSchemas();
     expect(schemas).toHaveLength(TOOLS.length);

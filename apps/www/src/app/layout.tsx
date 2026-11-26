@@ -6,7 +6,7 @@ import { Header } from "@/components/chrome/Header";
 import { Footer } from "@/components/chrome/Footer";
 import { AnnouncementBar, CookieConsent, DemoPill } from "@/components/chrome/Client";
 import { t } from "@/lib/copy";
-import { appUrl, integrationsMenu, platformMenu, resourcesMenu, soon } from "@/lib/nav";
+import { appUrl, integrationsMenu, platformMenu, resourcesMenu } from "@/lib/nav";
 import { getStatVars } from "@/lib/stats";
 
 export const metadata: Metadata = {
@@ -54,7 +54,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
           platform={platformMenu(vars)}
           integrations={integrationsMenu()}
           resources={resourcesMenu()}
-          links={{ agents: soon("agents"), api: appUrl("/developers"), login: appUrl("/login"), signup: appUrl("/signup") }}
+          links={{ agents: "/agents", api: "/api", login: appUrl("/login"), signup: appUrl("/signup") }}
         />
         <main id="main">{children}</main>
         <Footer />

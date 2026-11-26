@@ -2,6 +2,7 @@
  * MCP server tests (plan 12 / 15 Phase 7): the 29-tool inventory and annotations, protocol round
  * trips through the HTTP handler, metering (100 free/day, overage), tenancy, and principals.
  */
+import { MCP_TOOL_COUNT, MCP_WRITE_TOOL_COUNT } from "@founders/core/limits";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { config } from "dotenv";
 config({ path: new URL("../../../.env", import.meta.url).pathname, quiet: true });
@@ -62,6 +63,8 @@ afterAll(async () => {
 describe("inventory", () => {
   it("has the 29 tools of plan 12: 24 read + 5 write", () => {
     expect(TOOLS).toHaveLength(29);
+    expect(TOOLS).toHaveLength(MCP_TOOL_COUNT);
+    expect(TOOLS.filter((t) => t.write)).toHaveLength(MCP_WRITE_TOOL_COUNT);
     expect(TOOLS.filter((t) => !t.write).map((t) => t.name).sort()).toEqual([...SPEC.read].sort());
     expect(TOOLS.filter((t) => t.write).map((t) => t.name).sort()).toEqual([...SPEC.write].sort());
     // Resolve and list/search management are free; intelligence tools are paid.
