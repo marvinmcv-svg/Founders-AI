@@ -1512,8 +1512,6 @@ export const bulkDeliveries = pgTable(
     sinkConfig: text("sink_config").notNull(), // encrypted JSON
     cadence: text("cadence").notNull().default("DAILY"), // DAILY | WEEKLY | MANUAL
     status: text("status").notNull().default("ACTIVE"),
-    watermark: ts("watermark"),
-    lastOutboxId: bigint("last_outbox_id", { mode: "number" }),
     lastRun: ts("last_run"),
     createdBy: text("created_by").notNull(),
     createdAt: createdAt(),
@@ -1535,6 +1533,21 @@ export const bulkRuns = pgTable(
     finishedAt: ts("finished_at"),
   },
   (t) => [index("bulk_runs_delivery_idx").on(t.deliveryId, t.startedAt)],
+);
+
+/**
+ * What each delivery last shipped: one content hash per row. The next incremental is the exact diff
+ * (new/changed → `upsert`, gone → `delete`) for any dataset, whatever its change tracking (D-058).
+ */
+export const bulkState = pgTable(
+  "bulk_state",
+  {
+    deliveryId: text("delivery_id").notNull(),
+    dataset: text("dataset").notNull(),
+    entityId: text("entity_id").notNull(),
+    hash: text("hash").notNull(),
+  },
+  (t) => [primaryKey({ columns: [t.deliveryId, t.dataset, t.entityId] })],
 );
 
 /** Interest signals (plan 8, 9.4). Only public-evidence sources; telemetry is never a source here. */

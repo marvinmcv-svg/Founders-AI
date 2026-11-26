@@ -57,6 +57,13 @@
       "when": 1795713520510,
       "tag": "0007_phase8_integrations",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1795715836551,
+      "tag": "0008_phase8_bulk_state",
+      "breakpoints": true
     }
   ]
 }

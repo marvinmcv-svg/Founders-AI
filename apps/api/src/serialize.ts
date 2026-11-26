@@ -4,26 +4,9 @@
  */
 import { taxonomyName } from "@founders/core/taxonomy";
 import type { Row } from "@founders/core/repo";
+import { redistributable } from "@founders/core/redistribution";
 
-type Prov = Record<string, { redistributable?: boolean }> | null | undefined;
-
-function blocked(prov: Prov): Set<string> {
-  const out = new Set<string>();
-  if (!prov) return out;
-  for (const [field, p] of Object.entries(prov)) if (p && p.redistributable === false) out.add(field);
-  return out;
-}
-
-export function redistributable<T extends Row>(row: T): T {
-  const deny = blocked(row.provenance as Prov);
-  const copy: Row = { ...row };
-  delete copy.provenance;
-  delete copy.embedding;
-  delete copy.deleted_at;
-  if (deny.has("*")) return {} as T;
-  for (const f of deny) delete copy[f];
-  return copy as T;
-}
+export { redistributable };
 
 const arr = (v: unknown) => (Array.isArray(v) ? (v as string[]) : []);
 

@@ -1,0 +1,22 @@
+{
+  "name": "@founders/zapier",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Zapier integration (Platform CLI app definition). Publishing needs the Zapier partner review (H9).",
+  "exports": { ".": "./src/index.ts" },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "lint": "eslint src test",
+    "test": "vitest run --passWithNoTests"
+  },
+  "devDependencies": {
+    "@founders/api": "workspace:*",
+    "@founders/core": "workspace:*",
+    "@founders/db": "workspace:*",
+    "@types/node": "^22.18.0",
+    "dotenv": "^17.2.3",
+    "drizzle-orm": "^0.45.4",
+    "vitest": "^3.2.4"
+  }
+}

@@ -20,7 +20,8 @@
     "./crypto": "./src/crypto.ts",
     "./llm": "./src/llm.ts",
     "./random": "./src/random.ts",
-    "./extract": "./src/extract.ts"
+    "./extract": "./src/extract.ts",
+    "./redistribution": "./src/redistribution.ts"
   },
   "scripts": {
     "typecheck": "tsc -p tsconfig.json",

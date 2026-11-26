@@ -114,3 +114,36 @@ export async function networkRemoveSource(provider: "LINKEDIN_CSV" | "GMAIL" | "
     return err(e);
   }
 }
+
+/* ---------------- Bulk delivery (plan 13.5) ---------------- */
+
+export async function bulkCreate(input: repo.CreateBulkInput): Promise<Res<{ id: string }>> {
+  try {
+    const r = await repo.createBulkDelivery(await getCtx(), input);
+    revalidatePath("/settings");
+    return { ok: true, data: r };
+  } catch (e) {
+    return err(e);
+  }
+}
+
+export async function bulkRun(id: string, full = false): Promise<Res<{ files: number; rows: number }>> {
+  try {
+    const r = await repo.runBulkDelivery(await getCtx(), id, { full });
+    revalidatePath("/settings");
+    if (r.status === "FAILED") return { ok: false, error: r.error ?? "Delivery failed" };
+    return { ok: true, data: { files: r.manifest?.files.length ?? 0, rows: r.manifest?.files.reduce((a, f) => a + f.rows, 0) ?? 0 } };
+  } catch (e) {
+    return err(e);
+  }
+}
+
+export async function bulkDelete(id: string): Promise<Res<null>> {
+  try {
+    await repo.deleteBulkDelivery(await getCtx(), id);
+    revalidatePath("/settings");
+    return { ok: true, data: null };
+  } catch (e) {
+    return err(e);
+  }
+}

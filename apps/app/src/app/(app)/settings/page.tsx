@@ -10,6 +10,7 @@ import { MCP_RESOURCE } from "@/lib/auth";
 import { SlackIntegration } from "./IntegrationsClient";
 import { CrmIntegrations } from "@/components/integrations/CrmIntegrations";
 import { NetworkSources } from "@/components/integrations/NetworkSources";
+import { BulkDeliveries } from "@/components/integrations/BulkDeliveries";
 import { ApiKeys, DigestPanel, InviteForm } from "./SettingsClient";
 
 export const metadata: Metadata = { title: "Settings" };
@@ -22,7 +23,7 @@ export default async function Settings() {
     repo.listCrmConnections(ctx),
     repo.getCrmLog(ctx, 15),
   ]);
-  const networkSources = await repo.getMyNetworkSources(ctx);
+  const [networkSources, bulk] = await Promise.all([repo.getMyNetworkSources(ctx), repo.listBulkDeliveries(ctx)]);
   const slack = integrations.find((i) => i.provider === "SLACK");
   const [org, members, keys, balance, ledger, usage, statuses, digests, audit] = await Promise.all([
     repo.getOrg(ctx),
@@ -55,7 +56,7 @@ export default async function Settings() {
   return (
     <div className="grid gap-8 p-6 xl:grid-cols-[180px_1fr]">
       <nav className="hidden flex-col gap-1 text-[13px] xl:flex">
-        {[["workspace", "Workspace"], ["members", "Members"], ["api", "API keys"], ["mcp", "MCP"], ["credits", "Credits & usage"], ["notifications", "Notifications"], ["crm", "CRM"], ["network", "Network"], ["integrations", "Alerts & automation"], ["statuses", "Statuses"], ["privacy", "Data & privacy"], ["audit", "Audit log"]].map(([id, l]) => (
+        {[["workspace", "Workspace"], ["members", "Members"], ["api", "API keys"], ["mcp", "MCP"], ["credits", "Credits & usage"], ["notifications", "Notifications"], ["crm", "CRM"], ["network", "Network"], ["bulk", "Bulk delivery"], ["integrations", "Alerts & automation"], ["statuses", "Statuses"], ["privacy", "Data & privacy"], ["audit", "Audit log"]].map(([id, l]) => (
           <a key={id} href={`#${id}`} className="rounded-md px-2 py-1.5 text-muted hover:bg-white/[0.05] hover:text-ink">
             {l}
           </a>
@@ -144,6 +145,9 @@ export default async function Settings() {
           <p className="mt-2 text-[12px] text-muted">
             See the whole team map and warm paths on <Link href="/network" className="text-accent hover:underline">Team Network</Link>.
           </p>
+        </Section>
+        <Section id="bulk" title="Bulk delivery" sub="Datasets to your S3, GCS or Snowflake: full snapshot, then daily incrementals (op column, stable IDs, manifest with checksums).">
+          <BulkDeliveries deliveries={bulk} isAdmin={isAdmin} />
         </Section>
         <Section id="integrations" title="Alerts & automation" sub="Slack channel alerts, webhooks and Zapier.">
           <div className="flex flex-col gap-3">

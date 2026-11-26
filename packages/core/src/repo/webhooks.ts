@@ -49,7 +49,7 @@ export function verifyWebhookSignature(secret: string, body: string, header: str
 
 /* ---------------- management (org-scoped) ---------------- */
 
-type HookRow = { id: string; org_id: string; url: string; events: string[]; secret: string; secret_prefix: string; status: string; disabled_reason: string | null; failing_since: string | null; created_at: string };
+type HookRow = { id: string; org_id: string; url: string; events: string[]; secret: string; secret_prefix: string; status: string; disabled_reason: string | null; failing_since: string | null; source: string; created_at: string };
 
 const publicHook = (r: HookRow) => ({
   id: r.id,
@@ -58,6 +58,7 @@ const publicHook = (r: HookRow) => ({
   status: r.status,
   disabled_reason: r.disabled_reason,
   secret_prefix: r.secret_prefix,
+  source: r.source,
   created_at: r.created_at,
 });
 
@@ -80,8 +81,10 @@ export async function createWebhook(ctx: OrgContext, input: { url: string; event
   if (n >= WEBHOOK_MAX_PER_ORG) throw new ForbiddenError(`A workspace can have at most ${WEBHOOK_MAX_PER_ORG} webhooks`);
   const secret = `whsec_${randomBytes(24).toString("base64url")}`;
   const id = newId("webhook");
-  const [row] = await q<HookRow>(sql`INSERT INTO webhooks (id, org_id, url, events, secret, secret_prefix, created_by)
-    VALUES (${id}, ${ctx.orgId}, ${u.toString()}, ${sql`ARRAY[${sql.join(events.map((e) => sql`${e}`), sql`, `)}]::text[]`}, ${encryptSecret(secret)}, ${secret.slice(0, 10)}, ${ctx.userId})
+  // Zapier REST-hook subscriptions (plan 13.4) are tagged so the UI can show them as Zaps.
+  const source = u.hostname === "hooks.zapier.com" ? "zapier" : "api";
+  const [row] = await q<HookRow>(sql`INSERT INTO webhooks (id, org_id, url, events, secret, secret_prefix, source, created_by)
+    VALUES (${id}, ${ctx.orgId}, ${u.toString()}, ${sql`ARRAY[${sql.join(events.map((e) => sql`${e}`), sql`, `)}]::text[]`}, ${encryptSecret(secret)}, ${secret.slice(0, 10)}, ${source}, ${ctx.userId})
     RETURNING *`);
   return { ...publicHook(row!), secret };
 }

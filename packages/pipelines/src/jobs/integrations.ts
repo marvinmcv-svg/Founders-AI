@@ -1,5 +1,5 @@
 /** Phase 8 scheduled integration work (plan 13.1 scheduled enrichments, 13.2 network). */
-import { processNetworkMoves, runScheduledCrmSyncs, syncAllNetworkSources } from "@founders/core/repo";
+import { processNetworkMoves, runDueBulkDeliveries, runScheduledCrmSyncs, syncAllNetworkSources } from "@founders/core/repo";
 import type { JobDef } from "../runner";
 
 export const crmSyncJob: JobDef = {
@@ -19,5 +19,14 @@ export const networkJob: JobDef = {
     for (const [k, v] of Object.entries(s)) ctx.count(k, v);
     const m = await processNetworkMoves();
     ctx.count("moves", m.moves);
+  },
+};
+
+export const bulkJob: JobDef = {
+  name: "bulk",
+  description: "Deliver bulk datasets that are due (full snapshot first, then incrementals) to S3 / GCS / Snowflake",
+  async run(ctx) {
+    const r = await runDueBulkDeliveries();
+    for (const [k, v] of Object.entries(r)) ctx.count(k, v);
   },
 };
