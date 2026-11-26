@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/generate.ts"
+    ".": "./src/generate.ts",
+    "./load": "./src/load.ts"
   },
   "scripts": {
     "seed": "tsx src/run.ts",

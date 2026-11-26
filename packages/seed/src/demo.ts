@@ -159,5 +159,4 @@ export async function seedDemoWorkspace(
     await sql`INSERT INTO notifications (id, org_id, user_id, kind, payload) VALUES (${`ntf_${deps.random(12)}`}, ${orgId}, ${userId}, 'search.new_results',
       ${sql.json({ searchId: created.id, name: s.name, count: r.added })})`;
   }
-  console.log(`  demo workspace: ${DEMO.email} / ${DEMO.password}  ·  API key ${DEMO.apiKey}`);
 }

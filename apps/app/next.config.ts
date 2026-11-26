@@ -3,7 +3,7 @@ import { config } from "dotenv";
 config({ path: "../../.env" });
 
 const nextConfig: NextConfig = {
-  transpilePackages: ["@founders/ui", "@founders/core", "@founders/config", "@founders/db"],
+  transpilePackages: ["@founders/ui", "@founders/core", "@founders/config", "@founders/db", "@founders/seed", "@founders/api"],
   env: {
     BRAND_NAME: process.env.BRAND_NAME ?? "Founders AI",
     BRAND_DOMAIN: process.env.BRAND_DOMAIN ?? "foundersscz.com",
