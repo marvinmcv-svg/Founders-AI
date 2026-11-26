@@ -13,14 +13,14 @@ export type HeaderProps = {
   links: { agents: string; api: string; login: string; signup: string };
 };
 
-function ItemLink({ item, soonLabel, onClick }: { item: MenuItem; soonLabel: string; onClick?: () => void }) {
+function ItemLink({ item, soonLabel, newLabel, onClick }: { item: MenuItem; soonLabel: string; newLabel?: string; onClick?: () => void }) {
   const external = item.href.startsWith("http");
   const cls = "group flex flex-col gap-0.5 rounded-lg px-3 py-2 hover:bg-white/[0.05]";
   const inner = (
     <>
       <span className="flex items-center gap-2 text-[14px] text-ink">
         {item.title}
-        {item.badge === "soon" ? <Badge tone="neutral">{soonLabel}</Badge> : null}
+        {item.badge === "soon" ? <Badge tone="neutral">{soonLabel}</Badge> : item.badge === "new" && newLabel ? <Badge>{newLabel}</Badge> : null}
       </span>
       <span className="text-[12px] text-muted">{item.desc}</span>
     </>
@@ -92,7 +92,7 @@ export function Header(p: HeaderProps) {
         <div key={g.label}>
           <p className="px-3 pb-1 pt-1 text-[11px] uppercase tracking-[0.12em] text-faint">{g.label}</p>
           {g.items.map((it) => (
-            <ItemLink key={it.title} item={it} soonLabel={p.labels.soon} onClick={() => setOpen(null)} />
+            <ItemLink key={it.title} item={it} soonLabel={p.labels.soon} newLabel={p.labels.new} onClick={() => setOpen(null)} />
           ))}
         </div>
       ))}
@@ -109,7 +109,7 @@ export function Header(p: HeaderProps) {
           <div className="relative">
             <Trigger id="platform" label={p.labels.platform} />
             <Panel id="platform" className="w-[640px]">
-              <ItemLink item={p.platform.overview} soonLabel={p.labels.soon} onClick={() => setOpen(null)} />
+              <ItemLink item={p.platform.overview} soonLabel={p.labels.soon} newLabel={p.labels.new} onClick={() => setOpen(null)} />
               <div className="my-2 border-t border-line" />
               {groups(p.platform.groups)}
               <Link href={p.platform.promo.href} onClick={() => setOpen(null)} className="mt-3 flex items-center justify-between rounded-xl border border-accent/25 bg-accent-soft px-4 py-3">
@@ -169,7 +169,7 @@ export function Header(p: HeaderProps) {
               <details key={sec.label} className="border-b border-line py-2">
                 <summary className="cursor-pointer list-none px-3 py-2 font-display text-[18px] text-ink">{sec.label}</summary>
                 {sec.items.map((it) => (
-                  <ItemLink key={it.title} item={it} soonLabel={p.labels.soon} onClick={() => setMobile(false)} />
+                  <ItemLink key={it.title} item={it} soonLabel={p.labels.soon} newLabel={p.labels.new} onClick={() => setMobile(false)} />
                 ))}
               </details>
             ))}

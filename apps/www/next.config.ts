@@ -12,6 +12,13 @@ const nextConfig: NextConfig = {
     NEXT_PUBLIC_WWW_URL: process.env.NEXT_PUBLIC_WWW_URL ?? "http://localhost:3000",
   },
   poweredByHeader: false,
+  async redirects() {
+    return [
+      { source: "/soon/talent-signals", destination: "/signals/talent", permanent: true },
+      { source: "/soon/news", destination: "/news", permanent: true },
+      { source: "/soon/revenue-valuation", destination: "/revenue-valuation", permanent: true },
+    ];
+  },
   async headers() {
     return [
       {

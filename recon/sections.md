@@ -77,3 +77,32 @@ Structural-parity checklist (plan 2.5 / 15). Derived from the plan's Section 6 p
 - `partners.why`
 - `partners.form`
 - `partners.closing`
+
+## `/signals/talent`
+- `talent.hero`
+- `talent.overview`
+- `talent.feed`
+- `talent.spinouts`
+- `talent.trackers`
+- `talent.api`
+- `talent.closing`
+
+## `/news`
+- `news.hero`
+- `news.signals`
+- `news.updates`
+- `news.lists`
+- `news.competitive`
+- `news.api`
+- `news.agents`
+- `news.closing`
+
+## `/revenue-valuation`
+- `revenue.hero`
+- `revenue.pillars`
+- `revenue.coverage`
+- `revenue.anchored`
+- `revenue.valuation`
+- `revenue.model`
+- `revenue.delivery`
+- `revenue.closing`

@@ -11,7 +11,7 @@ export function Footer() {
   const I = (k: string) => t(`global.menu.integrations.${k}.title`);
   const cols: { title: string; links: [string, string][] }[] = [
     { title: t("global.footer.cols.data"), links: [[P("companies"), "/companies"], [P("people"), "/people"], [P("investors"), "/investors"], [P("transactions"), "/transactions"]] },
-    { title: t("global.footer.cols.features"), links: [[P("talent"), soon("talent-signals")], [P("news"), soon("news")], [P("revenue"), soon("revenue-valuation")], [P("valuation"), soon("revenue-valuation")], [t("global.nav.agents"), soon("agents")]] },
+    { title: t("global.footer.cols.features"), links: [[P("talent"), "/signals/talent"], [P("news"), "/news"], [P("revenue"), "/revenue-valuation"], [P("valuation"), "/revenue-valuation#valuation-estimates"], [t("global.nav.agents"), soon("agents")]] },
     { title: t("global.footer.cols.integrations"), links: [[I("crm"), soon("integrations")], [I("network"), soon("integrations")], [I("chrome"), soon("integrations")]] },
     { title: t("global.footer.cols.delivery"), links: [[I("api"), appUrl("/developers")], [I("mcp"), soon("mcp")], [I("bulk"), "/pricing#bulk"]] },
     { title: t("global.footer.cols.company"), links: [[t("global.footer.program"), "https://foundersscz.com"], [L("partners"), "/partners"], [L("contact"), "/contact"], [L("careers"), soon("careers")], [L("blog"), soon("blog")], [t("global.menu.resources.academy.title"), brand.urls.academy]] },

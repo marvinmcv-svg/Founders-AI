@@ -31,6 +31,10 @@ export async function getStatVars(): Promise<Vars> {
       "stats.talent_signals_7d": floorPlus(s.talent_signals_7d),
       "stats.latam_companies": floorPlus(s.latam_companies),
       "stats.countries": s.countries,
+      "stats.talent_signals": floorPlus(s.talent_signals),
+      "stats.news_signals": floorPlus(s.news_signals),
+      "stats.news_sources": floorPlus(s.news_sources),
+      "stats.revenue_disclosures": floorPlus(s.revenue_disclosures),
     };
   } catch (e) {
     console.warn("[stats] platform_stats read failed:", e instanceof Error ? e.message : String(e));
@@ -52,6 +56,10 @@ function fallbackVars(): Vars {
     "stats.talent_signals_7d": "Hundreds of",
     "stats.latam_companies": "Many",
     "stats.countries": "many",
+    "stats.talent_signals": "thousands of",
+    "stats.news_signals": "hundreds of",
+    "stats.news_sources": "dozens of",
+    "stats.revenue_disclosures": "hundreds of",
   };
 }
 

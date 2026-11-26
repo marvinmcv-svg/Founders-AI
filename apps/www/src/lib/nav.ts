@@ -25,15 +25,15 @@ export function platformMenu(vars: Record<string, string | number>) {
       {
         label: t("global.menu.platform.featuresGroup"),
         items: [
-          { ...m("talent"), href: soon("talent-signals"), badge: "soon" as const },
+          { ...m("talent"), href: "/signals/talent", badge: "new" as const },
           { ...m("interest"), href: soon("interest-signals"), badge: "soon" as const },
-          { ...m("news"), href: soon("news"), badge: "soon" as const },
-          { ...m("revenue"), href: soon("revenue-valuation"), badge: "soon" as const },
-          { ...m("valuation"), href: soon("revenue-valuation"), badge: "soon" as const },
+          { ...m("news"), href: "/news", badge: "new" as const },
+          { ...m("revenue"), href: "/revenue-valuation" },
+          { ...m("valuation"), href: "/revenue-valuation#valuation-estimates" },
         ],
       },
     ] as MenuGroup[],
-    promo: { title: t("global.menu.platform.promo.title"), desc: t("global.menu.platform.promo.desc"), cta: t("global.menu.platform.promo.cta"), href: "/companies#estimates" },
+    promo: { title: t("global.menu.platform.promo.title"), desc: t("global.menu.platform.promo.desc"), cta: t("global.menu.platform.promo.cta"), href: "/revenue-valuation" },
   };
 }
 

@@ -163,7 +163,8 @@
       "explore": "Explore",
       "learnMore": "Learn more",
       "seeDocs": "Read the docs",
-      "talkToUs": "Talk to us"
+      "talkToUs": "Talk to us",
+      "openApp": "Open Founders AI"
     },
     "closing": {
       "h2": "See your market before it moves.",
@@ -914,5 +915,289 @@
     "h1": "This page moved on.",
     "body": "The link may be old, or the page never existed.",
     "cta": "Back home"
+  },
+  "talent": {
+    "meta": {
+      "title": "Talent Signals",
+      "description": "Find stealth founders and new companies months before the first round, from career moves across Latin America and beyond."
+    },
+    "hero": {
+      "eyebrow": "Talent signals",
+      "h1": "Find founders while they're still",
+      "h1Accent": "in stealth.",
+      "sub": "Every day we score the career moves that come before a company: operators leaving to build, stealth teams forming, founders starting again."
+    },
+    "overview": {
+      "eyebrow": "Overview",
+      "h2": "The earliest feed of who is about to build.",
+      "lede": "{stats.talent_signals_7d} new talent signals in the last 7 days, each one scored, summarised and linked to a full profile.",
+      "cards": [
+        {
+          "title": "Signal types",
+          "body": "New company, stealth activity, departure, promotion and return to founding, each tracked on its own."
+        },
+        {
+          "title": "Dates and scores",
+          "body": "Every signal carries the date we saw it and a 1–10 score for how much it matters."
+        },
+        {
+          "title": "Summary and profile",
+          "body": "One line on what happened, with a link to the person's full career history."
+        },
+        {
+          "title": "Targeted to your thesis",
+          "body": "Filter by sector, vertical, country or the company someone just left."
+        }
+      ]
+    },
+    "feed": {
+      "eyebrow": "The feed",
+      "h2": "Four reasons to reach out today.",
+      "lede": "Signals arrive as they happen, ranked so the strongest sit at the top.",
+      "cards": [
+        {
+          "title": "New founders",
+          "body": "Proven operators who just started something of their own."
+        },
+        {
+          "title": "Stealth activity",
+          "body": "Teams forming before a name, a domain or a deck exists."
+        },
+        {
+          "title": "Job changes",
+          "body": "Senior moves that often come right before a new company."
+        },
+        {
+          "title": "Months early",
+          "body": "Most signals land long before the first announced round."
+        }
+      ]
+    },
+    "spinouts": {
+      "eyebrow": "Spinouts",
+      "h2": "See which teams produce founders.",
+      "lede": "Track the companies whose alumni keep starting companies, and meet the next wave as it leaves."
+    },
+    "trackers": {
+      "eyebrow": "Alumni trackers",
+      "h2": "Watch the companies founders come from.",
+      "lede": "Save a tracker per company or fund portfolio and get only what is new since your last look.",
+      "cards": [
+        {
+          "title": "One tracker per company",
+          "body": "Follow everyone who leaves a team you rate."
+        },
+        {
+          "title": "New since last read",
+          "body": "Each tracker counts the signals you haven't seen yet."
+        },
+        {
+          "title": "Alerts where you work",
+          "body": "Send matches to email, Slack or in-app alerts."
+        }
+      ]
+    },
+    "api": {
+      "h2": "Talent signals as an API feed.",
+      "lede": "Poll the feed, pull one person's history, or run a saved talent search on a schedule."
+    },
+    "closing": {
+      "h2": "Reach the founder before the round exists.",
+      "body": "Open Founders AI and see this week's strongest talent signals in Bolivia and across Latin America."
+    }
+  },
+  "news": {
+    "meta": {
+      "title": "News",
+      "description": "Company news turned into scored signals: one line on what changed, classified so you know what to act on."
+    },
+    "hero": {
+      "eyebrow": "News signals",
+      "h1": "Company news, distilled",
+      "h1Accent": "into signal.",
+      "sub": "We read the articles so you don't have to: every mention is summarised in one line, classified and scored for how much it matters."
+    },
+    "signals": {
+      "eyebrow": "News signals",
+      "h2": "Every article becomes one clear line.",
+      "lede": "{stats.news_signals} scored news signals so far from {stats.news_sources} sources, and growing.",
+      "cards": [
+        {
+          "title": "One signal per company",
+          "body": "An article that mentions three companies becomes three signals, each about one of them."
+        },
+        {
+          "title": "What's new, in one line",
+          "body": "A short summary of what changed, with a link to the original."
+        },
+        {
+          "title": "Scored 0–5",
+          "body": "Routine mentions score low; real changes score high and are flagged."
+        },
+        {
+          "title": "Classified for action",
+          "body": "Every signal is tagged with the kind of change it describes."
+        }
+      ]
+    },
+    "updates": {
+      "eyebrow": "Meaningful updates",
+      "h2": "Five kinds of news worth acting on.",
+      "lede": "Filter by the updates that move your work, for the companies you care about.",
+      "cards": [
+        {
+          "title": "Revenue",
+          "body": "Disclosed revenue, ARR and growth milestones."
+        },
+        {
+          "title": "Profitability",
+          "body": "Break-even, margins and cost changes."
+        },
+        {
+          "title": "Traction",
+          "body": "Customers, users, launches and expansion."
+        },
+        {
+          "title": "Funding",
+          "body": "Rounds, debt and new investors."
+        },
+        {
+          "title": "Deals & M&A",
+          "body": "Acquisitions, mergers and partnerships."
+        }
+      ]
+    },
+    "lists": {
+      "eyebrow": "Lists & alerts",
+      "h2": "A newsroom for your portfolio.",
+      "lede": "Point news at a list or saved search and get only what changed since you last read it.",
+      "cards": [
+        {
+          "title": "Your portfolio",
+          "body": "Every update on the companies you back."
+        },
+        {
+          "title": "Competitors of your companies",
+          "body": "What rivals of your portfolio are announcing."
+        },
+        {
+          "title": "Watchlists",
+          "body": "Any list or saved search becomes a news feed."
+        }
+      ]
+    },
+    "competitive": {
+      "eyebrow": "Competitive intel",
+      "h2": "Know what the competition announced this week.",
+      "lede": "Open a company, see its competitor set, and read their news side by side."
+    },
+    "api": {
+      "h2": "News signals through the API.",
+      "lede": "Pull a company's scored news, resolve a name to an ID, or read the news for a whole list."
+    },
+    "agents": {
+      "eyebrow": "Agents",
+      "h2": "An analyst that reads everything.",
+      "lede": "Ask the Founders agent for a weekly digest of your portfolio's news, with sources, and only what is new since the last one."
+    },
+    "closing": {
+      "h2": "Read less. Know more.",
+      "body": "Open Founders AI and turn the news on your companies into a short list of things to act on."
+    }
+  },
+  "revenue": {
+    "meta": {
+      "title": "Revenue & Valuation",
+      "description": "Modeled revenue and valuation for private companies, with honest 90% ranges and the disclosures behind them."
+    },
+    "hero": {
+      "eyebrow": "Revenue & valuation",
+      "h1": "Put a number on every",
+      "h1Accent": "private company.",
+      "sub": "Modeled revenue and valuation with a 90% range and a confidence level, anchored to every verified disclosure we can find."
+    },
+    "pillars": {
+      "eyebrow": "How it works",
+      "h2": "Estimates you can defend in a partner meeting.",
+      "lede": "Four rules behind every number we publish.",
+      "cards": [
+        {
+          "title": "Anchored to disclosures",
+          "body": "When a company reports a figure, the estimate snaps to it."
+        },
+        {
+          "title": "Modeled between anchors",
+          "body": "Headcount, traffic, funding and sector fill the gaps month by month."
+        },
+        {
+          "title": "Honest ranges",
+          "body": "Every estimate comes with a P10–P90 range and a confidence level."
+        },
+        {
+          "title": "Valuation built on revenue",
+          "body": "Valuation stacks revenue, funding history and stage."
+        }
+      ]
+    },
+    "coverage": {
+      "eyebrow": "Coverage",
+      "h2": "From pre-launch to pre-IPO.",
+      "lede": "{stats.companies} companies carry an estimate, and {stats.revenue_disclosures} verified disclosures anchor the model.",
+      "cards": [
+        {
+          "title": "Early and bootstrapped",
+          "body": "Small teams with little public data get wide, honest ranges.",
+          "tag": "Low confidence"
+        },
+        {
+          "title": "Growth and scale-up",
+          "body": "Funded companies with traffic and hiring data get tighter ranges.",
+          "tag": "Medium"
+        },
+        {
+          "title": "Late stage",
+          "body": "Companies with disclosures and priced rounds get the tightest bands.",
+          "tag": "High"
+        }
+      ]
+    },
+    "anchored": {
+      "eyebrow": "Anchored",
+      "h2": "The range narrows where the data is strong.",
+      "lede": "Watch the band widen when data is thin and pull tight at each verified disclosure."
+    },
+    "valuation": {
+      "eyebrow": "Valuation",
+      "h2": "A live valuation between priced rounds.",
+      "lede": "Valuations are re-estimated every month from the company's latest revenue, funding and stage, not frozen at the last round."
+    },
+    "model": {
+      "eyebrow": "The model",
+      "h2": "See what moves the number.",
+      "lede": "Quantile models give the median and the 90% range; the driver breakdown shows what pushed the estimate up or down."
+    },
+    "delivery": {
+      "eyebrow": "Delivery",
+      "h2": "Revenue is a filter, not a footnote.",
+      "lede": "Use estimates wherever you work.",
+      "cards": [
+        {
+          "title": "In the app",
+          "body": "Filter any search by estimated revenue or growth."
+        },
+        {
+          "title": "In the API",
+          "body": "GET /companies/{id}/latest-revenue returns the estimate, range and growth."
+        },
+        {
+          "title": "In your warehouse",
+          "body": "Monthly estimate files in CSV or Parquet with bulk delivery."
+        }
+      ]
+    },
+    "closing": {
+      "h2": "Every private company, with a number and a range.",
+      "body": "Open Founders AI and see modeled revenue and valuation on every profile."
+    }
   }
 }
