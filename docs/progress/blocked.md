@@ -24,3 +24,4 @@ Items from plan Section 0C. Each is stubbed behind an interface so work can cont
 
 | H3 (R2 agent) | BLOCKED-HUMAN | R2 Phase 6 | Working `ANTHROPIC_API_KEY` for the agent's Claude engine and the LLM-graded eval | Agent answers come from the deterministic rules engine (D-037); the Claude loop is covered by tests with a scripted client. |
 | H15 (R2 agent) | BLOCKED-HUMAN | R2 Phase 6 | Human spot-check of agent answers on the 50-prompt eval set | Deterministic graders (sourced, cited, tools, entities, confirmation, no-leak) pass 50/50. |
+| H16 | BLOCKED-HUMAN | R2 Phase 7 | Manual MCP client matrix on the production URL: Claude Desktop/claude.ai, Claude Code, ChatGPT connector, Cursor, Windsurf, OpenCode | Protocol paths those clients use are covered by e2e (OAuth discovery, DCR, PKCE, consent, Streamable HTTP) and MCP Inspector. |

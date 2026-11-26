@@ -6,6 +6,8 @@ import { API_BULK_MAX, API_MAX_PAGE_SIZE, API_RATE_LIMIT_RPS, API_TRIAL_CREDITS 
 import { CREDIT_PRICES } from "@founders/core/pricing";
 import { Card, Wordmark } from "@founders/ui";
 import { CodeBlock, EndpointPill } from "@founders/ui/code";
+import { McpInstall } from "@/components/mcp/McpInstall";
+import { MCP_RESOURCE } from "@/lib/auth";
 
 export const metadata: Metadata = { title: "API reference", description: `${brand.name} REST API reference` };
 
@@ -24,6 +26,7 @@ export default function Developers() {
         <a className="rounded-full border border-line px-3 py-1 hover:border-accent/50" href="/api/v1/openapi.json">openapi.json</a>
         <a className="rounded-full border border-line px-3 py-1 hover:border-accent/50" href="/api/v1/llms.txt">llms.txt</a>
         <Link className="rounded-full border border-line px-3 py-1 hover:border-accent/50" href="/settings#api">Request a key</Link>
+        <a className="rounded-full border border-line px-3 py-1 hover:border-accent/50" href="#mcp">MCP server</a>
       </div>
       <div className="mt-8 grid gap-3 md:grid-cols-4">
         {[[`${API_RATE_LIMIT_RPS} req/s`, "per key"], [API_MAX_PAGE_SIZE.toLocaleString(), "records per page"], [String(API_BULK_MAX), "lookups per bulk call"], [String(API_TRIAL_CREDITS), "trial credits"]].map(([v, l]) => (
@@ -40,6 +43,11 @@ export default function Developers() {
       <p className="mt-2 text-[14px] text-muted">
         By-ID and enrichment: {CREDIT_PRICES["entity.by_id"]} per matched record · estimates: {CREDIT_PRICES["estimates.record"]} · verified email: {CREDIT_PRICES["person.email"]} when found · feeds &amp; searches: {CREDIT_PRICES["feed.per_100"]} per 100 records · AI search: {CREDIT_PRICES["ai_search.query"]} + page · resolve, lists and saved-search management: free. Misses are never charged. Every response returns <code>X-Credits-Charged</code> and <code>X-Credits-Remaining</code>.
       </p>
+      <section id="mcp" className="mt-10 scroll-mt-6">
+        <h2 className="mb-1 text-[20px] font-semibold">MCP server</h2>
+        <p className="mb-4 text-[13.5px] text-muted">Use the same data from Claude, ChatGPT, Cursor, Windsurf, OpenCode or any MCP client. Sign in with your {brand.name} account; no key needed.</p>
+        <McpInstall url={MCP_RESOURCE} />
+      </section>
       {tags.map((tag) => (
         <section key={tag} className="mt-10">
           <h2 className="text-[20px] font-semibold">{tag}</h2>

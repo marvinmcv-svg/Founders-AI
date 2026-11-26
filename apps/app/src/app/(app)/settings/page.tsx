@@ -4,6 +4,9 @@ import * as repo from "@founders/core/repo";
 import { API_TRIAL_CREDITS, MCP_FREE_CALLS_PER_DAY } from "@founders/core/limits";
 import { Badge, buttonClass, Card } from "@founders/ui";
 import { getCtx } from "@/lib/session";
+import { McpInstall } from "@/components/mcp/McpInstall";
+import { McpSettings } from "@/components/mcp/McpSettings";
+import { MCP_RESOURCE } from "@/lib/auth";
 import { SlackIntegration } from "./IntegrationsClient";
 import { ApiKeys, DigestPanel, InviteForm } from "./SettingsClient";
 
@@ -27,6 +30,7 @@ export default async function Settings() {
     ),
   ]);
   const isAdmin = ctx.role === "admin" || ctx.role === "owner";
+  const [mcpOverage, mcpUsage, mcpConnections] = await Promise.all([repo.getMcpOverage(ctx.orgId), repo.getMcpUsage(ctx), repo.getMcpConnections(ctx)]);
   const byOp = new Map<string, { calls: number; credits: number }>();
   for (const u of usage) {
     const k = `${u.surface} · ${u.operation}`;
@@ -43,7 +47,7 @@ export default async function Settings() {
   return (
     <div className="grid gap-8 p-6 xl:grid-cols-[180px_1fr]">
       <nav className="hidden flex-col gap-1 text-[13px] xl:flex">
-        {[["workspace", "Workspace"], ["members", "Members"], ["api", "API keys"], ["credits", "Credits & usage"], ["notifications", "Notifications"], ["integrations", "Integrations"], ["statuses", "Statuses"], ["privacy", "Data & privacy"], ["audit", "Audit log"]].map(([id, l]) => (
+        {[["workspace", "Workspace"], ["members", "Members"], ["api", "API keys"], ["mcp", "MCP"], ["credits", "Credits & usage"], ["notifications", "Notifications"], ["integrations", "Integrations"], ["statuses", "Statuses"], ["privacy", "Data & privacy"], ["audit", "Audit log"]].map(([id, l]) => (
           <a key={id} href={`#${id}`} className="rounded-md px-2 py-1.5 text-muted hover:bg-white/[0.05] hover:text-ink">
             {l}
           </a>
@@ -76,8 +80,12 @@ export default async function Settings() {
         <Section id="api" title="API keys" sub={`Keys are shown once and stored as a hash. New keys need admin approval; the first approved key adds ${API_TRIAL_CREDITS} trial credits.`}>
           <ApiKeys keys={keys} isAdmin={isAdmin} />
           <p className="mt-2 text-[12px] text-muted">
-            Docs, OpenAPI and llms.txt: <Link href="/developers" className="text-accent hover:underline">API & docs</Link> · MCP (R2): {MCP_FREE_CALLS_PER_DAY} free calls/day/user.
+            Docs, OpenAPI and llms.txt: <Link href="/developers" className="text-accent hover:underline">API & docs</Link> · <Link href="#mcp" className="text-accent hover:underline">MCP server</Link>.
           </p>
+        </Section>
+        <Section id="mcp" title="MCP" sub="Connect Claude, ChatGPT, Cursor and other AI tools to this workspace's data.">
+          <McpSettings overage={mcpOverage} isAdmin={isAdmin} usage={mcpUsage} connections={mcpConnections} freePerDay={MCP_FREE_CALLS_PER_DAY} />
+          <div className="mt-4"><McpInstall url={MCP_RESOURCE} /></div>
         </Section>
         <Section id="credits" title="Credits & usage" sub="Exports, email reveals and API calls draw from one balance. Misses are never charged.">
           <div className="grid gap-4 md:grid-cols-[200px_1fr]">

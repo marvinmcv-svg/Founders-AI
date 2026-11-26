@@ -16,10 +16,12 @@
     "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
+    "@better-auth/mcp": "1.7.28",
     "@founders/api": "workspace:*",
     "@founders/config": "workspace:*",
     "@founders/core": "workspace:*",
     "@founders/db": "workspace:*",
+    "@hono/node-server": "^1.19.19",
     "@modelcontextprotocol/server": "2.4.0",
     "drizzle-orm": "^0.45.4",
     "zod": "^4.1.12"

@@ -13,7 +13,9 @@
 
 - **Phase 6 — Agents & Skills:** done except items blocked on H3/H15. Plan and evidence in `docs/progress/phase-6.md`. `packages/agent` (Claude Messages API loop + rules-engine fallback, tools, number guard, confirmations, credits/caps), 12 curated skills + editor/share/schedule, personalization, agent UI, `apps/agent-evals` (50/50 on the rules engine).
 
-**Next:** Phase 7 (MCP server — the agent tools in `packages/agent/src/tools.ts` are the shared implementation), then 9 (remaining marketing pages). Read plan 12, 15 (7) and 06.
+- **Phase 7 — MCP server:** done except the manual client matrix (H16). Plan and evidence in `docs/progress/phase-7.md`. `/mcp` (Streamable HTTP, 29 tools, 3 prompts), OAuth 2.1 (Better Auth `mcp()` + DCR + CIMD), API-key fallback, metering (100 free/day, overage), Settings → MCP + install guide.
+
+**Next:** Phase 9 (remaining R2 marketing pages: Talent, News, Revenue/Valuation, Agents, API, MCP, comparison & alternatives, blog/insights). Then the R2 review. Read plan 06, 17, 15 (9) and 0B.
 
 **Open R1 carry-overs** (not blocking R2 work): SEC Form D public pipeline, entity resolution, OpenSearch + indexer (outbox is ready), BullMQ workers (H2: Redis), 10M-row load test, Stripe (H13), TS SDK, Fumadocs console, Storybook, Lighthouse/axe, Turnstile (H3).
 

@@ -43,6 +43,7 @@ async function authorize(page: Page, request: APIRequestContext, decision: "allo
   await expect(page.getByRole("heading", { name: /Connect E2E MCP client/ })).toBeVisible({ timeout: 60000 });
   expect(page.url()).toContain("/oauth/consent?");
   await page.waitForLoadState("networkidle"); // consent buttons are a client island
+  if (decision === "allow") await page.screenshot({ path: "../docs/progress/screens/phase-7-mcp-consent.png" });
   await page.getByRole("button", { name: decision === "allow" ? /^Allow/ : "Deny" }).click();
   await expect.poll(() => callback, { timeout: 30000 }).not.toBeNull();
   const cb = callback as unknown as URL;
@@ -85,4 +86,18 @@ test("an MCP client connects with OAuth (DCR + PKCE + consent) and calls tools",
 test("denying consent returns access_denied to the client", async ({ page, request }) => {
   const { cb } = await authorize(page, request, "deny");
   expect(cb.searchParams.get("error")).toBe("access_denied");
+});
+
+test("Settings → MCP shows the install guide, overage toggle and connected apps", async ({ page }) => {
+  await page.goto("/login");
+  await page.click("form button");
+  await page.waitForURL(/\/companies/);
+  await page.goto("/settings#mcp");
+  await expect(page.getByRole("heading", { name: "MCP", exact: true })).toBeVisible();
+  await expect(page.getByText("Server URL (Streamable HTTP, OAuth 2.1)")).toBeVisible();
+  await expect(page.getByText(/claude mcp add --transport http/)).toBeVisible();
+  await expect(page.getByRole("switch", { name: "Allow MCP overage on credits" })).toBeVisible();
+  await expect(page.getByText("E2E MCP client").first()).toBeVisible(); // connected in the first test
+  await page.locator("#mcp").scrollIntoViewIfNeeded();
+  await page.screenshot({ path: "../docs/progress/screens/phase-7-settings-mcp.png" });
 });
