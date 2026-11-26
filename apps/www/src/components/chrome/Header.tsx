@@ -143,7 +143,7 @@ export function Header(p: HeaderProps) {
           <a href={p.links.login} className={buttonClass("ghost", "sm")}>
             {p.labels.login}
           </a>
-          <a href={p.links.signup} className={buttonClass("primary", "sm")}>
+          <a href={p.links.signup} data-track="cta_open_app" className={buttonClass("primary", "sm")}>
             {p.labels.getStarted}
           </a>
         </div>
@@ -181,7 +181,7 @@ export function Header(p: HeaderProps) {
             <a href={p.links.login} className={buttonClass("secondary", "md")}>
               {p.labels.login}
             </a>
-            <a href={p.links.signup} className={buttonClass("primary", "md")} onClick={() => setMobile(false)}>
+            <a href={p.links.signup} data-track="cta_open_app" className={buttonClass("primary", "md")} onClick={() => setMobile(false)}>
               {p.labels.getStarted}
             </a>
           </div>

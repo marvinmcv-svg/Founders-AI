@@ -4,6 +4,7 @@ import { Marquee } from "@founders/ui/motion";
 import { Block, CardGrid, CtaBand, ProductHero, Split } from "@/components/sections/kit";
 import { ToolCatalog } from "@/components/mocks/ai";
 import { CopyUrl, McpClientSwitcher, PermissionDialogMock } from "@/components/mocks/ai-client";
+import { pageMeta } from "@/lib/meta";
 import { t, tList } from "@/lib/copy";
 import { appUrl } from "@/lib/nav";
 import { getStatVars } from "@/lib/stats";
@@ -11,7 +12,7 @@ import { getStatVars } from "@/lib/stats";
 export const revalidate = 600;
 export async function generateMetadata(): Promise<Metadata> {
   const vars = await getStatVars();
-  return { title: t("mcpPage.meta.title"), description: t("mcpPage.meta.description", vars), alternates: { canonical: "/mcp" } };
+  return pageMeta({ title: t("mcpPage.meta.title"), description: t("mcpPage.meta.description", vars), path: "/mcp", kicker: t("mcpPage.hero.eyebrow"), ogTitle: `${t("mcpPage.hero.h1")} ${t("mcpPage.hero.h1Accent")}` });
 }
 
 export default async function Mcp() {

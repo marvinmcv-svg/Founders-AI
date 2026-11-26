@@ -5,6 +5,7 @@ import { FIX } from "@founders/mocks";
 import { CodeBlock } from "@founders/ui/code";
 import { Block, CardGrid, CtaBand, ProductHero, StatTiles } from "@/components/sections/kit";
 import { ApiExplorer, type ApiSample } from "@/components/mocks/ai-client";
+import { pageMeta } from "@/lib/meta";
 import { t } from "@/lib/copy";
 import { appUrl } from "@/lib/nav";
 import { getStatVars } from "@/lib/stats";
@@ -12,7 +13,7 @@ import { getStatVars } from "@/lib/stats";
 export const revalidate = 600;
 export async function generateMetadata(): Promise<Metadata> {
   const vars = await getStatVars();
-  return { title: t("apiPage.meta.title"), description: t("apiPage.meta.description", vars), alternates: { canonical: "/api" } };
+  return pageMeta({ title: t("apiPage.meta.title"), description: t("apiPage.meta.description", vars), path: "/api", kicker: t("apiPage.hero.eyebrow"), ogTitle: `${t("apiPage.hero.h1")} ${t("apiPage.hero.h1Accent")}` });
 }
 
 const j = (v: unknown) => JSON.stringify(v, null, 2);

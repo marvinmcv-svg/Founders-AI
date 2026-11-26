@@ -4,10 +4,11 @@ import { ArrowUpRight } from "lucide-react";
 import { buttonClass, Card } from "@founders/ui";
 import { Block, CardGrid, ProductHero } from "@/components/sections/kit";
 import { openRoles } from "@/lib/careers";
+import { pageMeta } from "@/lib/meta";
 import { t } from "@/lib/copy";
 
 export const revalidate = 3600;
-export const metadata: Metadata = { title: t("careers.meta.title"), description: t("careers.meta.description"), alternates: { canonical: "/careers" } };
+export const metadata: Metadata = pageMeta({ title: t("careers.meta.title"), description: t("careers.meta.description"), path: "/careers", kicker: t("careers.hero.eyebrow"), ogTitle: `${t("careers.hero.h1")} ${t("careers.hero.h1Accent")}` });
 
 export default async function Careers() {
   const roles = await openRoles();

@@ -3,9 +3,10 @@ import Link from "next/link";
 import { buttonClass, Card } from "@founders/ui";
 import { Block, ProductHero } from "@/components/sections/kit";
 import { allComparisons } from "@/lib/comparisons";
+import { pageMeta } from "@/lib/meta";
 import { t } from "@/lib/copy";
 
-export const metadata: Metadata = { title: t("comparisons.meta.title"), description: t("comparisons.meta.description"), alternates: { canonical: "/comparisons" } };
+export const metadata: Metadata = pageMeta({ title: t("comparisons.meta.title"), description: t("comparisons.meta.description"), path: "/comparisons", kicker: t("comparisons.hero.eyebrow"), ogTitle: `${t("comparisons.hero.h1")} ${t("comparisons.hero.h1Accent")}` });
 
 export default function Comparisons() {
   const list = allComparisons();

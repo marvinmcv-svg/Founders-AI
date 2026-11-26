@@ -17,7 +17,9 @@
 
 - **Marketing home redesign (2026-11-26, D-047):** new brand-first home page (`apps/www/src/app/page.tsx`, `components/home/*`): animated hero with tilting product window, scroll-lit mission, Founders ecosystem (Program → foundersscz.com/aplicar, Academy, Community, Founders AI → app `/signup`), platform bento, live stats, Santa Cruz radar, Instagram captions. Header/hero/closing CTAs open the app. Screens: `docs/progress/screens/www-home-*.png`. Open question: production www renders stat *words*, not numbers, although `platform_stats` has data; `getStatVars` now logs the reason (`[stats]` in Vercel runtime logs).
 
-**Next:** Phase 9 (remaining R2 marketing pages: Talent, News, Revenue/Valuation, Agents, API, MCP, comparison & alternatives, blog/insights). Then the R2 review. Read plan 06, 17, 15 (9) and 0B.
+- **Phase 9 — Remaining marketing pages & content:** done except human-only items. Plan and evidence in `docs/progress/phase-9.md`. Talent, News, Revenue & Valuation, Agents, API, MCP pages; blog (Markdown, RSS, authors), Insights, Careers, comparison template (H17), OG images, sitemap, JSON-LD, consent-gated analytics, link checker, copy-similarity check.
+
+**Next:** R2 review by the owner (all R2 phases are done except human-only items). Do not start R3 (Phase 8 integrations, Phase 10 hardening) without approval.
 
 **Open R1 carry-overs** (not blocking R2 work): SEC Form D public pipeline, entity resolution, OpenSearch + indexer (outbox is ready), BullMQ workers (H2: Redis), 10M-row load test, Stripe (H13), TS SDK, Fumadocs console, Storybook, Lighthouse/axe, Turnstile (H3).
 

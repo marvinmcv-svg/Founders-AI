@@ -5,6 +5,7 @@ import "./globals.css";
 import { Header } from "@/components/chrome/Header";
 import { Footer } from "@/components/chrome/Footer";
 import { AnnouncementBar, CookieConsent, DemoPill } from "@/components/chrome/Client";
+import { AnalyticsListener } from "@/components/chrome/Analytics";
 import { t } from "@/lib/copy";
 import { appUrl, integrationsMenu, platformMenu, resourcesMenu } from "@/lib/nav";
 import { getStatVars } from "@/lib/stats";
@@ -21,11 +22,11 @@ export const viewport: Viewport = { themeColor: "#0a0a0a" };
 
 const orgJsonLd = {
   "@context": "https://schema.org",
-  "@type": "Organization",
-  name: brand.name,
-  url: brand.urls.www,
-  logo: `${brand.urls.www}/founders-mark.jpg`,
-  sameAs: [brand.social.instagram].filter(Boolean),
+  "@graph": [
+    { "@type": "Organization", "@id": `${brand.urls.www}/#org`, name: brand.name, legalName: brand.legalEntity, url: brand.urls.www, logo: `${brand.urls.www}/founders-mark.jpg`, sameAs: [brand.social.instagram, brand.urls.academy].filter(Boolean), address: { "@type": "PostalAddress", addressLocality: "Santa Cruz de la Sierra", addressCountry: "BO" } },
+    { "@type": "WebSite", "@id": `${brand.urls.www}/#website`, name: brand.name, url: brand.urls.www, publisher: { "@id": `${brand.urls.www}/#org` } },
+    { "@type": "SoftwareApplication", name: brand.name, applicationCategory: "BusinessApplication", operatingSystem: "Web", url: brand.urls.app, publisher: { "@id": `${brand.urls.www}/#org` } },
+  ],
 };
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
@@ -58,6 +59,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         />
         <main id="main">{children}</main>
         <Footer />
+        <AnalyticsListener />
         <DemoPill cta={t("global.demoPill.cta")} bookedLabel={t("global.demoPill.bookedToday")} />
         <CookieConsent text={t("global.cookie.text")} accept={t("global.cookie.accept")} reject={t("global.cookie.reject")} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }} />

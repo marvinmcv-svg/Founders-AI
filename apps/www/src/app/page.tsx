@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { ArrowRight, ArrowUpRight, Bot, Plug, Sparkles } from "lucide-react";
@@ -11,8 +12,10 @@ import { LiveStat, ScrollLitText, SpotlightCard } from "@/components/home/Intera
 import { t, tList, tObjects } from "@/lib/copy";
 import { appUrl } from "@/lib/nav";
 import { getStatVars, isNumericStat } from "@/lib/stats";
+import { pageMeta } from "@/lib/meta";
 
 export const revalidate = 600;
+export const metadata: Metadata = { ...pageMeta({ title: t("home.meta.title"), description: t("home.hero.sub"), path: "/", kicker: t("home.hero.eyebrow"), ogTitle: `${t("home.hero.h1a")} ${t("home.hero.h1b")} ${t("home.hero.h1c")}` }), title: { absolute: t("home.meta.title") } };
 
 /** Founders ecosystem destinations (all real, owner-run). */
 const PROGRAM_APPLY = "https://foundersscz.com/aplicar";
@@ -62,7 +65,7 @@ export default async function Home() {
           scrollLabel={t("home.hero.scroll")}
           ctas={
             <>
-              <a href={appUrl("/signup")} className={buttonClass("primary", "lg", "group h-14 px-8 text-[16px] shadow-[0_0_40px_rgba(216,255,74,0.35)]")}>
+              <a href={appUrl("/signup")} data-track="cta_open_app" className={buttonClass("primary", "lg", "group h-14 px-8 text-[16px] shadow-[0_0_40px_rgba(216,255,74,0.35)]")}>
                 {t("home.hero.cta")}
                 <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
               </a>
@@ -111,7 +114,7 @@ export default async function Home() {
         <div className="mt-14 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           {eco.map((e, i) => (
             <Reveal key={e.k} index={i} className="h-full">
-              <a href={e.href} target={e.k === "ai" ? undefined : "_blank"} rel={e.k === "ai" ? undefined : "noopener noreferrer"} className="block h-full">
+              <a href={e.href} data-track="cta_ecosystem" data-track-label={e.k} target={e.k === "ai" ? undefined : "_blank"} rel={e.k === "ai" ? undefined : "noopener noreferrer"} className="block h-full">
                 <SpotlightCard className={cn("flex h-full min-h-[340px] flex-col p-6 transition-transform duration-300 hover:-translate-y-1", e.featured && "border-accent/40 bg-[linear-gradient(160deg,rgba(216,255,74,0.14),transparent_55%)]")}>
                   <div className="flex h-full flex-col">
                     <div className="flex items-center justify-between">
@@ -341,7 +344,7 @@ export default async function Home() {
             </h2>
             <p className="mt-7 max-w-2xl text-[17px] text-muted md:text-[19px]">{t("home.closing2.body")}</p>
             <div className="mt-10 flex flex-wrap justify-center gap-3">
-              <a href={appUrl("/signup")} className={buttonClass("primary", "lg", "group h-14 px-8 text-[16px] shadow-[0_0_40px_rgba(216,255,74,0.35)]")}>
+              <a href={appUrl("/signup")} data-track="cta_open_app" className={buttonClass("primary", "lg", "group h-14 px-8 text-[16px] shadow-[0_0_40px_rgba(216,255,74,0.35)]")}>
                 {t("home.closing2.cta")}
                 <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
               </a>

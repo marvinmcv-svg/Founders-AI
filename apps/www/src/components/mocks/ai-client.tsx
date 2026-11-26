@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Check, Copy, ShieldCheck } from "lucide-react";
 import { cn } from "@founders/ui";
 import { CodeBlock } from "@founders/ui/code";
+import { track } from "@/lib/analytics";
 
 export type ApiSample = { id: string; label: string; method: string; path: string; json: string };
 
@@ -27,7 +28,10 @@ export function ApiExplorer({ samples, base }: { samples: ApiSample[]; base: str
             key={x.id}
             role="tab"
             aria-selected={x.id === s.id}
-            onClick={() => setId(x.id)}
+            onClick={() => {
+              setId(x.id);
+              track("api_sample_view", { sample: x.id });
+            }}
             className={cn("flex items-center gap-3 rounded-[12px] border px-4 py-3 text-left text-[14px] transition-colors", x.id === s.id ? "border-accent/50 bg-accent/10 text-ink" : "border-line bg-paper text-muted hover:border-line-strong hover:text-ink")}
           >
             <span className={cn("rounded px-1.5 py-0.5 font-mono text-[10.5px] font-semibold", x.method === "GET" ? "bg-info/15 text-info" : "bg-accent/15 text-accent")}>{x.method}</span>
@@ -66,7 +70,10 @@ export function McpClientSwitcher({ prompt, toolCalls, answer, server }: { promp
     <div>
       <div className="mb-3 flex flex-wrap gap-2" role="tablist" aria-label="MCP clients">
         {CLIENTS.map((x) => (
-          <button key={x.id} role="tab" aria-selected={x.id === id} onClick={() => setId(x.id)} className={cn("rounded-full border px-3.5 py-1.5 text-[13px] transition-colors", x.id === id ? "border-accent/60 bg-accent/10 text-ink" : "border-line text-muted hover:text-ink")}>
+          <button key={x.id} role="tab" aria-selected={x.id === id} onClick={() => {
+              setId(x.id);
+              track("mcp_client_switch", { client: x.id });
+            }} className={cn("rounded-full border px-3.5 py-1.5 text-[13px] transition-colors", x.id === id ? "border-accent/60 bg-accent/10 text-ink" : "border-line text-muted hover:text-ink")}>
             {x.name}
           </button>
         ))}
@@ -126,6 +133,7 @@ export function CopyUrl({ url, copy, copied }: { url: string; copy: string; copi
       <code className="min-w-0 flex-1 truncate font-mono text-[13.5px] text-accent">{url}</code>
       <button
         onClick={() => {
+          track("mcp_copy_url");
           void navigator.clipboard?.writeText(url).then(() => {
             setDone(true);
             setTimeout(() => setDone(false), 1500);

@@ -33,7 +33,7 @@ export function ProductHero({ id, prefix, vars, children, secondary }: { id: str
         </h1>
         <p className="mt-6 max-w-2xl text-pretty text-[17px] leading-relaxed text-muted md:text-[19px]">{t(`${prefix}.sub`, vars)}</p>
         <div className="mt-9 flex flex-wrap gap-3">
-          <a href={appUrl("/signup")} className={buttonClass("primary", "lg", "group shadow-[0_0_40px_rgba(216,255,74,0.3)]")}>
+          <a href={appUrl("/signup")} data-track="cta_open_app" className={buttonClass("primary", "lg", "group shadow-[0_0_40px_rgba(216,255,74,0.3)]")}>
             {t("global.cta.openApp")}
             <ArrowRight size={17} className="transition-transform group-hover:translate-x-1" />
           </a>
@@ -48,7 +48,7 @@ export function ProductHero({ id, prefix, vars, children, secondary }: { id: str
               </Link>
             )
           ) : (
-            <Link href="/contact" className={buttonClass("secondary", "lg")}>
+            <Link href="/contact" data-track="cta_book_demo" className={buttonClass("secondary", "lg")}>
               {t("global.cta.bookDemo")}
             </Link>
           )}
@@ -138,11 +138,11 @@ export function CtaBand({ id, h2, body }: { id: string; h2: string; body: string
           <h2 className="max-w-4xl text-balance font-display text-[40px] font-semibold leading-[0.98] tracking-[-0.04em] md:text-[72px]">{h2}</h2>
           <p className="mt-6 max-w-2xl text-[17px] text-muted">{body}</p>
           <div className="mt-9 flex flex-wrap justify-center gap-3">
-            <a href={appUrl("/signup")} className={buttonClass("primary", "lg", "group shadow-[0_0_40px_rgba(216,255,74,0.35)]")}>
+            <a href={appUrl("/signup")} data-track="cta_open_app" className={buttonClass("primary", "lg", "group shadow-[0_0_40px_rgba(216,255,74,0.35)]")}>
               {t("global.cta.openApp")}
               <ArrowRight size={17} className="transition-transform group-hover:translate-x-1" />
             </a>
-            <Link href="/contact" className={buttonClass("secondary", "lg")}>
+            <Link href="/contact" data-track="cta_book_demo" className={buttonClass("secondary", "lg")}>
               {t("global.cta.bookDemo")}
             </Link>
           </div>

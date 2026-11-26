@@ -1,6 +1,7 @@
 "use client";
 import { useState, type FormEvent } from "react";
 import { buttonClass, cn } from "@founders/ui";
+import { track } from "@/lib/analytics";
 
 export type NewsletterCopy = { title: string; body: string; placeholder: string; cta: string; done: string; error: string };
 
@@ -13,6 +14,7 @@ export function Newsletter({ copy, className }: { copy: NewsletterCopy; classNam
     setState("busy");
     const r = await fetch("/api/leads", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ kind: "NEWSLETTER", email: f.get("email"), website: f.get("website") }) }).catch(() => null);
     setState(r?.ok ? "done" : "error");
+    if (r?.ok) track("newsletter_signup");
   };
   return (
     <div data-newsletter className={cn("rounded-[24px] border border-line bg-paper p-6 md:p-8", className)}>

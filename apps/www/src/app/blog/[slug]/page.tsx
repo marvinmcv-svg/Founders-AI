@@ -9,6 +9,7 @@ import { Kicker } from "@/components/sections/kit";
 import { allPosts, author, formatDate, getPost, relatedPosts, renderMarkdown } from "@/lib/blog";
 import { fill, t } from "@/lib/copy";
 import { newsletterCopy } from "@/lib/newsletter";
+import { pageMeta } from "@/lib/meta";
 import { getStatVars } from "@/lib/stats";
 
 export const revalidate = 600;
@@ -23,12 +24,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const p = getPost(slug);
   if (!p) return {};
   const vars = await getStatVars();
-  return {
-    title: p.title,
-    description: fill(p.description, vars),
-    alternates: { canonical: `/blog/${p.slug}` },
-    openGraph: { type: "article", title: p.title, description: fill(p.description, vars), publishedTime: p.date, modifiedTime: p.updated ?? p.date, authors: [author(p.author).name], tags: p.tags },
-  };
+  const base = pageMeta({ title: p.title, description: fill(p.description, vars), path: `/blog/${p.slug}`, kicker: p.tags[0] ?? "Blog", type: "article" });
+  return { ...base, openGraph: { ...base.openGraph, type: "article", publishedTime: p.date, modifiedTime: p.updated ?? p.date, authors: [author(p.author).name], tags: p.tags } };
 }
 
 export default async function BlogPost({ params }: { params: Promise<{ slug: string }> }) {

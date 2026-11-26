@@ -5,11 +5,12 @@ import { buttonClass } from "@founders/ui";
 import { Rotator } from "@founders/ui/motion";
 import { Block, CardGrid, CtaBand, Kicker, ProductHero, Split } from "@/components/sections/kit";
 import { AgentMock, SkillLibraryMock } from "@/components/mocks/ai";
+import { pageMeta } from "@/lib/meta";
 import { t, tList } from "@/lib/copy";
 import { getStatVars } from "@/lib/stats";
 
 export const revalidate = 600;
-export const metadata: Metadata = { title: t("agents.meta.title"), description: t("agents.meta.description"), alternates: { canonical: "/agents" } };
+export const metadata: Metadata = pageMeta({ title: t("agents.meta.title"), description: t("agents.meta.description"), path: "/agents", kicker: t("agents.hero.eyebrow"), ogTitle: `${t("agents.hero.h1")} ${t("agents.hero.h1Accent")}` });
 
 export default async function Agents() {
   const vars = await getStatVars();

@@ -4,11 +4,12 @@ import { FIX } from "@founders/mocks";
 import { ApiPromo } from "@/components/sections";
 import { Block, CardGrid, CtaBand, ProductHero, Split } from "@/components/sections/kit";
 import { CompetitorNewsMock, NewsCardsMock } from "@/components/mocks/signals";
+import { pageMeta } from "@/lib/meta";
 import { t } from "@/lib/copy";
 import { getStatVars } from "@/lib/stats";
 
 export const revalidate = 600;
-export const metadata: Metadata = { title: t("news.meta.title"), description: t("news.meta.description"), alternates: { canonical: "/news" } };
+export const metadata: Metadata = pageMeta({ title: t("news.meta.title"), description: t("news.meta.description"), path: "/news", kicker: t("news.hero.eyebrow"), ogTitle: `${t("news.hero.h1")} ${t("news.hero.h1Accent")}` });
 
 export default async function News() {
   const vars = await getStatVars();

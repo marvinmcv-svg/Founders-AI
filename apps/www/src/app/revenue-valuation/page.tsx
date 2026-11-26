@@ -4,11 +4,12 @@ import { CompanyProfileMock, FIX } from "@founders/mocks";
 import { CodeBlock } from "@founders/ui/code";
 import { Block, CardGrid, CtaBand, ProductHero, Split } from "@/components/sections/kit";
 import { AnchoredBandMock, DriversMock, ValuationMock } from "@/components/mocks/signals";
+import { pageMeta } from "@/lib/meta";
 import { t } from "@/lib/copy";
 import { getStatVars } from "@/lib/stats";
 
 export const revalidate = 600;
-export const metadata: Metadata = { title: t("revenue.meta.title"), description: t("revenue.meta.description"), alternates: { canonical: "/revenue-valuation" } };
+export const metadata: Metadata = pageMeta({ title: t("revenue.meta.title"), description: t("revenue.meta.description"), path: "/revenue-valuation", kicker: t("revenue.hero.eyebrow"), ogTitle: `${t("revenue.hero.h1")} ${t("revenue.hero.h1Accent")}` });
 
 export default async function RevenueValuation() {
   const vars = await getStatVars();

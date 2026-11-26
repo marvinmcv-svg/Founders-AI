@@ -5,11 +5,12 @@ import { SignalTicker } from "@founders/mocks/animated";
 import { ApiPromo } from "@/components/sections";
 import { Block, CardGrid, CtaBand, ProductHero, Split } from "@/components/sections/kit";
 import { SpinoutsMock, TrackersMock } from "@/components/mocks/signals";
+import { pageMeta } from "@/lib/meta";
 import { t } from "@/lib/copy";
 import { getStatVars } from "@/lib/stats";
 
 export const revalidate = 600;
-export const metadata: Metadata = { title: t("talent.meta.title"), description: t("talent.meta.description"), alternates: { canonical: "/signals/talent" } };
+export const metadata: Metadata = pageMeta({ title: t("talent.meta.title"), description: t("talent.meta.description"), path: "/signals/talent", kicker: t("talent.hero.eyebrow"), ogTitle: `${t("talent.hero.h1")} ${t("talent.hero.h1Accent")}` });
 
 export default async function TalentSignals() {
   const vars = await getStatVars();

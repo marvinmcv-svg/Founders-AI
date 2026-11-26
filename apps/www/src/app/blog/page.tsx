@@ -5,11 +5,11 @@ import { Newsletter } from "@/components/blog/Newsletter";
 import { ProductHero } from "@/components/sections/kit";
 import { allPosts, allTags } from "@/lib/blog";
 import { t } from "@/lib/copy";
+import { pageMeta } from "@/lib/meta";
 import { newsletterCopy } from "@/lib/newsletter";
 
 export const metadata: Metadata = {
-  title: t("blog.meta.title"),
-  description: t("blog.meta.description"),
+  ...pageMeta({ title: t("blog.meta.title"), description: t("blog.meta.description"), path: "/blog", kicker: t("blog.hero.eyebrow"), ogTitle: `${t("blog.hero.h1")} ${t("blog.hero.h1Accent")}` }),
   alternates: { canonical: "/blog", types: { "application/rss+xml": "/blog/rss.xml" } },
 };
 

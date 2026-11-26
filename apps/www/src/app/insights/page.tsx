@@ -4,10 +4,11 @@ import { PostCard } from "@/components/blog/PostCard";
 import { Newsletter } from "@/components/blog/Newsletter";
 import { Block, ProductHero } from "@/components/sections/kit";
 import { postsByTag } from "@/lib/blog";
+import { pageMeta } from "@/lib/meta";
 import { t } from "@/lib/copy";
 import { newsletterCopy } from "@/lib/newsletter";
 
-export const metadata: Metadata = { title: t("insights.meta.title"), description: t("insights.meta.description"), alternates: { canonical: "/insights" } };
+export const metadata: Metadata = pageMeta({ title: t("insights.meta.title"), description: t("insights.meta.description"), path: "/insights", kicker: t("insights.hero.eyebrow"), ogTitle: `${t("insights.hero.h1")} ${t("insights.hero.h1Accent")}` });
 
 export default function Insights() {
   const research = postsByTag("insights");

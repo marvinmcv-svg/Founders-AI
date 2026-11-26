@@ -6,7 +6,7 @@ import { t } from "@/lib/copy";
 
 export function PostCard({ post, featured }: { post: Post; featured?: boolean }) {
   return (
-    <Link href={`/blog/${post.slug}`} className={cn("group flex h-full flex-col justify-between rounded-[20px] border p-6 transition-all duration-300 hover:-translate-y-1", featured ? "border-accent/40 bg-[linear-gradient(160deg,rgba(216,255,74,0.12),transparent_55%)] md:p-10" : "border-line bg-paper hover:border-accent/40")}>
+    <Link href={`/blog/${post.slug}`} data-track="blog_post_click" data-track-label={post.slug} className={cn("group flex h-full flex-col justify-between rounded-[20px] border p-6 transition-all duration-300 hover:-translate-y-1", featured ? "border-accent/40 bg-[linear-gradient(160deg,rgba(216,255,74,0.12),transparent_55%)] md:p-10" : "border-line bg-paper hover:border-accent/40")}>
       <div>
         <div className="flex flex-wrap items-center gap-2 text-[12px] text-faint">
           <span>{formatDate(post.date)}</span>
