@@ -4,7 +4,7 @@
  */
 import "@founders/db/env";
 import { getSql } from "@founders/db";
-import { DAILY, JOBS } from "./registry";
+import { DAILY, JOBS, WEEKLY } from "./registry";
 import { runJob } from "./runner";
 
 const [name, ...rest] = process.argv.slice(2);
@@ -20,9 +20,10 @@ async function main() {
   if (!name || name === "list") {
     for (const j of Object.values(JOBS)) console.log(`${j.name.padEnd(14)} ${j.description}`);
     console.log(`${"daily".padEnd(14)} ${DAILY.join(" → ")}`);
+    console.log(`${"weekly".padEnd(14)} ${WEEKLY.join(" → ")}`);
     return;
   }
-  const names = name === "daily" ? DAILY : [name];
+  const names = name === "daily" ? DAILY : name === "weekly" ? WEEKLY : [name];
   let failed = false;
   for (const n of names) {
     const job = JOBS[n];
