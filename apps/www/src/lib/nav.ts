@@ -66,8 +66,8 @@ export function resourcesMenu(): MenuGroup[] {
     {
       label: t("global.menu.resources.readGroup"),
       items: [
-        { ...m("blog"), href: soon("blog"), badge: "soon" },
-        { ...m("insights"), href: soon("insights"), badge: "soon" },
+        { ...m("blog"), href: "/blog" },
+        { ...m("insights"), href: "/insights" },
         { ...m("academy"), href: brand.urls.academy },
       ],
     },

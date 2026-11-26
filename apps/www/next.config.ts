@@ -12,6 +12,8 @@ const nextConfig: NextConfig = {
     NEXT_PUBLIC_WWW_URL: process.env.NEXT_PUBLIC_WWW_URL ?? "http://localhost:3000",
   },
   poweredByHeader: false,
+  // Blog Markdown is read with fs at build and on ISR revalidation; ship it with the functions.
+  outputFileTracingIncludes: { "/*": ["../../content/blog/**/*", "../../content/comparisons/**/*"] },
   async redirects() {
     return [
       { source: "/soon/talent-signals", destination: "/signals/talent", permanent: true },
@@ -19,6 +21,9 @@ const nextConfig: NextConfig = {
       { source: "/soon/revenue-valuation", destination: "/revenue-valuation", permanent: true },
       { source: "/soon/agents", destination: "/agents", permanent: true },
       { source: "/soon/mcp", destination: "/mcp", permanent: true },
+      { source: "/soon/blog", destination: "/blog", permanent: true },
+      { source: "/soon/insights", destination: "/insights", permanent: true },
+      { source: "/soon/careers", destination: "/careers", permanent: true },
     ];
   },
   async headers() {

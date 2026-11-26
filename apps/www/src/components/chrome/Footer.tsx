@@ -14,7 +14,7 @@ export function Footer() {
     { title: t("global.footer.cols.features"), links: [[P("talent"), "/signals/talent"], [P("news"), "/news"], [P("revenue"), "/revenue-valuation"], [P("valuation"), "/revenue-valuation#valuation-estimates"], [t("global.nav.agents"), "/agents"]] },
     { title: t("global.footer.cols.integrations"), links: [[I("crm"), soon("integrations")], [I("network"), soon("integrations")], [I("chrome"), soon("integrations")]] },
     { title: t("global.footer.cols.delivery"), links: [[I("api"), "/api"], [I("mcp"), "/mcp"], [I("bulk"), "/pricing#bulk"]] },
-    { title: t("global.footer.cols.company"), links: [[t("global.footer.program"), "https://foundersscz.com"], [L("partners"), "/partners"], [L("contact"), "/contact"], [L("careers"), soon("careers")], [L("blog"), soon("blog")], [t("global.menu.resources.academy.title"), brand.urls.academy]] },
+    { title: t("global.footer.cols.company"), links: [[t("global.footer.program"), "https://foundersscz.com"], [L("partners"), "/partners"], [L("contact"), "/contact"], [L("careers"), "/careers"], [L("blog"), "/blog"], [t("global.menu.resources.academy.title"), brand.urls.academy]] },
     { title: t("global.footer.cols.legal"), links: [[L("privacy"), "/privacy-policy"], [L("privacyRights"), "/privacy-rights"], [L("terms"), "/terms-conditions"], [L("dpa"), "/dpa"], [L("optOut"), "/privacy-rights?type=DELETE"]] },
   ];
   const prompt = encodeURIComponent(t("global.footer.askAiPrompt", { url: brand.urls.www }));

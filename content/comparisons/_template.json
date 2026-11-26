@@ -1,0 +1,23 @@
+{
+  "kind": "versus",
+  "title": "Founders AI vs <Competitor>",
+  "description": "How Founders AI and <Competitor> compare on coverage, signals, AI and pricing, with sources.",
+  "competitor": "<Competitor>",
+  "asOf": "2026-01-01",
+  "reviewed": true,
+  "reviewedBy": "<Legal reviewer>",
+  "overview": {
+    "us": { "whatItIs": "", "bestAt": "", "bestFor": "" },
+    "them": { "whatItIs": "", "bestAt": "", "bestFor": "" }
+  },
+  "choose": [
+    { "title": "Choose Founders AI if…", "body": "" },
+    { "title": "Use both if…", "body": "" },
+    { "title": "Choose <Competitor> if…", "body": "" }
+  ],
+  "features": [{ "group": "See the whole market", "rows": [{ "feature": "Private company profiles", "us": "yes", "them": "yes" }] }],
+  "differences": [],
+  "pricing": [],
+  "faq": [],
+  "sources": [{ "label": "<Competitor> pricing page", "url": "https://example.com", "accessed": "2026-01-01" }]
+}

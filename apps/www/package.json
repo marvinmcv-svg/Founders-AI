@@ -8,19 +8,21 @@
     "build": "next build",
     "start": "next start -p 3000",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint src"
+    "lint": "eslint src",
+    "test": "vitest run"
   },
   "dependencies": {
-    "@founders/config": "workspace:*",
-    "@founders/core": "workspace:*",
-    "@founders/db": "workspace:*",
-    "@founders/ui": "workspace:*",
-    "@founders/mocks": "workspace:*",
     "@fontsource-variable/dm-sans": "^5.2.8",
     "@fontsource-variable/space-grotesk": "^5.2.10",
     "@fontsource/instrument-serif": "^5.2.8",
+    "@founders/config": "workspace:*",
+    "@founders/core": "workspace:*",
+    "@founders/db": "workspace:*",
+    "@founders/mocks": "workspace:*",
+    "@founders/ui": "workspace:*",
     "clsx": "^2.1.1",
     "lucide-react": "^0.548.0",
+    "marked": "^16.4.2",
     "motion": "^12.23.0",
     "next": "15.5.29",
     "react": "^19.2.0",
@@ -32,7 +34,8 @@
     "@types/node": "^22.18.0",
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",
+    "dotenv": "^17.2.3",
     "tailwindcss": "^4.1.16",
-    "dotenv": "^17.2.3"
+    "vitest": "^3.2.7"
   }
 }

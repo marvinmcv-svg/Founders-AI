@@ -133,3 +133,23 @@ Structural-parity checklist (plan 2.5 / 15). Derived from the plan's Section 6 p
 - `mcp.connect`
 - `mcp.usage`
 - `mcp.closing`
+
+## `/blog`
+- `blog.hero`
+- `blog.posts`
+- `blog.newsletter`
+
+## `/insights`
+- `insights.hero`
+- `insights.newsletter`
+- `insights.posts`
+- `insights.cases`
+
+## `/careers`
+- `careers.hero`
+- `careers.values`
+- `careers.roles`
+
+## `/comparisons`
+- `comparisons.hero`
+- `comparisons.list`

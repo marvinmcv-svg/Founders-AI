@@ -65,3 +65,21 @@ test("API explorer switches samples and MCP URL is shown", async ({ page }) => {
   await expect(page.locator('[data-section="mcp.connect"] code')).toContainText("/mcp");
   await expect(page.locator('[data-section="mcp.tools"]')).toContainText("get_company_profile");
 });
+
+test("blog post renders live numbers, JSON-LD and the RSS feed lists it", async ({ page, request }) => {
+  await page.goto("/blog");
+  await page.getByRole("link", { name: /How we estimate private company revenue/ }).click();
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("How we estimate private company revenue");
+  await expect(page.locator("article")).not.toContainText("{stats.");
+  expect(await page.locator('script[type="application/ld+json"]').count()).toBeGreaterThanOrEqual(2);
+  const rss = await request.get("/blog/rss.xml");
+  expect(rss.headers()["content-type"]).toContain("rss");
+  expect(await rss.text()).toContain("/blog/how-we-estimate-private-company-revenue");
+});
+
+test("comparison drafts are never published", async ({ page }) => {
+  const r = await page.goto("/comparisons/_template");
+  expect(r?.status()).toBe(404);
+  await page.goto("/comparisons");
+  await expect(page.locator('[data-section="comparisons.list"]')).toBeVisible();
+});

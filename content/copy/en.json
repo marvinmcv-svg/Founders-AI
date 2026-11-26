@@ -1629,5 +1629,130 @@
         "I've prepared a list called \"Bolivia fintech — hiring\". Approve it and I'll create it."
       ]
     }
+  },
+  "blog": {
+    "meta": {
+      "title": "Blog",
+      "description": "Product news, guides and methodology from the team building Founders AI in Santa Cruz, Bolivia."
+    },
+    "hero": {
+      "eyebrow": "Blog",
+      "h1": "Notes from the",
+      "h1Accent": "build.",
+      "sub": "Product news, guides and how we think about private-market data, from Santa Cruz."
+    },
+    "all": "All posts",
+    "tagged": "Tagged",
+    "minRead": "min read",
+    "by": "By",
+    "related": "Keep reading",
+    "back": "All posts",
+    "updated": "Updated",
+    "empty": "No posts yet.",
+    "rss": "RSS"
+  },
+  "insights": {
+    "meta": {
+      "title": "Insights",
+      "description": "Research and methodology on private markets in Latin America, plus the weekly letter."
+    },
+    "hero": {
+      "eyebrow": "Insights",
+      "h1": "How private markets",
+      "h1Accent": "really move.",
+      "sub": "Methodology, market notes and research from our data, with a weekly letter for people who back founders."
+    },
+    "posts": {
+      "eyebrow": "Research",
+      "h2": "Latest insights"
+    },
+    "cases": {
+      "eyebrow": "Case studies",
+      "h2": "Customer stories",
+      "empty": "We publish customer stories only with written permission. The first ones are on the way."
+    }
+  },
+  "newsletter": {
+    "title": "The weekly letter",
+    "body": "One email a week: new founders, notable rounds and what changed in Latin American private markets.",
+    "placeholder": "Work email",
+    "cta": "Subscribe",
+    "done": "You're in. Look out for the next letter.",
+    "error": "Please check your email and try again."
+  },
+  "careers": {
+    "meta": {
+      "title": "Careers",
+      "description": "Work with Founders in Santa Cruz, Bolivia, building the intelligence engine for the next generation of founders."
+    },
+    "hero": {
+      "eyebrow": "Careers",
+      "h1": "Help the next generation of founders",
+      "h1Accent": "get seen.",
+      "sub": "We're building Founders AI from Santa Cruz, Bolivia, for the people who start and back companies across Latin America."
+    },
+    "values": {
+      "eyebrow": "How we work",
+      "h2": "What we believe.",
+      "cards": [
+        {
+          "title": "Real resources, not talk",
+          "body": "We measure ourselves by what founders can use the same week."
+        },
+        {
+          "title": "Evidence over opinion",
+          "body": "We validate with real users and real data, then ship."
+        },
+        {
+          "title": "All year, not two weeks",
+          "body": "Founders runs all year. So does the work."
+        },
+        {
+          "title": "Built from here",
+          "body": "Latin America is where we start, not a footnote."
+        }
+      ]
+    },
+    "roles": {
+      "eyebrow": "Open roles",
+      "h2": "Join us.",
+      "empty": "No open roles are listed right now. If you'd like to build this with us, tell us what you'd work on.",
+      "cta": "Write to us"
+    }
+  },
+  "comparisons": {
+    "meta": {
+      "title": "Comparisons",
+      "description": "How Founders AI compares with other private-market data platforms."
+    },
+    "hero": {
+      "eyebrow": "Comparisons",
+      "h1": "Honest comparisons,",
+      "h1Accent": "with sources.",
+      "sub": "Every comparison we publish is dated, sourced and reviewed before it goes live."
+    },
+    "list": {
+      "eyebrow": "Comparisons",
+      "h2": "Coming soon",
+      "empty": "Our comparison pages are being sourced and reviewed. Until then, we're happy to walk you through the differences ourselves."
+    },
+    "template": {
+      "overview": "Overview",
+      "whatItIs": "What it is",
+      "bestAt": "Best at",
+      "bestFor": "Best fit for",
+      "choose": "Which to choose",
+      "features": "Feature comparison",
+      "differences": "Key differences",
+      "pricing": "Pricing",
+      "faq": "FAQ",
+      "methodology": "Methodology",
+      "sources": "Sources",
+      "asOf": "Information as of",
+      "contact": "Spot something out of date? Tell us.",
+      "yes": "Yes",
+      "no": "No",
+      "partial": "Partial"
+    }
   }
 }

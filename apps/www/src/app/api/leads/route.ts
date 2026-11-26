@@ -24,6 +24,12 @@ const partner = z.object({
   website: z.string().optional(),
 });
 
+const newsletter = z.object({
+  kind: z.literal("NEWSLETTER"),
+  email: z.string().trim().email().max(200),
+  website: z.string().optional(),
+});
+
 async function verifyTurnstile(token: string | undefined, ip: string): Promise<boolean> {
   const secret = process.env.TURNSTILE_SECRET_KEY;
   if (!secret) return true; // BLOCKED-HUMAN H3: keys not configured yet
@@ -40,7 +46,7 @@ export async function POST(req: Request) {
   const ip = ipOf(req);
   if (!allow(`lead:${ip}`)) return NextResponse.json({ error: "Too many requests" }, { status: 429 });
   const body = (await req.json().catch(() => null)) as Record<string, unknown> | null;
-  const parsed = z.discriminatedUnion("kind", [demo, partner]).safeParse(body);
+  const parsed = z.discriminatedUnion("kind", [demo, partner, newsletter]).safeParse(body);
   if (!parsed.success) {
     const fieldErrors = Object.fromEntries(parsed.error.issues.map((i) => [String(i.path[0] ?? "form"), i.message]));
     return NextResponse.json({ error: "Invalid input", fieldErrors }, { status: 400 });
