@@ -30,6 +30,12 @@ const SELECT: Record<Product, string> = {
     t.amount_usd, t.announced_date, t.pre_money_usd, t.post_money_usd`,
   talent_signals: `t.id, t.person_id, p.full_name AS person_name, p.current_title, p.current_company_id, p.current_company_name,
     p.highlights AS person_highlights, t.type, t.status, t.score, t.summary, t.signal_date, t.new_company_id`,
+  acquisitions: `t.id, t.target_id, c.name AS target_name, c.domain AS target_domain, c.hq_country AS target_country, c.tagline AS target_tagline,
+    t.acquirer_id, t.acquirer_name, t.date, t.amount_usd, t.status`,
+  ipos: `t.id, t.company_id, c.name AS company_name, c.domain AS company_domain, c.hq_country AS company_country, t.date, t.exchange,
+    t.ticker, t.share_price, t.valuation_usd, t.raised_usd`,
+  news_signals: `t.id, t.company_id, c.name AS company_name, c.domain AS company_domain, c.hq_country AS company_country, t.category,
+    t.summary, t.score, t.is_major, t.published_at, ni.title, ni.publisher, ni.url`,
 };
 
 export type SearchParams = {
@@ -145,8 +151,23 @@ export function getCompanyNews(companyId: string, limit = 50) {
     WHERE ns.company_id = ${companyId} ORDER BY ns.published_at DESC LIMIT ${limit}`);
 }
 
+/**
+ * Estimates from the active REVENUE model (plan 9.6: rollback = repoint `model_versions.active`).
+ * Falls back to whatever version exists for the company (e.g. v0 before the ML job has run).
+ */
+const ACTIVE_ESTIMATE_VERSION = sql`COALESCE(
+  (SELECT e2.model_version FROM company_estimates e2 JOIN model_versions mv ON mv.version = e2.model_version AND mv.kind = 'REVENUE' AND mv.active
+    WHERE e2.company_id = e.company_id LIMIT 1),
+  (SELECT e3.model_version FROM company_estimates e3 WHERE e3.company_id = e.company_id ORDER BY e3.model_version DESC LIMIT 1))`;
+
 export function getCompanyEstimates(companyId: string) {
-  return q(sql`SELECT * FROM company_estimates WHERE company_id = ${companyId} ORDER BY month ASC`);
+  return q(sql`SELECT e.* FROM company_estimates e WHERE e.company_id = ${companyId} AND e.model_version = ${ACTIVE_ESTIMATE_VERSION} ORDER BY e.month ASC`);
+}
+
+export async function getActiveModelVersions() {
+  return q<{ version: string; kind: string; metrics: Record<string, unknown> | null; created_at: string }>(
+    sql`SELECT version, kind, metrics, created_at FROM model_versions WHERE active ORDER BY kind`,
+  );
 }
 
 export function getCompanyDisclosures(companyId: string) {

@@ -28,6 +28,7 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
         lists={lists.map((l) => ({ id: l.id, name: l.name, system: l.system, entity_type: l.entity_type }))}
         notifications={notifications}
         unread={unread}
+        isAdmin={repo.isPlatformAdmin(ctx.email)}
       />
       <div className="flex min-w-0 flex-1 flex-col">
         <MobileNav />

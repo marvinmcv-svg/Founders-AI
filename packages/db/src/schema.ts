@@ -300,7 +300,8 @@ export const companyEstimates = pgTable(
     drivers: jsonb("drivers").$type<{ label: string; impact: number }[]>(),
     modelVersion: text("model_version").notNull(),
   },
-  (t) => [primaryKey({ columns: [t.companyId, t.month] })],
+  // Versioned rows (plan 9.6): readers use the active REVENUE model; rollback = repoint `model_versions.active`.
+  (t) => [primaryKey({ columns: [t.companyId, t.month, t.modelVersion] })],
 );
 
 export const revenueDisclosures = pgTable(

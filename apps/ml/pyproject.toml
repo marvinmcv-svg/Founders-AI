@@ -1,0 +1,29 @@
+[project]
+name = "founders-ml"
+version = "0.1.0"
+description = "Founders AI ML service: revenue & valuation estimates (LightGBM quantile), talent score trainer"
+requires-python = ">=3.12"
+dependencies = [
+  "lightgbm>=4.5",
+  "numpy>=2.0",
+  "pandas>=2.2",
+  "scikit-learn>=1.5",
+  "psycopg[binary]>=3.2",
+  "python-dotenv>=1.0",
+  "fastapi>=0.115",
+  "uvicorn>=0.32",
+]
+
+[dependency-groups]
+dev = ["pytest>=8.3", "ruff>=0.7"]
+
+[tool.ruff]
+line-length = 180
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

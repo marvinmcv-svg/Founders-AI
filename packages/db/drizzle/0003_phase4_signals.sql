@@ -123,3 +123,12 @@ END $$;
 CREATE INDEX IF NOT EXISTS "news_items_url_idx" ON "news_items" USING btree ("url");
 --> statement-breakpoint
 CREATE INDEX IF NOT EXISTS "news_signals_published_idx" ON "news_signals" USING btree ("published_at");
+--> statement-breakpoint
+-- Versioned estimates (plan 9.6): v0 and v1 rows coexist; the active REVENUE model is what users see.
+ALTER TABLE "company_estimates" DROP CONSTRAINT IF EXISTS "company_estimates_company_id_month_pk";
+--> statement-breakpoint
+ALTER TABLE "company_estimates" ADD CONSTRAINT "company_estimates_company_id_month_model_version_pk" PRIMARY KEY ("company_id", "month", "model_version");
+--> statement-breakpoint
+INSERT INTO "model_versions" ("version", "kind", "active", "metrics")
+VALUES ('v0-heuristic', 'REVENUE', true, '{"description": "Headcount × revenue-per-employee prior (plan 9.6 v0)"}')
+ON CONFLICT ("version") DO NOTHING;
