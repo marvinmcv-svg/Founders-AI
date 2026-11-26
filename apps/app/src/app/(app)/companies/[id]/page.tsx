@@ -8,9 +8,11 @@ import * as repo from "@founders/core/repo";
 import { AvatarStack, Badge, BandChart, Chip, Delta, DriverBars, Favicon, LineChart, StackBar } from "@founders/ui";
 import { Notes, ProfileActions } from "@/components/profile/Actions";
 import { Empty, KV, Metric, Panel, Tabs } from "@/components/profile/bits";
+import { ReviewsTab, TractionTab } from "@/components/profile/TractionTabs";
+import type { ReviewsDetail, TractionSnapshot } from "@founders/db/schema";
 import { getCtx } from "@/lib/session";
 
-type P = { params: Promise<{ id: string }>; searchParams: Promise<{ tab?: string }> };
+type P = { params: Promise<{ id: string }>; searchParams: Promise<{ tab?: string; period?: string }> };
 
 export async function generateMetadata({ params }: P): Promise<Metadata> {
   const c = await repo.getCompany((await params).id);
@@ -23,7 +25,8 @@ const mon = (d: unknown) => new Date(String(d)).toLocaleDateString("en-US", { mo
 
 export default async function CompanyProfile({ params, searchParams }: P) {
   const { id } = await params;
-  const tab = (await searchParams).tab ?? "overview";
+  const sp = await searchParams;
+  const tab = sp.tab ?? "overview";
   const ctx = await getCtx();
   const c = await repo.getCompany(id);
   if (!c) notFound();
@@ -59,6 +62,8 @@ export default async function CompanyProfile({ params, searchParams }: P) {
     { id: "business", label: "Business" },
     { id: "financials", label: "Financials", count: rounds.length },
     { id: "team", label: "Team", count: people.length },
+    { id: "traction", label: "Traction Metrics" },
+    { id: "reviews", label: "Reviews", count: Object.keys((c.reviews_detail as object | null) ?? {}).length || undefined },
     { id: "news", label: "News", count: news.length },
     { id: "competitors", label: "Competitors", count: competitors.length },
   ];
@@ -327,6 +332,12 @@ export default async function CompanyProfile({ params, searchParams }: P) {
             </Panel>
           </>
         ) : null}
+
+        {tab === "traction" ? (
+          <TractionTab base={base} period={sp.period ?? "6m"} metrics={metrics} snapshot={(c.traction as TractionSnapshot | null) ?? null} />
+        ) : null}
+
+        {tab === "reviews" ? <ReviewsTab reviews={(c.reviews_detail as ReviewsDetail | null) ?? null} /> : null}
 
         {tab === "news" ? (
           <Panel title="Scored news (0–5)">
