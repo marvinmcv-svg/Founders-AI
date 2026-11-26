@@ -1,6 +1,7 @@
 /**
- * R1 API endpoints (plan Phase 5a) + the R2 ones we already have data for (talent, AI search).
- * Numbering in comments follows the Section 11 table.
+ * Public API endpoints, plan Section 11 (74 routes). 5a (R1) core + 5b (R2): signals feeds, AI search,
+ * entity extraction, webhooks. Interest-signal and network routes are registered with their final
+ * shape but answer 501 until R3 (D-031).
  */
 import { sql } from "drizzle-orm";
 import { z } from "zod";
@@ -10,6 +11,8 @@ import { PRODUCTS, emptyFilter, groupSchema, type Product } from "@founders/core
 import { nlToQuery } from "@founders/core/nl";
 import { TAXONOMY, BUSINESS_MODELS, GROWTH_STAGES, CUSTOMER_FOCUS, INVESTOR_TYPES, ROUND_TYPES } from "@founders/core/taxonomy";
 import * as repo from "@founders/core/repo";
+import { WEBHOOK_EVENTS } from "@founders/db/schema";
+import { ENTITY_EXTRACT_MAX_CHARS } from "@founders/core/limits";
 import { ApiError, bill, decodeCursor, endpoint, nextCursor, orgCtx, pageQuery, preflight, requireScope, type Ctx } from "./kit";
 import { companyJson, investorJson, personJson, redistributable } from "./serialize";
 
@@ -263,6 +266,34 @@ const feed = (path: string, tag: string, summary: string, product: Product, date
 feed("/funding-rounds", "Transactions", "Funding rounds feed", "funding_rounds", "announced_date", { type: z.string().optional().describe("Comma-separated round types, e.g. Seed,Series A") });
 feed("/talent", "Signals", "Talent signals feed", "talent_signals", "signal_date", { type: z.string().optional(), min_score: z.coerce.number().min(1).max(10).optional() });
 
+endpoint({ method: "get", path: "/news-signals", tag: "Signals", summary: "Global scored news feed", credit: "per_page",
+  query: pageQuery.extend({
+    published_after: z.string().date().optional().describe("Only news published after this date (YYYY-MM-DD)."),
+    category: z.string().optional().describe("Comma-separated: revenue, profitability, traction, funding, deals, other"),
+    min_score: z.coerce.number().min(0).max(5).optional(),
+    major_only: z.enum(["true", "false"]).optional(),
+  }), handler: async (c, { query }) => {
+    const offset = decodeCursor(query.cursor as string | undefined);
+    const children: repo.Row[] = [];
+    if (query.published_after) children.push({ kind: "condition", field: "published_at", operator: "after", value: query.published_after });
+    if (query.category) children.push({ kind: "condition", field: "category", operator: "any_of", value: String(query.category).split(",") });
+    if (query.min_score !== undefined) children.push({ kind: "condition", field: "score", operator: "gte", value: Number(query.min_score) });
+    if (query.major_only === "true") children.push({ kind: "condition", field: "is_major", operator: "is_true" });
+    const res = await repo.searchEntities("news_signals", { filter: groupSchema.parse({ kind: "group", op: "AND", children }), limit: Number(query.limit), offset });
+    await bill(c, "news_signals.feed", pageCost(res.rows.length), res.rows.length > 0);
+    return json(c, { items: res.rows.map((r) => redistributable(r)), total: res.total, total_capped: res.totalCapped, next_cursor: nextCursor(offset, res.rows.length, res.total) });
+  } });
+
+endpoint({ method: "get", path: "/revenue-signals", tag: "Signals", summary: "Verified revenue disclosures (anchors) feed", credit: "per_page",
+  query: pageQuery.extend({ published_after: z.string().date().optional().describe("Only disclosures published after this date (YYYY-MM-DD).") }), handler: async (c, { query }) => {
+    const after = (query.published_after as string | undefined) ?? "1900-01-01";
+    const rows = await repo.rawQuery(sql`SELECT d.id, d.company_id, c.name AS company_name, d.amount_usd, d.type, d.period, d.publisher, d.source_url, d.published_at, d.origin, d.news_signal_id
+      FROM revenue_disclosures d JOIN companies c ON c.id = d.company_id
+      WHERE d.status = 'verified' AND c.deleted_at IS NULL AND coalesce(d.published_at, d.period::timestamptz) > ${after}::date
+      ORDER BY coalesce(d.published_at, d.period::timestamptz) DESC, d.id LIMIT 5000`);
+    return paged(c, "revenue_signals.feed", rows.map((r) => redistributable(r)), query);
+  } });
+
 endpoint({ method: "get", path: "/funding-rounds/:roundId", tag: "Transactions", summary: "One funding round", credit: "per_match", handler: async (c, { params }) => {
   const r = await repo.getRound(params.roundId!);
   if (!r) throw new ApiError(404, "Not Found", "No such round. Not charged.");
@@ -294,28 +325,41 @@ endpoint({ method: "get", path: "/talent/:signalId", tag: "Signals", summary: "O
 
 /* ============================ Search & taxonomy ============================ */
 
-const queryCache = new Map<string, { product: Product; filter: unknown; sort: unknown; orgId: string; explanation: string }>();
-
 endpoint({ method: "post", path: "/search", tag: "Search", summary: "Plain-English search across products → query_id + first page", credit: "5 credits + page cost",
   body: z.object({ query: z.string().min(2).max(1000), product: z.enum(PRODUCTS).optional(), limit: z.number().int().min(1).max(1000).default(25) }), handler: async (c, { body }) => {
     const b = body as { query: string; product?: Product; limit: number };
     await preflight(c, CREDIT_PRICES["ai_search.query"] + pageCost(b.limit));
     const nl = await nlToQuery(b.query, b.product);
-    const id = `qry_${crypto.randomUUID().replace(/-/g, "").slice(0, 24)}`;
-    queryCache.set(id, { product: nl.product, filter: nl.filter, sort: nl.sort, orgId: c.get("principal").orgId, explanation: nl.explanation });
-    const res = await repo.searchEntities(nl.product, { filter: nl.filter, sort: nl.sort, limit: b.limit, orgId: c.get("principal").orgId });
+    const ctx = orgCtx(c);
+    const id = await repo.saveApiQuery(ctx, { product: nl.product, query: b.query, filter: nl.filter, sort: nl.sort, explanation: nl.explanation });
+    const res = await repo.searchEntities(nl.product, { filter: nl.filter, sort: nl.sort, limit: b.limit, orgId: ctx.orgId });
     await bill(c, "search.ai", CREDIT_PRICES["ai_search.query"] + pageCost(res.rows.length), true);
     return json(c, { query_id: id, product: nl.product, filter: nl.filter, explanation: nl.explanation, engine: nl.engine, total: res.total, items: res.rows, next_cursor: nextCursor(0, res.rows.length, res.total) });
   } });
 
-endpoint({ method: "get", path: "/search/:queryId/results", tag: "Search", summary: "Page through an AI search", credit: "per_page", query: pageQuery, handler: async (c, { params, query }) => {
-  const q = queryCache.get(params.queryId!);
-  if (!q || q.orgId !== c.get("principal").orgId) throw new ApiError(404, "Not Found", "Unknown or expired query_id.");
+endpoint({ method: "get", path: "/search/:queryId/results", tag: "Search", summary: "Page through an AI search (query_id valid for 7 days)", credit: "per_page", query: pageQuery, handler: async (c, { params, query }) => {
+  const ctx = orgCtx(c);
+  const saved = await repo.getApiQuery(ctx, params.queryId!);
+  if (!saved) throw new ApiError(404, "Not Found", "Unknown or expired query_id. Not charged.");
   const offset = decodeCursor(query.cursor as string | undefined);
-  const res = await repo.searchEntities(q.product, { filter: groupSchema.parse(q.filter), limit: Number(query.limit), offset, orgId: q.orgId });
+  const product = saved.product as Product;
+  const sort = saved.sort as repo.SearchParams["sort"];
+  const res = await repo.searchEntities(product, { filter: groupSchema.parse(saved.filter), sort, limit: Number(query.limit), offset, orgId: ctx.orgId });
   await bill(c, "search.page", pageCost(res.rows.length), res.rows.length > 0);
-  return json(c, { query_id: params.queryId, product: q.product, items: res.rows, total: res.total, next_cursor: nextCursor(offset, res.rows.length, res.total) });
+  return json(c, { query_id: params.queryId, product, items: res.rows, total: res.total, next_cursor: nextCursor(offset, res.rows.length, res.total) });
 } });
+
+endpoint({ method: "post", path: "/entities/extract", tag: "Search", summary: "Free text → resolved companies, investors and people (with character offsets)", credit: "1 credit per resolved entity",
+  body: z.object({
+    text: z.string().min(1).max(ENTITY_EXTRACT_MAX_CHARS),
+    types: z.array(z.enum(["company", "investor", "person"])).min(1).optional().describe("Entity types to resolve (default all)."),
+  }), handler: async (c, { body }) => {
+    const b = body as { text: string; types?: ("company" | "investor" | "person")[] };
+    const entities = await repo.extractEntities(b.text, b.types);
+    await preflight(c, entities.length * CREDIT_PRICES["extract.entity"]);
+    await bill(c, "entities.extract", entities.length * CREDIT_PRICES["extract.entity"], entities.length > 0);
+    return json(c, { entities, count: entities.length });
+  } });
 
 endpoint({ method: "get", path: "/taxonomy", tag: "Search", summary: "Sectors, industries, tech verticals, ecosystems and enums", credit: "free", handler: async (c) => {
   await bill(c, "taxonomy", 0, true);
@@ -371,21 +415,22 @@ endpoint({ method: "delete", path: "/searches/:searchId", tag: "Saved searches",
 } });
 
 const SEARCH_PRODUCTS: Record<string, Product> = { companies: "companies", people: "people", investors: "investors", talent: "talent_signals", transactions: "funding_rounds" };
-endpoint({ method: "get", path: "/searches/:product/:searchId/results", tag: "Saved searches", summary: "Saved-search results (`new_since_last_read=true` for a feed)", credit: "per_result",
-  query: pageQuery.extend({ new_since_last_read: z.enum(["true", "false"]).optional() }), handler: async (c, { params, query }) => {
-    const product = SEARCH_PRODUCTS[params.product!];
-    if (!product) throw new ApiError(404, "Not Found", "Product must be companies, people, investors, talent or transactions.");
-    const ctx = orgCtx(c);
-    const s = await repo.getSavedSearch(ctx, params.searchId!);
-    if (s.product !== product) throw new ApiError(400, "Bad Request", `This saved search is for ${s.product}.`);
-    const offset = decodeCursor(query.cursor as string | undefined);
-    const newOnly = query.new_since_last_read === "true";
-    const readerId = c.get("principal").keyId;
-    const res = await repo.getSavedSearchResults(ctx, s.id, { newOnly, limit: Number(query.limit), offset, readerId });
-    if (newOnly) await repo.markSearchRead(ctx, s.id, readerId);
-    await bill(c, "searches.results", pageCost(res.rows.length, CREDIT_PRICES["saved_results.per_100"]), res.rows.length > 0);
-    return json(c, { items: res.rows, total: res.total, next_cursor: nextCursor(offset, res.rows.length, res.total) });
-  } });
+// #49–54: one route per product, as in the spec table.
+for (const [slug, product] of Object.entries(SEARCH_PRODUCTS)) {
+  endpoint({ method: "get", path: `/searches/${slug}/:searchId/results`, tag: "Saved searches", summary: `Saved-search results: ${slug} (\`new_since_last_read=true\` for a feed)`, credit: "per_result",
+    query: pageQuery.extend({ new_since_last_read: z.enum(["true", "false"]).optional() }), handler: async (c, { params, query }) => {
+      const ctx = orgCtx(c);
+      const s = await repo.getSavedSearch(ctx, params.searchId!);
+      if (s.product !== product) throw new ApiError(400, "Bad Request", `This saved search is for ${s.product}. Not charged.`);
+      const offset = decodeCursor(query.cursor as string | undefined);
+      const newOnly = query.new_since_last_read === "true";
+      const readerId = c.get("principal").keyId;
+      const res = await repo.getSavedSearchResults(ctx, s.id, { newOnly, limit: Number(query.limit), offset, readerId });
+      if (newOnly) await repo.markSearchRead(ctx, s.id, readerId);
+      await bill(c, "searches.results", pageCost(res.rows.length, CREDIT_PRICES["saved_results.per_100"]), res.rows.length > 0);
+      return json(c, { items: res.rows, total: res.total, next_cursor: nextCursor(offset, res.rows.length, res.total) });
+    } });
+}
 
 /* ============================ Lists ============================ */
 
@@ -463,3 +508,62 @@ endpoint({ method: "get", path: "/me", tag: "Account", summary: "Key and workspa
   const [org] = await repo.rawQuery<{ name: string; plan: string }>(sql`SELECT name, plan FROM organization WHERE id = ${p.orgId}`);
   return json(c, { key_id: p.keyId, scopes: p.scopes, organization: { id: p.orgId, name: org?.name, plan: org?.plan }, credits: await repo.getBalance(p.orgId) });
 } });
+
+
+/* ============================ Webhooks (#71–74) ============================ */
+
+/** Webhook management needs the `write:webhooks` scope (only keys created by workspace admins carry it). */
+function webhookAdmin(c: Ctx): repo.OrgContext {
+  requireScope(c, "write:webhooks");
+  return { ...orgCtx(c), role: "admin" };
+}
+
+endpoint({ method: "get", path: "/webhooks", tag: "Webhooks", summary: "List webhooks", credit: "free", handler: async (c) => {
+  await bill(c, "webhooks.list", 0, true);
+  return json(c, { items: await repo.listWebhooks(orgCtx(c)) });
+} });
+
+endpoint({ method: "post", path: "/webhooks", tag: "Webhooks", summary: "Create a webhook (HMAC-SHA256 signed; the secret is returned once)", credit: "free",
+  body: z.object({ url: z.string().url().max(2000).describe("HTTPS endpoint; private and reserved addresses are refused."), events: z.array(z.enum(WEBHOOK_EVENTS)).min(1) }), handler: async (c, { body }) => {
+    const ctx = webhookAdmin(c);
+    const b = body as { url: string; events: (typeof WEBHOOK_EVENTS)[number][] };
+    try {
+      const hook = await repo.createWebhook(ctx, b);
+      await bill(c, "webhooks.create", 0, true);
+      return json(c, hook, 201);
+    } catch (e) {
+      if (e instanceof Error && e.name === "EgressBlockedError") throw new ApiError(400, "Bad Request", e.message);
+      throw e;
+    }
+  } });
+
+endpoint({ method: "delete", path: "/webhooks/:webhookId", tag: "Webhooks", summary: "Delete a webhook", credit: "free", handler: async (c, { params }) => {
+  await repo.deleteWebhook(webhookAdmin(c), params.webhookId!);
+  await bill(c, "webhooks.delete", 0, true);
+  return json(c, { deleted: true });
+} });
+
+endpoint({ method: "post", path: "/webhooks/:webhookId/test", tag: "Webhooks", summary: "Send a signed test event now", credit: "free", handler: async (c, { params }) => {
+  const r = await repo.testWebhook(webhookAdmin(c), params.webhookId!);
+  await bill(c, "webhooks.test", 0, true);
+  return json(c, r);
+} });
+
+/* ============================ R3 routes (D-031): registered, 501 until released ============================ */
+
+const notYet = (path: string, tag: string, summary: string, credit: string, why: string) =>
+  endpoint({ method: "get", path, tag, summary: `${summary} (available in R3)`, credit, query: pageQuery, release: "R3", handler: async () => {
+    throw new ApiError(501, "Not Implemented", `${why} This endpoint is not charged.`, { available_in: "R3" });
+  } });
+
+const INTEREST = "Investor-interest signals launch with R3, after legal review (plan 0B, H8).";
+const NETWORK = "Network tracking needs connected mailboxes and calendars, which launch with R3 (plan 0B).";
+notYet("/companies/:companyId/investor-interest-signals", "Companies", "Investor-interest signals on a company", "per_page", INTEREST);
+notYet("/investors/:investorId/investor-interest-signals", "Investors", "Interest signals an investor generates", "per_page", INTEREST);
+notYet("/investor-interest", "Signals", "Investor-interest feed", "per_page", INTEREST);
+notYet("/investor-interest/:signalId", "Signals", "One investor-interest signal", "per_match", INTEREST);
+notYet("/searches/investor-interest/:searchId/results", "Saved searches", "Saved-search results: investor-interest", "per_result", INTEREST);
+notYet("/network/people", "Network", "People your team knows", "per_page", NETWORK);
+notYet("/network/companies", "Network", "Companies reachable through your team, ranked by connections", "per_page", NETWORK);
+notYet("/network/connection/:personId", "Network", "Who on your team knows this person, and how well", "per_match", NETWORK);
+notYet("/network/members", "Network", "Teammates with connected sources", "free", NETWORK);

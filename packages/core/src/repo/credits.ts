@@ -93,11 +93,17 @@ export function hashApiKey(key: string) {
   return createHash("sha256").update(key).digest("hex");
 }
 
-export async function createApiKey(ctx: OrgContext, name: string, scopes: string[] = ["read:data", "write:lists", "write:searches"]) {
+export const DEFAULT_KEY_SCOPES = ["read:data", "write:lists", "write:searches"];
+/** Keys created by workspace admins can also manage webhooks (they can deliver org data off-platform). */
+export const ADMIN_KEY_SCOPES = [...DEFAULT_KEY_SCOPES, "write:webhooks"];
+
+export async function createApiKey(ctx: OrgContext, name: string, requested?: string[]) {
+  const isAdmin = ctx.role === "admin" || ctx.role === "owner";
+  const scopes = (requested ?? (isAdmin ? ADMIN_KEY_SCOPES : DEFAULT_KEY_SCOPES)).filter((s) => isAdmin || s !== "write:webhooks");
   const secret = `fai_${randomBytes(24).toString("base64url")}`;
   const id = newId("apiKey");
   // Keys start PENDING and need admin approval (≤ 1 business day). Admins' own keys auto-approve.
-  const status = ctx.role === "admin" || ctx.role === "owner" ? "ACTIVE" : "PENDING";
+  const status = isAdmin ? "ACTIVE" : "PENDING";
   await q(sql`INSERT INTO api_keys (id, org_id, user_id, name, prefix, hash, scopes, status)
     VALUES (${id}, ${ctx.orgId}, ${ctx.userId}, ${name.slice(0, 80)}, ${secret.slice(0, 10)}, ${hashApiKey(secret)},
       ${sql`ARRAY[${sql.join(scopes.map((s) => sql`${s}`), sql`, `)}]::text[]`}, ${status})`);

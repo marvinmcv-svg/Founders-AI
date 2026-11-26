@@ -8,3 +8,5 @@ export const MCP_FREE_CALLS_PER_DAY = 100;
 export const APP_GRID_PAGE_SIZE = 100;
 export const EXACT_COUNT_CAP = 10_000;
 export const EXPORT_MAX_ROWS = 5000;
+export const WEBHOOK_MAX_PER_ORG = 10;
+export const ENTITY_EXTRACT_MAX_CHARS = 20_000;

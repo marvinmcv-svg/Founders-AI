@@ -14,17 +14,18 @@
     "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
+    "@founders/config": "workspace:*",
     "@founders/core": "workspace:*",
     "@founders/db": "workspace:*",
-    "@founders/config": "workspace:*",
     "@hono/node-server": "^1.19.0",
     "@hono/zod-openapi": "^1.1.0",
+    "drizzle-orm": "^0.45.4",
     "hono": "^4.10.0",
-    "zod": "^4.1.12",
-    "drizzle-orm": "^0.45.4"
+    "zod": "^4.1.12"
   },
   "devDependencies": {
     "@types/node": "^22.18.0",
+    "dotenv": "^17.4.2",
     "tsx": "^4.23.15",
     "vitest": "^3.2.4"
   }

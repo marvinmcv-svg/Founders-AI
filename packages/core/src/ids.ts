@@ -30,6 +30,9 @@ export const ID_PREFIX = {
   delivery: "dlv",
   change: "chg",
   newsRaw: "nwr",
+  webhook: "whk",
+  webhookDelivery: "whd",
+  query: "qry",
 } as const;
 
 export type IdKind = keyof typeof ID_PREFIX;

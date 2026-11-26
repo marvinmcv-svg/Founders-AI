@@ -5,7 +5,7 @@
 import type { Context, Hono, MiddlewareHandler } from "hono";
 import { z } from "zod";
 import { API_MAX_PAGE_SIZE, API_DEFAULT_PAGE_SIZE, API_RATE_LIMIT_RPS } from "@founders/core/limits";
-import { charge, getBalance, InsufficientCreditsError, verifyApiKey, type ApiPrincipal, type OrgContext } from "@founders/core/repo";
+import { bodyHash, charge, getBalance, getIdempotent, InsufficientCreditsError, storeIdempotent, verifyApiKey, type ApiPrincipal, type OrgContext } from "@founders/core/repo";
 
 export type Env = { Variables: { principal: ApiPrincipal; requestId: string; started: number } };
 export type Ctx = Context<Env>;
@@ -64,6 +64,36 @@ export const authMiddleware: MiddlewareHandler<Env> = async (c, next) => {
   }
   c.set("principal", principal);
   await next();
+};
+
+/**
+ * Idempotency-Key on POST (plan 11): the first response (status < 500) is stored for 24 h and
+ * replayed verbatim, uncharged, for the same key + method + path + body. Reusing a key with a
+ * different request is a 422.
+ */
+export const idempotencyMiddleware: MiddlewareHandler<Env> = async (c, next) => {
+  const key = c.req.header("idempotency-key");
+  if (c.req.method !== "POST" || !key) return next();
+  if (key.length > 255) return problem(c, 400, "Bad Request", "Idempotency-Key must be at most 255 characters.");
+  const ctx = orgCtx(c as Ctx);
+  const raw = await c.req.text();
+  const hash = bodyHash(raw);
+  const prior = await getIdempotent(ctx, key);
+  if (prior) {
+    if (prior.method !== c.req.method || prior.path !== c.req.path || prior.body_hash !== hash) {
+      return problem(c, 422, "Unprocessable Entity", "This Idempotency-Key was already used for a different request.");
+    }
+    return c.newResponse(prior.response, prior.status as 200, {
+      "Content-Type": prior.status >= 400 ? "application/problem+json" : "application/json",
+      "Idempotent-Replayed": "true",
+      "X-Credits-Charged": "0",
+    });
+  }
+  await next();
+  if (c.res.status < 500) {
+    const response = await c.res.clone().text();
+    await storeIdempotent(ctx, key, { method: c.req.method, path: c.req.path, body_hash: hash, status: c.res.status, response });
+  }
 };
 
 export function requireScope(c: Ctx, scope: string) {
@@ -132,6 +162,8 @@ export type Endpoint = {
   tag: string;
   summary: string;
   credit: CreditRule;
+  /** Set for routes that are registered but not yet released (they answer 501). */
+  release?: "R3";
   query?: z.ZodObject;
   body?: z.ZodType;
   handler: (c: Ctx, input: { params: Record<string, string>; query: Record<string, unknown>; body: unknown }) => Promise<Response>;
@@ -188,6 +220,7 @@ export function openApiDocument(serverUrl: string) {
       summary: e.summary,
       description: `Credits: ${CREDIT_TEXT[e.credit] ?? e.credit}`,
       "x-credits": e.credit,
+      ...(e.release ? { "x-release": e.release } : {}),
       parameters: [...params, ...queryParams],
       ...(e.body ? { requestBody: { required: true, content: { "application/json": { schema: z.toJSONSchema(e.body, { io: "input" }) } } } } : {}),
       responses: {
@@ -197,6 +230,7 @@ export function openApiDocument(serverUrl: string) {
         "402": { description: "Not enough credits" },
         "404": { description: "Not found (not charged)" },
         "429": { description: "Rate limited" },
+        ...(e.release ? { "501": { description: `Not available until ${e.release} (not charged)` } } : {}),
       },
       security: [{ ApiKey: [] }],
     };

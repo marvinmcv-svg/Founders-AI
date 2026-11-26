@@ -15,6 +15,7 @@ import { newId } from "../ids";
 import { sendDigest } from "./digest";
 import { getRowsByIds, rawQuery as q, searchEntities } from "./entities";
 import { ForbiddenError, type OrgContext } from "./workspace";
+import { enqueueWebhookEvent, orgsSubscribedTo } from "./webhooks";
 
 export const SLACK_HOSTS = ["hooks.slack.com"];
 
@@ -194,10 +195,44 @@ export async function processRealtimeAlerts(opts: { batch?: number; post?: Poste
     totals.new_results = (totals.new_results ?? 0) + inserted.length;
     const c = await deliver(s, inserted.map((r) => r.entity_id), post);
     for (const [k, v] of Object.entries(c)) totals[`delivered_${k}`] = (totals[`delivered_${k}`] ?? 0) + v;
+    totals.webhooks_queued = (totals.webhooks_queued ?? 0) + (await enqueueWebhookEvent(s.org_id, "search.new_results", { search_id: s.id, name: s.name, product: s.product, new_ids: inserted.map((r) => r.entity_id).slice(0, 1000), count: inserted.length }));
   }
+  totals.webhooks_queued = (totals.webhooks_queued ?? 0) + (await queueSignalWebhooks(byProduct));
   const maxId = events[events.length - 1]!.id;
   await q(sql`UPDATE outbox_events SET alerts_processed_at = now() WHERE alerts_processed_at IS NULL AND id <= ${maxId}`);
   return totals;
+}
+
+/**
+ * Webhook producers for the same outbox batch (plan 11 #72): `signal.talent` (new talent signals, to
+ * every subscribed org) and `list.news` (news signals about companies on that org's lists).
+ * `signal.interest` and `crm.sync` are accepted on subscription but only emitted from R3 (D-031).
+ */
+async function queueSignalWebhooks(byProduct: Map<string, string[]>): Promise<number> {
+  let queued = 0;
+  const talentIds = [...new Set(byProduct.get("talent_signals") ?? [])];
+  if (talentIds.length) {
+    const orgs = await orgsSubscribedTo("signal.talent");
+    for (const org of orgs) {
+      for (let i = 0; i < talentIds.length; i += 1000) {
+        queued += await enqueueWebhookEvent(org, "signal.talent", { product: "talent_signals", signal_ids: talentIds.slice(i, i + 1000) });
+      }
+    }
+  }
+  const newsIds = [...new Set(byProduct.get("news_signals") ?? [])];
+  if (newsIds.length) {
+    const orgs = await orgsSubscribedTo("list.news");
+    if (orgs.length) {
+      const idArr = sql`ARRAY[${sql.join(newsIds.map((x) => sql`${x}`), sql`, `)}]::text[]`;
+      const orgArr = sql`ARRAY[${sql.join(orgs.map((x) => sql`${x}`), sql`, `)}]::text[]`;
+      const rows = await q<{ org_id: string; list_id: string; list_name: string; signal_ids: string[] }>(sql`
+        SELECT l.org_id, l.id AS list_id, l.name AS list_name, array_agg(DISTINCT n.id) AS signal_ids
+        FROM news_signals n JOIN list_items li ON li.entity_id = n.company_id JOIN lists l ON l.id = li.list_id AND l.deleted_at IS NULL
+        WHERE n.id = ANY(${idArr}) AND l.org_id = ANY(${orgArr}) GROUP BY l.org_id, l.id, l.name`);
+      for (const r of rows) queued += await enqueueWebhookEvent(r.org_id, "list.news", { list_id: r.list_id, list_name: r.list_name, signal_ids: r.signal_ids });
+    }
+  }
+  return queued;
 }
 
 /* ------------------------------------------------------------------ */

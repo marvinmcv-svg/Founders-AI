@@ -1,0 +1,23 @@
+/** Plan Section 11 endpoint table (74 rows), verbatim method + path. The API must match it exactly. */
+export const SPEC_ROUTES = [
+  "GET /companies/{companyId}", "POST /companies", "POST /companies/resolve", "POST /companies/search-by-text",
+  "GET /companies/{companyId}/people", "GET /companies/{companyId}/competitors", "GET /companies/{companyId}/funding-rounds",
+  "GET /companies/{companyId}/acquisitions", "GET /companies/{companyId}/ipos", "GET /companies/{companyId}/latest-revenue",
+  "GET /companies/{companyId}/latest-valuation", "GET /companies/{companyId}/revenue-history", "GET /companies/{companyId}/news-signals",
+  "GET /companies/{companyId}/investor-interest-signals", "GET /companies/{companyId}/traction",
+  "GET /people/{personId}", "POST /people", "POST /people/resolve", "POST /people/by-email", "GET /people/{personId}/email",
+  "GET /people/{personId}/talent-signals", "GET /people/{personId}/experience", "GET /people/{personId}/investments",
+  "GET /investors/{investorId}", "POST /investors/resolve", "GET /investors/{investorId}/portfolio", "GET /investors/{investorId}/funding-rounds",
+  "GET /investors/{investorId}/investor-interest-signals", "GET /investors/{investorId}/co-investors",
+  "GET /funding-rounds", "GET /funding-rounds/{roundId}", "GET /acquisitions", "GET /ipos",
+  "GET /talent", "GET /talent/{signalId}", "GET /investor-interest", "GET /investor-interest/{signalId}", "GET /revenue-signals", "GET /news-signals",
+  "POST /search", "GET /search/{queryId}/results", "POST /entities/extract", "GET /taxonomy",
+  "GET /searches", "POST /searches", "GET /searches/{searchId}", "PATCH /searches/{searchId}", "DELETE /searches/{searchId}",
+  "GET /searches/companies/{searchId}/results", "GET /searches/people/{searchId}/results", "GET /searches/investors/{searchId}/results",
+  "GET /searches/talent/{searchId}/results", "GET /searches/investor-interest/{searchId}/results", "GET /searches/transactions/{searchId}/results",
+  "GET /lists", "POST /lists", "GET /lists/{listId}", "PATCH /lists/{listId}", "DELETE /lists/{listId}",
+  "GET /lists/companies/{listId}/results", "GET /lists/people/{listId}/results", "PATCH /lists/companies/{listId}", "PATCH /lists/people/{listId}",
+  "GET /network/people", "GET /network/companies", "GET /network/connection/{personId}", "GET /network/members",
+  "GET /organization/credits", "GET /organization/usage", "GET /me",
+  "GET /webhooks", "POST /webhooks", "DELETE /webhooks/{webhookId}", "POST /webhooks/{webhookId}/test",
+];

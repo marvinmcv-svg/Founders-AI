@@ -14,3 +14,8 @@ next-env.d.ts
 *.tsbuildinfo
 .DS_Store
 recon-raw
+
+# Python
+__pycache__/
+*.pyc
+*.egg-info/

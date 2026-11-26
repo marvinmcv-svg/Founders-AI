@@ -993,3 +993,85 @@ export const modelVersions = pgTable(
   },
   (t) => [index("model_versions_kind_idx").on(t.kind)],
 );
+
+/* ------------------------------------------------------------------ */
+/* Phase 5b (R2): webhooks, persisted AI-search queries, idempotency   */
+/* ------------------------------------------------------------------ */
+
+export const WEBHOOK_EVENTS = ["search.new_results", "list.news", "signal.talent", "signal.interest", "crm.sync"] as const;
+export type WebhookEvent = (typeof WEBHOOK_EVENTS)[number];
+
+/** Customer webhook endpoints (plan 11 #71–74). The signing secret is AES-GCM encrypted at rest. */
+export const webhooks = pgTable(
+  "webhooks",
+  {
+    id: text("id").primaryKey(),
+    orgId: text("org_id").notNull(),
+    url: text("url").notNull(),
+    events: text("events").array().notNull(),
+    secret: text("secret").notNull(), // encrypted
+    secretPrefix: text("secret_prefix").notNull(),
+    status: text("status").notNull().default("ACTIVE"), // ACTIVE | DISABLED
+    disabledReason: text("disabled_reason"),
+    /** Start of the current unbroken failure streak; auto-disable after 24 h (plan 11 security). */
+    failingSince: ts("failing_since"),
+    createdBy: text("created_by").notNull(),
+    createdAt: createdAt(),
+  },
+  (t) => [index("webhooks_org_idx").on(t.orgId)],
+);
+
+/** One row per event per endpoint; retried with exponential backoff up to 6 times. */
+export const webhookDeliveries = pgTable(
+  "webhook_deliveries",
+  {
+    id: text("id").primaryKey(),
+    webhookId: text("webhook_id").notNull(),
+    orgId: text("org_id").notNull(),
+    event: text("event").notNull(),
+    payload: jsonb("payload").notNull(),
+    status: text("status").notNull().default("PENDING"), // PENDING | DELIVERED | FAILED
+    attempts: integer("attempts").notNull().default(0),
+    nextAttemptAt: ts("next_attempt_at").notNull().defaultNow(),
+    lastStatusCode: integer("last_status_code"),
+    lastError: text("last_error"),
+    deliveredAt: ts("delivered_at"),
+    createdAt: createdAt(),
+  },
+  (t) => [
+    index("webhook_deliveries_due_idx").on(t.nextAttemptAt).where(sql`status = 'PENDING'`),
+    index("webhook_deliveries_hook_idx").on(t.webhookId, t.createdAt),
+  ],
+);
+
+/** AI-search queries, so `GET /search/{queryId}/results` works across serverless instances. */
+export const apiQueries = pgTable(
+  "api_queries",
+  {
+    id: text("id").primaryKey(),
+    orgId: text("org_id").notNull(),
+    product: text("product").notNull(),
+    query: text("query").notNull(),
+    filter: jsonb("filter").notNull(),
+    sort: jsonb("sort"),
+    explanation: text("explanation"),
+    createdAt: createdAt(),
+  },
+  (t) => [index("api_queries_org_idx").on(t.orgId, t.createdAt)],
+);
+
+/** Idempotency-Key replay store for POST requests (24 h). */
+export const idempotencyKeys = pgTable(
+  "idempotency_keys",
+  {
+    orgId: text("org_id").notNull(),
+    key: text("key").notNull(),
+    method: text("method").notNull(),
+    path: text("path").notNull(),
+    bodyHash: text("body_hash").notNull(),
+    status: integer("status").notNull(),
+    response: text("response").notNull(),
+    createdAt: createdAt(),
+  },
+  (t) => [primaryKey({ columns: [t.orgId, t.key] })],
+);
