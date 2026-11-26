@@ -27,6 +27,34 @@ importers:
         specifier: ^8.46.0
         version: 8.74.0(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3)
 
+  apps/agent-evals:
+    dependencies:
+      '@founders/agent':
+        specifier: workspace:*
+        version: link:../../packages/agent
+      '@founders/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+      '@founders/db':
+        specifier: workspace:*
+        version: link:../../packages/db
+      drizzle-orm:
+        specifier: ^0.45.4
+        version: 0.45.4(@opentelemetry/api@1.10.0)(kysely@0.29.9)(postgres@3.4.9)
+    devDependencies:
+      '@types/node':
+        specifier: ^22.18.0
+        version: 22.20.7
+      dotenv:
+        specifier: ^17.2.3
+        version: 17.4.2
+      tsx:
+        specifier: ^4.23.15
+        version: 4.23.15
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.7(@types/node@22.20.7)(jiti@2.7.0)(lightningcss@1.33.0)(tsx@4.23.15)(yaml@2.9.1)
+
   apps/api:
     dependencies:
       '@founders/config':
@@ -78,6 +106,9 @@ importers:
       '@fontsource/instrument-serif':
         specifier: ^5.2.8
         version: 5.3.0
+      '@founders/agent':
+        specifier: workspace:*
+        version: link:../../packages/agent
       '@founders/api':
         specifier: workspace:*
         version: link:../api
@@ -249,6 +280,37 @@ importers:
         specifier: ^22.18.0
         version: 22.20.7
 
+  packages/agent:
+    dependencies:
+      '@anthropic-ai/sdk':
+        specifier: latest
+        version: 1.14.0(zod@4.6.7)
+      '@founders/config':
+        specifier: workspace:*
+        version: link:../config
+      '@founders/core':
+        specifier: workspace:*
+        version: link:../core
+      '@founders/db':
+        specifier: workspace:*
+        version: link:../db
+      drizzle-orm:
+        specifier: ^0.45.4
+        version: 0.45.4(@opentelemetry/api@1.10.0)(kysely@0.29.9)(postgres@3.4.9)
+      zod:
+        specifier: ^4.1.12
+        version: 4.6.7
+    devDependencies:
+      '@types/node':
+        specifier: ^22.18.0
+        version: 22.20.7
+      dotenv:
+        specifier: ^17.2.3
+        version: 17.4.2
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.7(@types/node@22.20.7)(jiti@2.7.0)(lightningcss@1.33.0)(tsx@4.23.15)(yaml@2.9.1)
+
   packages/config:
     devDependencies:
       '@types/node':
@@ -332,6 +394,9 @@ importers:
 
   packages/pipelines:
     dependencies:
+      '@founders/agent':
+        specifier: workspace:*
+        version: link:../agent
       '@founders/config':
         specifier: workspace:*
         version: link:../config
@@ -360,6 +425,8 @@ importers:
       vitest:
         specifier: ^3.2.4
         version: 3.2.7(@types/node@22.20.7)(jiti@2.7.0)(lightningcss@1.33.0)(tsx@4.23.15)(yaml@2.9.1)
+
+  packages/sdk-python: {}
 
   packages/seed:
     dependencies:

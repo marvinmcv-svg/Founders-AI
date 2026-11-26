@@ -22,3 +22,5 @@ Items from plan Section 0C. Each is stubbed behind an interface so work can cont
 | H3 (R2) | BLOCKED-HUMAN | R2 Phase 4 | Working `ANTHROPIC_API_KEY` (the configured key returns 401), hosted embedding model, Resend | LLM steps use deterministic fallbacks (circuit breaker, D-025); competitors use the local hashed TF-IDF embedder; alert/digest email is stored, not sent. |
 | H2 (R2) | BLOCKED-HUMAN | R2 Phase 4 | Worker host (Railway/Fly) + Redis for weekly/monthly jobs and the Python ML service | Daily jobs run from Vercel cron (D-023); competitors, traction and ML estimates run from the CLI. |
 
+| H3 (R2 agent) | BLOCKED-HUMAN | R2 Phase 6 | Working `ANTHROPIC_API_KEY` for the agent's Claude engine and the LLM-graded eval | Agent answers come from the deterministic rules engine (D-037); the Claude loop is covered by tests with a scripted client. |
+| H15 (R2 agent) | BLOCKED-HUMAN | R2 Phase 6 | Human spot-check of agent answers on the 50-prompt eval set | Deterministic graders (sourced, cited, tools, entities, confirmation, no-leak) pass 50/50. |

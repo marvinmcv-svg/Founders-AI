@@ -9,6 +9,9 @@ export const CREDIT_PRICES = {
   "ai_search.query": 5,
   "extract.entity": 1,
   "export.per_100": 1,
+  /** Agent: a turn on the rules engine; Claude turns cost per 10k tokens (input + output). */
+  "agent.turn": 1,
+  "agent.per_10k_tokens": 1,
   free: 0,
 } as const;
 

@@ -7,3 +7,4 @@ export * from "./alerts";
 export * from "./webhooks";
 export * from "./extract";
 export * from "./api";
+export * from "./agent";

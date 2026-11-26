@@ -65,7 +65,7 @@ export default async function InvestorProfile({ params }: P) {
             </div>
           </div>
         </div>
-        <ProfileActions entityType="INVESTOR" id={id} liked={liked} status={entityStatus[id] ?? null} statuses={statuses} inLists={inLists} />
+        <ProfileActions entityName={String(inv.name)} entityType="INVESTOR" id={id} liked={liked} status={entityStatus[id] ?? null} statuses={statuses} inLists={inLists} />
       </header>
       <div className="grid gap-4 p-6">
         <div className="grid gap-3 sm:grid-cols-3 xl:grid-cols-6">

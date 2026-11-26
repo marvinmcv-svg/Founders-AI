@@ -89,6 +89,14 @@ export async function testSlack(ctx: OrgContext, post: Poster = egressPoster) {
   if (res.status >= 300) throw new Error(`Slack answered ${res.status}`);
 }
 
+/** Posts a plain message to the org's Slack (scheduled agent skills). Returns false when not connected. */
+export async function postSlackText(orgId: string, text: string, post: Poster = egressPoster): Promise<boolean> {
+  const url = await slackUrl(orgId);
+  if (!url) return false;
+  const res = await post(url, JSON.stringify({ text: text.slice(0, 3500) }));
+  return res.status < 300;
+}
+
 /* ------------------------------------------------------------------ */
 /* Real-time processing                                                */
 /* ------------------------------------------------------------------ */

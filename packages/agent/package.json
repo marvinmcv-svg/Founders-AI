@@ -1,0 +1,30 @@
+{
+  "name": "@founders/agent",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./skills": "./src/skills.ts",
+    "./guard": "./src/guard.ts",
+    "./mentions": "./src/mentions.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "lint": "eslint src",
+    "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "latest",
+    "@founders/config": "workspace:*",
+    "@founders/core": "workspace:*",
+    "@founders/db": "workspace:*",
+    "drizzle-orm": "^0.45.4",
+    "zod": "^4.1.12"
+  },
+  "devDependencies": {
+    "@types/node": "^22.18.0",
+    "dotenv": "^17.2.3",
+    "vitest": "^3.2.4"
+  }
+}

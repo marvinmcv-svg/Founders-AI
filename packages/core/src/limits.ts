@@ -10,3 +10,8 @@ export const EXACT_COUNT_CAP = 10_000;
 export const EXPORT_MAX_ROWS = 5000;
 export const WEBHOOK_MAX_PER_ORG = 10;
 export const ENTITY_EXTRACT_MAX_CHARS = 20_000;
+/** Agent guardrails (plan 10.1 cost guardrails). */
+export const AGENT_MAX_STEPS = 25;
+export const AGENT_MAX_INPUT_TOKENS_PER_TURN = 200_000;
+export const AGENT_DAILY_TURNS_PER_USER = 200;
+export const AGENT_TOOL_RESULT_MAX_ROWS = 25;

@@ -16,6 +16,7 @@
   "dependencies": {
     "@founders/config": "workspace:*",
     "@founders/core": "workspace:*",
+    "@founders/agent": "workspace:*",
     "@founders/db": "workspace:*",
     "drizzle-orm": "^0.45.4",
     "postgres": "^3.4.7"

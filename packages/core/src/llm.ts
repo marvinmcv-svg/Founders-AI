@@ -7,6 +7,10 @@ import Anthropic from "@anthropic-ai/sdk";
 export const LLM_MODEL = process.env.ANTHROPIC_MODEL || "claude-opus-5-5";
 
 let client: Anthropic | null = null;
+/** Shared client for callers that need more than one structured call (the agent loop). */
+export function getLlmClient(): Anthropic | null {
+  return disabledReason ? null : getClient();
+}
 function getClient(): Anthropic | null {
   if (!process.env.ANTHROPIC_API_KEY) return null;
   client ??= new Anthropic();
@@ -18,6 +22,15 @@ function getClient(): Anthropic | null {
  * process stops calling Claude and every caller uses its deterministic fallback.
  */
 let disabledReason: string | null = null;
+
+/** Callers outside this module report auth failures so every later call uses its fallback. */
+export function tripLlmBreaker(err: unknown): boolean {
+  if (err instanceof Anthropic.AuthenticationError || err instanceof Anthropic.PermissionDeniedError) {
+    disabledReason = `${err.status} ${err.name}`;
+    return true;
+  }
+  return false;
+}
 
 export function llmAvailable(): boolean {
   return Boolean(process.env.ANTHROPIC_API_KEY) && !disabledReason;

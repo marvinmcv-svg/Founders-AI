@@ -3,7 +3,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useTransition, type ReactNode } from "react";
 import {
-  Bell, BellRing, Bookmark, Building2, Merge, Newspaper, ShieldCheck, ChevronsUpDown, Code2, Command, Handshake, Landmark, List, LogOut, Network, Settings, Sparkles, Star, TrendingUp, Users,
+  Bell, BellRing, Bookmark, Building2, Merge, MessageSquare, Newspaper, ShieldCheck, ChevronsUpDown, Code2, Command, Handshake, Landmark, List, LogOut, Network, Settings, SlidersHorizontal, Sparkles, SquarePen, Star, TrendingUp, Users, Wand2,
 } from "lucide-react";
 import { cn, LogoMark } from "@founders/ui";
 import { markNotificationsRead, switchOrg } from "@/app/actions";
@@ -21,7 +21,22 @@ export type SidebarData = {
   notifications: { id: string; kind: string; payload: Record<string, unknown>; read_at: string | null; created_at: string }[];
   unread: number;
   isAdmin?: boolean;
+  threads?: { id: string; title: string; visibility: string; updated_at: string; mine: boolean }[];
 };
+
+/** Today / Yesterday / Last week / Earlier (plan 7 agent sidebar). */
+function groupThreads(threads: NonNullable<SidebarData["threads"]>) {
+  const day = 864e5;
+  const start = new Date();
+  start.setHours(0, 0, 0, 0);
+  const groups: [string, typeof threads][] = [["Today", []], ["Yesterday", []], ["Last week", []], ["Earlier", []]];
+  for (const t of threads) {
+    const at = new Date(t.updated_at).getTime();
+    const g = at >= start.getTime() ? 0 : at >= start.getTime() - day ? 1 : at >= start.getTime() - 7 * day ? 2 : 3;
+    groups[g]![1].push(t);
+  }
+  return groups.filter(([, xs]) => xs.length);
+}
 
 function Item({ href, icon, label, badge, exact }: { href: string; icon: ReactNode; label: string; badge?: ReactNode; exact?: boolean }) {
   const path = usePathname();
@@ -52,6 +67,8 @@ export function Sidebar(d: SidebarData) {
   const crm = sys("MY_CRM");
   const net = sys("MY_NETWORK");
   const user = d.lists.filter((l) => !l.system).slice(0, 6);
+  const path = usePathname();
+  const agentMode = path === "/agent" || path.startsWith("/agent/");
   return (
     <aside className="sticky top-0 hidden h-screen w-[232px] shrink-0 flex-col gap-4 overflow-y-auto border-r border-line bg-sunken px-3 py-4 lg:flex">
       <div className="flex items-center justify-between px-1">
@@ -77,14 +94,14 @@ export function Sidebar(d: SidebarData) {
               {d.notifications.slice(0, 8).map((n) => (
                 <Link
                   key={n.id}
-                  href={n.payload.searchId ? `/searches/${String(n.payload.searchId)}` : "/searches"}
+                  href={n.payload.threadId ? `/agent/${String(n.payload.threadId)}` : n.payload.searchId ? `/searches/${String(n.payload.searchId)}` : "/searches"}
                   onClick={() => setBellOpen(false)}
                   className="flex flex-col rounded-lg px-2 py-2 hover:bg-white/[0.05]"
                 >
                   <span className="text-[13px] text-ink">
                     {String(n.payload.name ?? "Saved search")} <span className="text-accent">+{String(n.payload.count ?? 0)}</span>
                   </span>
-                  <span className="text-[11px] text-muted">New results · {new Date(n.created_at).toLocaleDateString()}</span>
+                  <span className="text-[11px] text-muted">{n.kind === "agent.scheduled" ? "Scheduled skill ran" : "New results"} · {new Date(n.created_at).toLocaleDateString()}</span>
                 </Link>
               ))}
             </div>
@@ -92,13 +109,29 @@ export function Sidebar(d: SidebarData) {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 rounded-lg bg-white/[0.05] p-0.5 text-center text-[12px]">
-        <span className="rounded-md bg-white/[0.1] py-1 text-ink">Browse</span>
-        <span className="cursor-not-allowed py-1 text-faint" title="Agent mode ships in Release 2">
-          Agent
-        </span>
+      <div className="grid grid-cols-2 rounded-lg bg-white/[0.05] p-0.5 text-center text-[12px]" role="tablist" aria-label="Mode">
+        <Link href="/companies" role="tab" aria-selected={!agentMode} className={cn("rounded-md py-1", !agentMode ? "bg-white/[0.1] text-ink" : "text-faint hover:text-ink")}>Browse</Link>
+        <Link href="/agent" role="tab" aria-selected={agentMode} className={cn("rounded-md py-1", agentMode ? "bg-white/[0.1] text-ink" : "text-faint hover:text-ink")}>Agent</Link>
       </div>
 
+      {agentMode ? (
+        <>
+          <div className="flex flex-col gap-0.5">
+            <Item href="/agent" icon={ic(SquarePen)} label="New chat" exact />
+            <Item href="/agent/personalization" icon={ic(SlidersHorizontal)} label="Personalization" />
+            <Item href="/agent/skills" icon={ic(Wand2)} label="Skills" />
+          </div>
+          {groupThreads(d.threads ?? []).map(([label, xs]) => (
+            <Group key={label} label={label}>
+              {xs.slice(0, 25).map((t) => (
+                <Item key={t.id} href={`/agent/${t.id}`} icon={ic(t.visibility === "TEAM" ? Users : MessageSquare)} label={t.title} />
+              ))}
+            </Group>
+          ))}
+          {!(d.threads ?? []).length ? <p className="px-2 text-[12px] text-faint">No conversations yet.</p> : null}
+        </>
+      ) : (
+        <>
       <div className="flex flex-col gap-0.5">
         <button
           onClick={() => window.dispatchEvent(new Event("fai:cmdk"))}
@@ -136,6 +169,8 @@ export function Sidebar(d: SidebarData) {
         <Item href="/acquisitions" icon={ic(Merge)} label="Acquisitions" />
         <Item href="/ipos" icon={ic(BellRing)} label="IPOs" />
       </Group>
+        </>
+      )}
 
       <div className="mt-auto flex flex-col gap-0.5 border-t border-line pt-3">
         <Item href="/developers" icon={ic(Code2)} label="API & docs" />

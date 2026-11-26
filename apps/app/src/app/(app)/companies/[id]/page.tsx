@@ -116,7 +116,7 @@ export default async function CompanyProfile({ params, searchParams }: P) {
             ) : null}
           </div>
         </div>
-        <ProfileActions entityType="COMPANY" id={id} liked={liked} status={entityStatus[id] ?? null} statuses={statuses} inLists={inLists} />
+        <ProfileActions entityName={String(c.name)} entityType="COMPANY" id={id} liked={liked} status={entityStatus[id] ?? null} statuses={statuses} inLists={inLists} />
       </header>
       <Tabs base={base} tabs={tabs} active={tab} />
 

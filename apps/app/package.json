@@ -13,6 +13,7 @@
   "dependencies": {
     "@founders/config": "workspace:*",
     "@founders/core": "workspace:*",
+    "@founders/agent": "workspace:*",
     "@founders/db": "workspace:*",
     "@founders/ui": "workspace:*",
     "@founders/mocks": "workspace:*",

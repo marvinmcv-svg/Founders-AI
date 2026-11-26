@@ -1,0 +1,25 @@
+{
+  "name": "@founders/agent-evals",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Plan 10.1 evaluation harness: 50 fixed agent prompts on the seed dataset with graders.",
+  "scripts": {
+    "eval": "tsx src/cli.ts",
+    "typecheck": "tsc -p tsconfig.json",
+    "lint": "eslint src test",
+    "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "@founders/agent": "workspace:*",
+    "@founders/core": "workspace:*",
+    "@founders/db": "workspace:*",
+    "drizzle-orm": "^0.45.4"
+  },
+  "devDependencies": {
+    "@types/node": "^22.18.0",
+    "dotenv": "^17.2.3",
+    "tsx": "^4.23.15",
+    "vitest": "^3.2.4"
+  }
+}

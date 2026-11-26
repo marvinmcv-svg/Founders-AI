@@ -1075,3 +1075,131 @@ export const idempotencyKeys = pgTable(
   },
   (t) => [primaryKey({ columns: [t.orgId, t.key] })],
 );
+
+/* ------------------------------------------------------------------ */
+/* Phase 6 (R2): agent threads, skills, personalization, schedules     */
+/* ------------------------------------------------------------------ */
+
+export type AgentSource = { id: string; kind: "company" | "person" | "investor" | "round" | "signal" | "news" | "list" | "search" | "web"; label: string; url?: string };
+export type AgentStep = { id: string; tool: string; label: string; status: "running" | "done" | "error" | "awaiting_confirmation" | "denied"; summary?: string; sources?: string[]; ms?: number };
+export type AgentTable = { id: string; title: string; product: string | null; columns: { key: string; label: string }[]; rows: Record<string, unknown>[] };
+export type AgentPending = { toolUseId: string; tool: string; input: Record<string, unknown>; label: string };
+
+/** A conversation with the agent (plan 10.1). TEAM threads are visible to the whole workspace. */
+export const agentThreads = pgTable(
+  "agent_threads",
+  {
+    id: text("id").primaryKey(),
+    orgId: text("org_id").notNull(),
+    ownerId: text("owner_id").notNull(),
+    title: text("title").notNull(),
+    visibility: text("visibility").notNull().default("PRIVATE"), // PRIVATE | TEAM
+    /** Tools the user allowed for the rest of this thread ("Always for this thread"). */
+    allowedTools: text("allowed_tools").array().notNull().default(sql`'{}'::text[]`),
+    /** Page the thread was started from, e.g. { entityId: "com_…" }. */
+    context: jsonb("context").$type<Record<string, unknown>>(),
+    deletedAt: ts("deleted_at"),
+    createdAt: createdAt(),
+    updatedAt: ts("updated_at").notNull().defaultNow(),
+  },
+  (t) => [index("agent_threads_org_idx").on(t.orgId, t.updatedAt)],
+);
+
+export const agentMessages = pgTable(
+  "agent_messages",
+  {
+    id: text("id").primaryKey(),
+    threadId: text("thread_id").notNull(),
+    orgId: text("org_id").notNull(),
+    role: text("role").notNull(), // user | assistant
+    authorId: text("author_id"),
+    text: text("text").notNull().default(""),
+    /** Raw model transcript for this turn (assistant + tool_result blocks), replayed on the next turn. */
+    transcript: jsonb("transcript").$type<unknown[]>(),
+    steps: jsonb("steps").$type<AgentStep[]>(),
+    sources: jsonb("sources").$type<AgentSource[]>(),
+    tables: jsonb("tables").$type<AgentTable[]>(),
+    artifactIds: text("artifact_ids").array(),
+    pending: jsonb("pending").$type<AgentPending>(),
+    status: text("status").notNull().default("done"), // running | awaiting_confirmation | done | error
+    engine: text("engine"), // claude | rules
+    skillSlug: text("skill_slug"),
+    usage: jsonb("usage").$type<Record<string, number>>(),
+    /** Guardrail result: numbers in the answer that no tool result supports (must be empty). */
+    unsourced: text("unsourced").array(),
+    createdAt: createdAt(),
+  },
+  (t) => [index("agent_messages_thread_idx").on(t.threadId, t.createdAt)],
+);
+
+/** Long outputs saved from a thread: memo, table, chart, email draft (plan 10.1 artifacts). */
+export const agentArtifacts = pgTable(
+  "agent_artifacts",
+  {
+    id: text("id").primaryKey(),
+    orgId: text("org_id").notNull(),
+    threadId: text("thread_id"),
+    kind: text("kind").notNull(), // memo | table | chart | email | csv
+    title: text("title").notNull(),
+    content: jsonb("content").notNull(),
+    createdBy: text("created_by").notNull(),
+    createdAt: createdAt(),
+  },
+  (t) => [index("agent_artifacts_org_idx").on(t.orgId, t.createdAt)],
+);
+
+/** Workspace skills (plan 10.2). Curated skills live in code (packages/agent) and are read-only. */
+export const skills = pgTable(
+  "skills",
+  {
+    id: text("id").primaryKey(),
+    orgId: text("org_id").notNull(),
+    ownerId: text("owner_id").notNull(),
+    slug: text("slug").notNull(),
+    name: text("name").notNull(),
+    description: text("description").notNull().default(""),
+    steps: text("steps").array().notNull(),
+    inputs: jsonb("inputs").$type<{ name: string; label: string; kind: "text" | "company" | "person" | "investor" | "list" | "search" }[]>(),
+    outputFormat: text("output_format").notNull().default(""),
+    visibility: text("visibility").notNull().default("PRIVATE"), // PRIVATE | TEAM
+    status: text("status").notNull().default("SAVED"), // DRAFT | SAVED
+    deletedAt: ts("deleted_at"),
+    createdAt: createdAt(),
+    updatedAt: ts("updated_at").notNull().defaultNow(),
+  },
+  (t) => [uniqueIndex("skills_org_slug_uq").on(t.orgId, t.slug).where(sql`deleted_at IS NULL`), index("skills_org_idx").on(t.orgId)],
+);
+
+/** Agent personalization (plan 10.1 Context). user_id '*' holds the workspace default. */
+export const agentPreferences = pgTable(
+  "agent_preferences",
+  {
+    orgId: text("org_id").notNull(),
+    userId: text("user_id").notNull(),
+    instructions: jsonb("instructions").$type<Record<string, unknown>>().notNull(),
+    updatedAt: ts("updated_at").notNull().defaultNow(),
+  },
+  (t) => [primaryKey({ columns: [t.orgId, t.userId] })],
+);
+
+/** Scheduled skills (plan 10.1): run a skill on a cadence and deliver the answer. */
+export const skillSchedules = pgTable(
+  "skill_schedules",
+  {
+    id: text("id").primaryKey(),
+    orgId: text("org_id").notNull(),
+    userId: text("user_id").notNull(),
+    skillSlug: text("skill_slug").notNull(),
+    prompt: text("prompt").notNull().default(""),
+    cadence: text("cadence").notNull(), // DAILY | WEEKLY
+    weekday: integer("weekday"), // 1 = Monday (WEEKLY)
+    hour: integer("hour").notNull().default(7),
+    timezone: text("timezone").notNull().default("America/La_Paz"),
+    channels: text("channels").array().notNull().default(sql`'{in_app}'::text[]`),
+    status: text("status").notNull().default("ACTIVE"), // ACTIVE | PAUSED
+    lastRunAt: ts("last_run_at"),
+    lastThreadId: text("last_thread_id"),
+    createdAt: createdAt(),
+  },
+  (t) => [index("skill_schedules_org_idx").on(t.orgId)],
+);

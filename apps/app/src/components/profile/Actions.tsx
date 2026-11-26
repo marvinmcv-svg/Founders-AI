@@ -1,15 +1,16 @@
 "use client";
 /** Profile action bar islands: Add to List, Like, Hide, Status, Share; Notes; Email reveal. */
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
-import { Check, EyeOff, Heart, Link2, Mail, Plus } from "lucide-react";
+import { Check, EyeOff, Heart, Link2, Mail, Plus, Sparkles } from "lucide-react";
 import { CREDIT_PRICES } from "@founders/core/pricing";
 import { buttonClass, cn } from "@founders/ui";
 import { addNote, addToList, createList, getMyLists, revealEmail, setStatus, toggleHide, toggleLike } from "@/app/actions";
 
 type EntityType = "COMPANY" | "PERSON" | "INVESTOR";
 
-export function ProfileActions({ entityType, id, liked: likedInit, status, statuses, inLists }: { entityType: EntityType; id: string; liked: boolean; status: { id: string; label: string; color: string } | null; statuses: { id: string; label: string; color: string }[]; inLists: { id: string; name: string }[] }) {
+export function ProfileActions({ entityType, id, entityName, liked: likedInit, status, statuses, inLists }: { entityType: EntityType; id: string; entityName?: string; liked: boolean; status: { id: string; label: string; color: string } | null; statuses: { id: string; label: string; color: string }[]; inLists: { id: string; name: string }[] }) {
   const router = useRouter();
   const [liked, setLiked] = useState(likedInit);
   const [st, setSt] = useState(status);
@@ -33,6 +34,11 @@ export function ProfileActions({ entityType, id, liked: likedInit, status, statu
       >
         <Plus size={14} /> Add to List
       </button>
+      {entityName ? (
+        <Link href={`/agent?entity=${id}&name=${encodeURIComponent(entityName)}`} className={buttonClass("secondary", "sm")}>
+          <Sparkles size={14} /> Ask agent
+        </Link>
+      ) : null}
       <button className={buttonClass("secondary", "sm")} onClick={() => setOpen(open === "status" ? null : "status")}>
         <span className="h-2 w-2 rounded-full" style={{ background: st?.color ?? "#6b6b6b" }} />
         {st?.label ?? "Set status"}

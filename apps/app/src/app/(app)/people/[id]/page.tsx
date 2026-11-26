@@ -71,7 +71,7 @@ export default async function PersonProfile({ params }: P) {
           </div>
           <RevealEmail personId={id} />
         </div>
-        <ProfileActions entityType="PERSON" id={id} liked={liked} status={entityStatus[id] ?? null} statuses={statuses} inLists={inLists} />
+        <ProfileActions entityName={String(p.full_name)} entityType="PERSON" id={id} liked={liked} status={entityStatus[id] ?? null} statuses={statuses} inLists={inLists} />
       </header>
       <div className="grid gap-4 p-6 xl:grid-cols-[1.4fr_1fr]">
         <div className="flex flex-col gap-4">
