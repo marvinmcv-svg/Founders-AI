@@ -28,7 +28,17 @@ export async function POST(req: Request) {
   if (!authorized(req)) return new Response("Not found", { status: 404 });
   const scale = Math.min(1, Math.max(0.01, Number(new URL(req.url).searchParams.get("scale") ?? "0.2")));
   const { seedDatabase } = await import("@founders/seed/load");
+  const postgres = (await import("postgres")).default;
+  // Same plain client as the CLI seed (`pnpm db:seed`), not the app's shared pool.
+  const url = process.env.DATABASE_URL ?? "";
+  const sql = postgres(url, { max: 2, ssl: /localhost|127\.0\.0\.1/.test(url) ? false : "require", prepare: !url.includes(":6543"), onnotice: () => {} });
   const lines: string[] = [];
-  const stats = await seedDatabase(getSql(), { scale, log: (l) => lines.push(l) });
-  return Response.json({ ok: true, scale, stats, log: lines });
+  try {
+    const stats = await seedDatabase(sql, { scale, log: (l) => lines.push(l) });
+    return Response.json({ ok: true, scale, stats, log: lines });
+  } catch (e) {
+    return Response.json({ ok: false, error: (e as Error).message, log: lines }, { status: 500 });
+  } finally {
+    await sql.end({ timeout: 5 });
+  }
 }
