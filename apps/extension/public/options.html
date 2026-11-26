@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Founders AI — settings</title>
+    <link rel="stylesheet" href="panel.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Founders AI</h1>
+      <p class="muted">Paste an API key from the app (Settings → API keys). Lookups use your workspace's API credits; misses are free.</p>
+      <label>API key <input id="key" type="password" autocomplete="off" style="width: 100%" placeholder="fai_…" /></label>
+      <label>App URL <input id="base" style="width: 100%" placeholder="https://app.foundersscz.com" /></label>
+      <div class="row"><button id="save" class="primary">Save</button><button id="test">Test connection</button></div>
+      <p id="status" class="status"></p>
+      <div class="card" id="li">
+        <b>LinkedIn panel</b>
+        <p class="muted">Adds a "View on Founders AI" button on LinkedIn company and profile pages. It reads only the page address, never page content, and turns on only when your workspace enables it.</p>
+        <button id="grant">Allow on linkedin.com</button>
+      </div>
+    </main>
+    <script type="module" src="options.js"></script>
+  </body>
+</html>

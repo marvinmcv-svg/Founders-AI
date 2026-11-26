@@ -1,0 +1,33 @@
+{
+  "manifest_version": 3,
+  "name": "Founders AI",
+  "short_name": "Founders AI",
+  "version": "0.1.0",
+  "description": "See any company's Founders AI card while you browse: rank, team, funding, growth. Push to CRM, add to a list, like.",
+  "minimum_chrome_version": "116",
+  "action": {
+    "default_title": "Open Founders AI"
+  },
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "options_page": "options.html",
+  "permissions": [
+    "sidePanel",
+    "storage",
+    "tabs",
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://*.foundersscz.com/*",
+    "http://localhost/*"
+  ],
+  "optional_host_permissions": [
+    "https://www.linkedin.com/*",
+    "https://*/*"
+  ]
+}

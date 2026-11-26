@@ -12,5 +12,6 @@ export default defineConfig({
   projects: [
     { name: "www", testMatch: /www\..*\.spec\.ts/, use: { baseURL: process.env.WWW_URL ?? "http://localhost:3000" } },
     { name: "app", testMatch: /app\..*\.spec\.ts/, use: { baseURL: process.env.APP_URL ?? "http://localhost:3001" } },
+    { name: "ext", testMatch: /ext\..*\.spec\.ts/ },
   ],
 });

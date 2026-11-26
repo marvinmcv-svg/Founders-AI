@@ -1,0 +1,17 @@
+{
+  "name": "@founders/extension",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Chrome extension (MV3): side panel company card on any site; LinkedIn panel behind a remote flag (H11).",
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json && node scripts/copy.mjs",
+    "typecheck": "tsc -p tsconfig.json",
+    "lint": "eslint src test",
+    "test": "vitest run --passWithNoTests"
+  },
+  "devDependencies": {
+    "@types/node": "^22.18.0",
+    "vitest": "^3.2.4"
+  }
+}
