@@ -235,7 +235,7 @@ export async function runScheduledDigests(opts: { now?: Date; anyHour?: boolean 
     }
     for (const cadence of due) {
       const [already] = await q<{ n: number }>(sql`SELECT count(*)::int AS n FROM digest_runs WHERE org_id = ${u.org_id} AND user_id = ${u.user_id}
-        AND cadence = ${cadence} AND sent_at > ${now} - interval '20 hours'`);
+        AND cadence = ${cadence} AND sent_at > ${now.toISOString()}::timestamptz - interval '20 hours'`);
       if (already?.n) {
         out.skipped++;
         continue;

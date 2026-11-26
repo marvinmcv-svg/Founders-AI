@@ -1,4 +1,4 @@
-import { getDb, getSql } from "@founders/db";
+import { getDb, getRawSql } from "@founders/db";
 import type { SQL } from "drizzle-orm";
 
 export type Row = Record<string, unknown>;
@@ -8,7 +8,7 @@ export async function q<T = Row>(query: SQL): Promise<T[]> {
 }
 
 /** Raw postgres.js client for bulk work (COPY-like multi-row inserts, unnest updates). */
-export const pg = () => getSql();
+export const pg = () => getRawSql();
 
 /** JSON-compatible value (what postgres.js `sql.json` accepts). */
 export type Json = string | number | boolean | null | Json[] | { [k: string]: Json };

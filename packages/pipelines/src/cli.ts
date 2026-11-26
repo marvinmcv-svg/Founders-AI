@@ -3,7 +3,7 @@
  * Examples: `pnpm pipelines highlights --only=companies`, `pnpm pipelines talent --changes=500`.
  */
 import "@founders/db/env";
-import { getSql } from "@founders/db";
+import { closeAll } from "@founders/db";
 import { DAILY, JOBS, MONTHLY, WEEKLY } from "./registry";
 import { runJob } from "./runner";
 
@@ -42,4 +42,4 @@ main()
     console.error(e);
     process.exitCode = 1;
   })
-  .finally(() => getSql().end({ timeout: 5 }));
+  .finally(() => closeAll());
