@@ -94,14 +94,28 @@ export function Sidebar(d: SidebarData) {
               {d.notifications.slice(0, 8).map((n) => (
                 <Link
                   key={n.id}
-                  href={n.payload.threadId ? `/agent/${String(n.payload.threadId)}` : n.payload.searchId ? `/searches/${String(n.payload.searchId)}` : "/searches"}
+                  href={
+                    n.kind === "network.move"
+                      ? `/people/${String(n.payload.personId)}`
+                      : n.payload.threadId
+                        ? `/agent/${String(n.payload.threadId)}`
+                        : n.payload.searchId
+                          ? `/searches/${String(n.payload.searchId)}`
+                          : "/searches"
+                  }
                   onClick={() => setBellOpen(false)}
                   className="flex flex-col rounded-lg px-2 py-2 hover:bg-white/[0.05]"
                 >
-                  <span className="text-[13px] text-ink">
-                    {String(n.payload.name ?? "Saved search")} <span className="text-accent">+{String(n.payload.count ?? 0)}</span>
+                  {n.kind === "network.move" ? (
+                    <span className="text-[13px] text-ink">{String(n.payload.text ?? "")}</span>
+                  ) : (
+                    <span className="text-[13px] text-ink">
+                      {String(n.payload.name ?? "Saved search")} <span className="text-accent">+{String(n.payload.count ?? 0)}</span>
+                    </span>
+                  )}
+                  <span className="text-[11px] text-muted">
+                    {n.kind === "agent.scheduled" ? "Scheduled skill ran" : n.kind === "network.move" ? "Network move" : "New results"} · {new Date(n.created_at).toLocaleDateString()}
                   </span>
-                  <span className="text-[11px] text-muted">{n.kind === "agent.scheduled" ? "Scheduled skill ran" : "New results"} · {new Date(n.created_at).toLocaleDateString()}</span>
                 </Link>
               ))}
             </div>
@@ -160,6 +174,7 @@ export function Sidebar(d: SidebarData) {
       <Group label="People">
         <Item href="/people" icon={ic(Users)} label="People DB" />
         <Item href="/talent-signals" icon={ic(Sparkles)} label="Talent Signals" />
+        <Item href="/network" icon={ic(Network)} label="Team Network" />
       </Group>
       <Group label="Investors">
         <Item href="/investors" icon={ic(Landmark)} label="Investor DB" />

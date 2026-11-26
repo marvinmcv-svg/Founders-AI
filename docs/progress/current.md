@@ -3,7 +3,7 @@
 **Release:** R3 — *Workflow & scale* — **in progress.** R2 accepted by the owner on 2026-11-26 (D-051); R1 accepted earlier (D-022).
 
 **R3 in progress**
-- **Phase 8 — Integrations:** CRM ×6 done (adapters, sandbox, pull/match preview/push/enrich/log, UI, filters, badges). Network, Zapier, bulk delivery, interest signals (flag), Chrome extension and Integrations page next. Plan and evidence in `docs/progress/phase-8.md`.
+- **Phase 8 — Integrations:** CRM ×6 done (adapters, sandbox, pull/match preview/push/enrich/log, UI, filters, badges); network tracking done (LinkedIn export, mailbox/calendar clients + demo, team map, warm paths, move alerts, API #64–67). Zapier, bulk delivery, interest signals (flag), Chrome extension and Integrations page next. Plan and evidence in `docs/progress/phase-8.md`.
 
 **Done in R2** (accepted)
 
@@ -23,7 +23,7 @@
 
 - **Phase 9 — Remaining marketing pages & content:** done except human-only items. Plan and evidence in `docs/progress/phase-9.md`. Talent, News, Revenue & Valuation, Agents, API, MCP pages; blog (Markdown, RSS, authors), Insights, Careers, comparison template (H17), OG images, sitemap, JSON-LD, consent-gated analytics, link checker, copy-similarity check.
 
-**Next:** finish Phase 8 (network → Zapier + bulk → interest flag + extension + Integrations page), then Phase 10 (Stripe, admin console, DSAR, audit, hardening, launch checklist). Cloud: apply migration 0007 before deploying Phase 8.
+**Next:** finish Phase 8 (Zapier + bulk → interest flag + extension + Integrations page), then Phase 10 (Stripe, admin console, DSAR, audit, hardening, launch checklist). Cloud: apply migration 0007 before deploying Phase 8.
 
 **Open R1 carry-overs** (not blocking R2 work): SEC Form D public pipeline, entity resolution, OpenSearch + indexer (outbox is ready), BullMQ workers (H2: Redis), 10M-row load test, Stripe (H13), TS SDK, Fumadocs console, Storybook, Lighthouse/axe, Turnstile (H3).
 

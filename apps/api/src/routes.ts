@@ -557,13 +557,34 @@ const notYet = (path: string, tag: string, summary: string, credit: string, why:
   } });
 
 const INTEREST = "Investor-interest signals launch with R3, after legal review (plan 0B, H8).";
-const NETWORK = "Network tracking needs connected mailboxes and calendars, which launch with R3 (plan 0B).";
 notYet("/companies/:companyId/investor-interest-signals", "Companies", "Investor-interest signals on a company", "per_page", INTEREST);
 notYet("/investors/:investorId/investor-interest-signals", "Investors", "Interest signals an investor generates", "per_page", INTEREST);
 notYet("/investor-interest", "Signals", "Investor-interest feed", "per_page", INTEREST);
 notYet("/investor-interest/:signalId", "Signals", "One investor-interest signal", "per_match", INTEREST);
 notYet("/searches/investor-interest/:searchId/results", "Saved searches", "Saved-search results: investor-interest", "per_result", INTEREST);
-notYet("/network/people", "Network", "People your team knows", "per_page", NETWORK);
-notYet("/network/companies", "Network", "Companies reachable through your team, ranked by connections", "per_page", NETWORK);
-notYet("/network/connection/:personId", "Network", "Who on your team knows this person, and how well", "per_match", NETWORK);
-notYet("/network/members", "Network", "Teammates with connected sources", "free", NETWORK);
+/* ============================ Network (plan 13.2; needs the read:network scope) ============================ */
+
+const networkCtx = (c: Ctx) => {
+  requireScope(c, "read:network");
+  return orgCtx(c);
+};
+
+endpoint({ method: "get", path: "/network/people", tag: "Network", summary: "People your team knows (deduped, with teammate IDs and strength 0–100)", credit: "per_page", query: pageQuery, handler: async (c, { query }) =>
+  paged(c, "network.people", await repo.networkPeople(networkCtx(c)), query) });
+
+endpoint({ method: "get", path: "/network/companies", tag: "Network", summary: "Companies reachable through your team, ranked by connections", credit: "per_page", query: pageQuery, handler: async (c, { query }) =>
+  paged(c, "network.companies", await repo.networkCompanies(networkCtx(c)), query) });
+
+endpoint({ method: "get", path: "/network/connection/:personId", tag: "Network", summary: "Who on your team knows this person, and how well", credit: "per_match", handler: async (c, { params }) => {
+  const ctx = networkCtx(c);
+  await personOr404(params.personId!);
+  const teammates = await repo.connectionsFor(ctx, params.personId!);
+  await bill(c, "network.connection", teammates.length ? CREDIT_PRICES["entity.by_id"] : 0, teammates.length > 0);
+  return json(c, { person_id: params.personId, connected: teammates.length > 0, teammates });
+} });
+
+endpoint({ method: "get", path: "/network/members", tag: "Network", summary: "Teammates with connected sources", credit: "free", handler: async (c) => {
+  const items = await repo.networkMembers(networkCtx(c));
+  await bill(c, "network.members", 0, true);
+  return json(c, { items });
+} });

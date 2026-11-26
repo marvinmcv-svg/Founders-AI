@@ -37,7 +37,7 @@ describe("route table", () => {
         if (op["x-release"]) expect(op.responses["501"]).toBeTruthy();
       }
     }
-    expect(ENDPOINTS.filter((e) => e.release === "R3").length).toBe(9);
+    expect(ENDPOINTS.filter((e) => e.release === "R3").length).toBe(5); // interest signals (H8); network shipped in Phase 8
   });
 });
 
@@ -48,6 +48,7 @@ let dbUp = false;
 let key = "";
 let rlKey = "";
 let readOnlyKey = "";
+let networkKey = "";
 const keyIds: string[] = [];
 
 async function call(path: string, init: RequestInit & { key?: string } = {}) {
@@ -74,11 +75,12 @@ beforeAll(async () => {
   }
   if (!dbUp) return;
   await repo.grantCredits(OWNER.orgId, 1000, "test_topup");
-  for (const [name, scopes] of [["contract-admin", undefined], ["contract-ratelimit", undefined], ["contract-readonly", ["read:data"]]] as const) {
+  for (const [name, scopes] of [["contract-admin", undefined], ["contract-ratelimit", undefined], ["contract-readonly", ["read:data"]], ["contract-network", ["read:data", "read:network"]]] as const) {
     const k = await repo.createApiKey(OWNER, name, scopes ? [...scopes] : undefined);
     keyIds.push(k.id);
     if (name === "contract-admin") key = k.secret;
     else if (name === "contract-ratelimit") rlKey = k.secret;
+    else if (name === "contract-network") networkKey = k.secret;
     else readOnlyKey = k.secret;
   }
 });
@@ -190,12 +192,27 @@ describe("5b endpoints", () => {
 
   it("R3 routes answer 501 and are not charged", async () => {
     if (!dbUp) return;
-    for (const p of ["/investor-interest", "/network/members", "/companies/com_x/investor-interest-signals"]) {
+    for (const p of ["/investor-interest", "/companies/com_x/investor-interest-signals"]) {
       const r = await call(p);
       expect(r.status).toBe(501);
       expect(r.body.available_in).toBe("R3");
       expect(r.headers.get("x-credits-charged")).toBeNull();
     }
   });
-});
 
+  it("network routes need read:network and return the team's graph", async () => {
+    if (!dbUp) return;
+    expect((await call("/network/members")).status).toBe(403);
+    const members = await call("/network/members", { key: networkKey });
+    expect(members.status).toBe(200);
+    expect(Array.isArray(members.body.items)).toBe(true);
+    const people = await call("/network/people?limit=5", { key: networkKey });
+    expect(people.status).toBe(200);
+    expect(people.body).toHaveProperty("total");
+    const [anyPerson] = await getSql()`SELECT id FROM people LIMIT 1`;
+    const conn = await call(`/network/connection/${String(anyPerson?.id)}`, { key: networkKey });
+    expect(conn.status).toBe(200);
+    expect(conn.body).toHaveProperty("teammates");
+    expect((await call("/network/connection/per_doesnotexist000000000000", { key: networkKey })).status).toBe(404);
+  });
+});

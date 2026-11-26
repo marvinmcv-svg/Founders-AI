@@ -79,7 +79,7 @@ export function createFoundersMcpServer(p: McpPrincipal): McpServer {
     "warm_paths_to_list",
     { title: "Warm paths to a list", description: "Find warm introduction paths to the companies on a list.", argsSchema: z.object({ list: z.string().min(1).describe("List name or id") }) },
     ({ list }) => ({
-      messages: [{ role: "user" as const, content: { type: "text" as const, text: `Call get_lists and find the list "${list}", then get_list_items. For each company, use get_company_people and get_company_funding to find founders and investors, and suggest the most promising warm-intro path (shared investors, former colleagues). Team-network connections arrive in Release 3.` } }],
+      messages: [{ role: "user" as const, content: { type: "text" as const, text: `Call get_lists and find the list "${list}", then get_list_items. For each company, use get_company_people and get_company_funding to find founders and investors, and suggest the most promising warm-intro path (shared investors, former colleagues).` } }],
     }),
   );
   return server;

@@ -78,3 +78,39 @@ export async function pushEntitiesToCrm(kind: "COMPANY" | "PERSON", ids: string[
     return err(e);
   }
 }
+
+/* ---------------- Network (plan 13.2) ---------------- */
+
+export async function networkImportLinkedin(csvText: string): Promise<Res<repo.LinkedinImportResult>> {
+  try {
+    if (csvText.length > 20 * 1024 * 1024) return { ok: false, error: "The file is larger than 20 MB" };
+    const r = await repo.importLinkedinConnections(await getCtx(), csvText);
+    revalidatePath("/settings");
+    revalidatePath("/network");
+    return { ok: true, data: r };
+  } catch (e) {
+    return err(e);
+  }
+}
+
+export async function networkConnectDemo(provider: "GMAIL" | "OUTLOOK" | "GCAL" | "MSCAL"): Promise<Res<{ matched: number }>> {
+  try {
+    const r = await repo.connectDemoMailbox(await getCtx(), provider);
+    revalidatePath("/settings");
+    revalidatePath("/network");
+    return { ok: true, data: { matched: r.matched } };
+  } catch (e) {
+    return err(e);
+  }
+}
+
+export async function networkRemoveSource(provider: "LINKEDIN_CSV" | "GMAIL" | "OUTLOOK" | "GCAL" | "MSCAL"): Promise<Res<null>> {
+  try {
+    await repo.removeNetworkSource(await getCtx(), provider);
+    revalidatePath("/settings");
+    revalidatePath("/network");
+    return { ok: true, data: null };
+  } catch (e) {
+    return err(e);
+  }
+}

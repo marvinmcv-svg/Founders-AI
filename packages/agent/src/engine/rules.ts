@@ -355,7 +355,14 @@ async function warmIntro(rec: TurnRecorder, id: string, draft: boolean): Promise
   if (!r) return { text: "I couldn't read that person's profile." };
   const out = [`### Ways in to ${str(p.full_name)} ${chip(id)}`];
   const net = await run(rec, "network_connections", { person_id: id });
-  out.push(`1. **Team network:** ${str(o(net?.data).reason ?? "not connected")}`);
+  const mates = a(o(net?.data).teammates);
+  out.push(
+    `1. **Team network:** ${
+      mates.length
+        ? mates.slice(0, 3).map((t) => `${str(t.name)} (${str(t.label)}, strength ${str(t.strength)})`).join(", ") + ` — ask ${str(mates[0]?.name)} first.`
+        : str(o(net?.data).reason ?? "not connected")
+    }`,
+  );
   const exp = a(p.experience).filter((e) => !e.is_current && e.company_id);
   out.push(`2. **Former colleagues:** people who overlapped at ${exp.length ? exp.slice(0, 3).map((e) => `${str(e.company_name)} ${chip(str(e.company_id))}`).join(", ") : "their previous companies"} — open those companies' team pages to find them.`);
   if (p.current_company_id) {

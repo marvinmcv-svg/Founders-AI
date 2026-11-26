@@ -12,6 +12,7 @@ import { ReviewsTab, TractionTab } from "@/components/profile/TractionTabs";
 import type { ReviewsDetail, TractionSnapshot } from "@founders/db/schema";
 import { getCtx } from "@/lib/session";
 import { CrmProfileCard } from "@/components/integrations/CrmBadge";
+import { TeamConnections } from "@/components/integrations/TeamConnections";
 
 type P = { params: Promise<{ id: string }>; searchParams: Promise<{ tab?: string; period?: string }> };
 
@@ -29,7 +30,7 @@ export default async function CompanyProfile({ params, searchParams }: P) {
   const sp = await searchParams;
   const tab = sp.tab ?? "overview";
   const ctx = await getCtx();
-  const [crmBadges, crmTarget] = await Promise.all([repo.getCrmBadges(ctx, [id]), repo.defaultCrm(ctx)]);
+  const [crmBadges, crmTarget, teamConn] = await Promise.all([repo.getCrmBadges(ctx, [id]), repo.defaultCrm(ctx), repo.companyConnections(ctx, id)]);
   const c = await repo.getCompany(id);
   if (!c) notFound();
   const [people, investors, rounds, competitors, news, estimates, disclosures, metrics, statuses, entityStatus, liked, inLists, notes, talent, acquisitions, ipos, team] = await Promise.all([
@@ -119,7 +120,10 @@ export default async function CompanyProfile({ params, searchParams }: P) {
           </div>
         </div>
         <ProfileActions entityName={String(c.name)} entityType="COMPANY" id={id} liked={liked} status={entityStatus[id] ?? null} statuses={statuses} inLists={inLists} />
-        <CrmProfileCard kind="COMPANY" id={id} badge={crmBadges[id] ?? null} target={crmTarget} canWrite={repo.canWrite(ctx)} />
+        <div className="flex flex-wrap items-center gap-4">
+          <CrmProfileCard kind="COMPANY" id={id} badge={crmBadges[id] ?? null} target={crmTarget} canWrite={repo.canWrite(ctx)} />
+          <TeamConnections kind="COMPANY" rows={teamConn.map((r) => ({ user_name: r.user_name, strength: r.strength, person: r.full_name }))} />
+        </div>
       </header>
       <Tabs base={base} tabs={tabs} active={tab} />
 

@@ -1,5 +1,5 @@
-/** Phase 8 scheduled integration work (plan 13.1 scheduled enrichments). */
-import { runScheduledCrmSyncs } from "@founders/core/repo";
+/** Phase 8 scheduled integration work (plan 13.1 scheduled enrichments, 13.2 network). */
+import { processNetworkMoves, runScheduledCrmSyncs, syncAllNetworkSources } from "@founders/core/repo";
 import type { JobDef } from "../runner";
 
 export const crmSyncJob: JobDef = {
@@ -8,5 +8,16 @@ export const crmSyncJob: JobDef = {
   async run(ctx) {
     const r = await runScheduledCrmSyncs();
     for (const [k, v] of Object.entries(r)) ctx.count(k, v);
+  },
+};
+
+export const networkJob: JobDef = {
+  name: "network",
+  description: "Re-sync connected mailboxes/calendars, then alert teams when a connection changes company",
+  async run(ctx) {
+    const s = await syncAllNetworkSources();
+    for (const [k, v] of Object.entries(s)) ctx.count(k, v);
+    const m = await processNetworkMoves();
+    ctx.count("moves", m.moves);
   },
 };

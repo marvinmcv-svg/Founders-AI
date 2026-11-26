@@ -8,6 +8,7 @@ import { Notes, ProfileActions, RevealEmail } from "@/components/profile/Actions
 import { Empty, Metric, Panel } from "@/components/profile/bits";
 import { getCtx } from "@/lib/session";
 import { CrmProfileCard } from "@/components/integrations/CrmBadge";
+import { TeamConnections } from "@/components/integrations/TeamConnections";
 
 type P = { params: Promise<{ id: string }> };
 
@@ -27,7 +28,7 @@ const years = (start: unknown, end: unknown) => {
 export default async function PersonProfile({ params }: P) {
   const { id } = await params;
   const ctx = await getCtx();
-  const [crmBadges, crmTarget] = await Promise.all([repo.getCrmBadges(ctx, [id]), repo.defaultCrm(ctx)]);
+  const [crmBadges, crmTarget, teamConn] = await Promise.all([repo.getCrmBadges(ctx, [id]), repo.defaultCrm(ctx), repo.connectionsFor(ctx, id)]);
   const p = await repo.getPerson(id);
   if (!p) notFound();
   const [exp, edu, signals, investments, statuses, entityStatus, liked, inLists, notes] = await Promise.all([
@@ -74,7 +75,10 @@ export default async function PersonProfile({ params }: P) {
           <RevealEmail personId={id} />
         </div>
         <ProfileActions entityName={String(p.full_name)} entityType="PERSON" id={id} liked={liked} status={entityStatus[id] ?? null} statuses={statuses} inLists={inLists} />
-        <CrmProfileCard kind="PERSON" id={id} badge={crmBadges[id] ?? null} target={crmTarget} canWrite={repo.canWrite(ctx)} />
+        <div className="flex flex-wrap items-center gap-4">
+          <CrmProfileCard kind="PERSON" id={id} badge={crmBadges[id] ?? null} target={crmTarget} canWrite={repo.canWrite(ctx)} />
+          <TeamConnections kind="PERSON" rows={teamConn.map((r) => ({ user_name: r.name, strength: r.strength }))} />
+        </div>
       </header>
       <div className="grid gap-4 p-6 xl:grid-cols-[1.4fr_1fr]">
         <div className="flex flex-col gap-4">

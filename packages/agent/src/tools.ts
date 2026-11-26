@@ -314,11 +314,19 @@ const resolveEntities = defineTool({
 
 const networkConnections = defineTool({
   name: "network_connections",
-  description: "Who on the team knows a person (needs connected mailboxes/calendars — available in Release 3).",
+  description: "Who on the team knows a person and how well (strength 0–100, from teammates' connected LinkedIn exports, mailboxes and calendars).",
   schema: z.object({ person_id: id }),
   label: () => "Checking your team's network",
-  async run() {
-    return { summary: "Team network not connected yet", data: { available: false, reason: "Network tracking launches with Release 3 (connected mailboxes and calendars)." }, sources: [] };
+  async run(ctx, i) {
+    const teammates = await repo.connectionsFor(ctx.org, i.person_id);
+    if (!teammates.length) {
+      return { summary: "No one on the team is connected", data: { connected: false, teammates: [], reason: "No teammate has a connection to this person yet — teammates can add their LinkedIn export, mailbox or calendar in Settings → Network." }, sources: [] };
+    }
+    return {
+      summary: `${teammates.length} teammate${teammates.length === 1 ? "" : "s"} connected`,
+      data: { connected: true, teammates: teammates.map((t) => ({ name: t.name, strength: t.strength, label: repo.strengthLabel(t.strength), via: t.sources, last_interaction_at: t.last_interaction_at })) },
+      sources: [sourceFor(i.person_id, "Team network")],
+    };
   },
 });
 
