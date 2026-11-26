@@ -9,3 +9,6 @@ export async function q<T = Row>(query: SQL): Promise<T[]> {
 
 /** Raw postgres.js client for bulk work (COPY-like multi-row inserts, unnest updates). */
 export const pg = () => getSql();
+
+/** JSON-compatible value (what postgres.js `sql.json` accepts). */
+export type Json = string | number | boolean | null | Json[] | { [k: string]: Json };

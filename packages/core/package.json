@@ -18,7 +18,8 @@
     "./signals/*": "./src/signals/*.ts",
     "./egress": "./src/egress.ts",
     "./crypto": "./src/crypto.ts",
-    "./llm": "./src/llm.ts"
+    "./llm": "./src/llm.ts",
+    "./random": "./src/random.ts"
   },
   "scripts": {
     "typecheck": "tsc -p tsconfig.json",
