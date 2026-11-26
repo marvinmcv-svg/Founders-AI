@@ -5,6 +5,8 @@ import { Badge, Card } from "@founders/ui";
 import { Empty, Tabs } from "@/components/profile/bits";
 import { getCtx } from "@/lib/session";
 import { ActivateButton, FlagToggle, ReviewButtons } from "./AdminClient";
+import { AccountsTab, DsarTab, EntitiesTab, KeysTab, QaTab, TaxonomyTab } from "./tabs";
+import { HydrationMarker } from "./AdminActions";
 
 export const metadata: Metadata = { title: "Admin" };
 
@@ -12,12 +14,13 @@ const usd = (n: number | null | undefined) => (n == null ? "—" : n >= 1e6 ? `$
 const when = (s: string | null) => (s ? new Date(s).toLocaleString("en-US", { dateStyle: "medium", timeStyle: "short" }) : "—");
 const pct = (x: unknown) => (typeof x === "number" ? `${(x * 100).toFixed(1)}%` : "—");
 
-export default async function Admin({ searchParams }: { searchParams: Promise<{ tab?: string; status?: string }> }) {
+export default async function Admin({ searchParams }: { searchParams: Promise<{ tab?: string; status?: string; q?: string; org?: string; id?: string; kind?: string }> }) {
   const ctx = await getCtx();
   // Not a 403 page: the console should not be discoverable by customers.
   if (!repo.isPlatformAdmin(ctx.email)) notFound();
   const a: repo.AdminContext = { email: ctx.email, userId: ctx.userId };
-  const { tab = "disclosures", status = "pending" } = await searchParams;
+  const sp = await searchParams;
+  const { tab = "disclosures", status = "pending" } = sp;
   const st = (["pending", "verified", "rejected"].includes(status) ? status : "pending") as "pending" | "verified" | "rejected";
   const [counts, disclosures, runs, models] = await Promise.all([
     repo.disclosureCounts(a),
@@ -26,17 +29,25 @@ export default async function Admin({ searchParams }: { searchParams: Promise<{ 
     tab === "models" ? repo.modelRegistry(a) : Promise.resolve([]),
   ]);
   const flags = tab === "flags" ? await repo.listFlags() : [];
+  const [dsar, pendingKeys] = await Promise.all([repo.dsarCounts(a), repo.listPendingApiKeys(a)]);
   return (
     <div className="flex flex-col">
+      <HydrationMarker />
       <div className="px-6 pt-6">
         <h1 className="text-[22px] font-semibold">Admin</h1>
-        <p className="mb-4 text-[13px] text-muted">Internal console: revenue-anchor verification, pipeline runs and model versions.</p>
+        <p className="mb-4 text-[13px] text-muted">Internal console: customer accounts and credits, key approvals, data-subject requests, data quality (entities, taxonomy, signals, revenue anchors), pipelines, models and flags.</p>
       </div>
       <Tabs
         base="/admin"
         active={tab}
         tabs={[
           { id: "disclosures", label: "Disclosure queue", count: counts.pending ?? 0 },
+          { id: "accounts", label: "Accounts & credits" },
+          { id: "keys", label: "API key approvals", count: pendingKeys.length },
+          { id: "dsar", label: "Data requests", count: dsar.open },
+          { id: "entities", label: "Entities & merge" },
+          { id: "taxonomy", label: "Taxonomy" },
+          { id: "qa", label: "Signal QA" },
           { id: "pipelines", label: "Pipelines" },
           { id: "models", label: "Models" },
           { id: "flags", label: "Feature flags" },
@@ -149,6 +160,12 @@ export default async function Admin({ searchParams }: { searchParams: Promise<{ 
             })}
           </div>
         ) : null}
+        {tab === "accounts" ? <AccountsTab a={a} q={sp.q} org={sp.org} /> : null}
+        {tab === "keys" ? <KeysTab a={a} /> : null}
+        {tab === "dsar" ? <DsarTab a={a} id={sp.id} status={sp.status} /> : null}
+        {tab === "entities" ? <EntitiesTab a={a} id={sp.id} /> : null}
+        {tab === "taxonomy" ? <TaxonomyTab a={a} kind={sp.kind} /> : null}
+        {tab === "qa" ? <QaTab a={a} kind={sp.kind} /> : null}
         {tab === "flags" ? (
           <div className="flex max-w-3xl flex-col gap-3">
             <p className="text-[13px] text-muted">Remote switches. An empty org list means every workspace. Every change is audited.</p>

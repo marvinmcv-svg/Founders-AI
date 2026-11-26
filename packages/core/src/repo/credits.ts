@@ -178,9 +178,3 @@ export function routeLead(firmType?: string, aum?: string): string {
   if (firmType === "Angel" || firmType === "Accelerator") return "self-serve";
   return "venture";
 }
-
-export async function insertDsar(input: { email: string; fullName?: string; type: "ACCESS" | "DELETE" | "OPT_OUT"; details?: string }) {
-  const id = newId("dsar");
-  await q(sql`INSERT INTO dsar_requests (id, email, full_name, type, details) VALUES (${id}, ${input.email}, ${input.fullName ?? null}, ${input.type}, ${input.details ?? null})`);
-  return id;
-}

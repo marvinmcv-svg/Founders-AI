@@ -12,6 +12,7 @@ import { CrmIntegrations } from "@/components/integrations/CrmIntegrations";
 import { NetworkSources } from "@/components/integrations/NetworkSources";
 import { BulkDeliveries } from "@/components/integrations/BulkDeliveries";
 import { ApiKeys, DigestPanel, InviteForm } from "./SettingsClient";
+import { PrivacyPanel } from "./PrivacyClient";
 
 export const metadata: Metadata = { title: "Settings" };
 
@@ -179,7 +180,7 @@ export default async function Settings() {
           </div>
         </Section>
         <Section id="privacy" title="Data & privacy">
-          <p className="text-[13px] text-muted">Your lists, searches and notes are visible only inside this workspace. To export or delete your account data, contact privacy@ — self-serve DSAR tooling arrives with the admin console (R3).</p>
+          <PrivacyPanel email={ctx.email} />
         </Section>
         <Section id="audit" title="Audit log" sub={isAdmin ? "Latest entries. The full log has filters and CSV export." : "Visible to workspace admins."}>
           {isAdmin ? (

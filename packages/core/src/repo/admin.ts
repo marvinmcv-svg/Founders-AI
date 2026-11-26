@@ -14,7 +14,7 @@ export function isPlatformAdmin(email: string | null | undefined): boolean {
   return list.includes(email.toLowerCase());
 }
 
-function assertAdmin(a: AdminContext) {
+export function assertPlatformAdmin(a: AdminContext) {
   if (!isPlatformAdmin(a.email)) throw new ForbiddenError("Platform admin only");
 }
 
@@ -25,7 +25,7 @@ export type DisclosureRow = {
 };
 
 export function listDisclosures(a: AdminContext, status: "pending" | "verified" | "rejected" = "pending", limit = 100) {
-  assertAdmin(a);
+  assertPlatformAdmin(a);
   return q<DisclosureRow>(sql`SELECT d.id, d.company_id, c.name AS company_name, d.amount_usd, d.type, d.period::text AS period, d.source_url, d.publisher,
       d.published_at, d.status, d.origin, d.evidence, d.verified_by, d.reviewed_at, c.est_revenue_usd AS current_estimate_usd
     FROM revenue_disclosures d JOIN companies c ON c.id = d.company_id
@@ -33,7 +33,7 @@ export function listDisclosures(a: AdminContext, status: "pending" | "verified" 
 }
 
 export async function disclosureCounts(a: AdminContext) {
-  assertAdmin(a);
+  assertPlatformAdmin(a);
   const rows = await q<{ status: string; n: number }>(sql`SELECT status, count(*)::int AS n FROM revenue_disclosures GROUP BY 1`);
   return Object.fromEntries(rows.map((r) => [r.status, r.n])) as Record<string, number>;
 }
@@ -43,7 +43,7 @@ export async function disclosureCounts(a: AdminContext) {
  * "LLM extraction → human verification queue → revenue_disclosures"); the company is queued for re-rating.
  */
 export async function reviewDisclosure(a: AdminContext, id: string, decision: "verified" | "rejected", amountUsd?: number) {
-  assertAdmin(a);
+  assertPlatformAdmin(a);
   const [d] = await q<{ company_id: string }>(sql`UPDATE revenue_disclosures SET status = ${decision}, verified_by = ${a.email}, reviewed_at = now(),
       amount_usd = COALESCE(${amountUsd ?? null}::bigint, amount_usd)
     WHERE id = ${id} AND status = 'pending' RETURNING company_id`);
@@ -53,14 +53,14 @@ export async function reviewDisclosure(a: AdminContext, id: string, decision: "v
 }
 
 export function recentPipelineRuns(a: AdminContext, limit = 40) {
-  assertAdmin(a);
+  assertPlatformAdmin(a);
   return q<{ id: string; job: string; status: string; trigger: string; counts: Record<string, number> | null; error: string | null; started_at: string; finished_at: string | null }>(
     sql`SELECT id, job, status, trigger, counts, error, started_at, finished_at FROM pipeline_runs ORDER BY started_at DESC LIMIT ${limit}`,
   );
 }
 
 export function modelRegistry(a: AdminContext) {
-  assertAdmin(a);
+  assertPlatformAdmin(a);
   return q<{ version: string; kind: string; active: boolean; metrics: Record<string, unknown> | null; created_at: string }>(
     sql`SELECT version, kind, active, metrics, created_at FROM model_versions ORDER BY kind, created_at DESC`,
   );
@@ -68,7 +68,7 @@ export function modelRegistry(a: AdminContext) {
 
 /** Rollback / roll forward = repoint the active version of a kind (plan 9.6). */
 export async function activateModel(a: AdminContext, version: string) {
-  assertAdmin(a);
+  assertPlatformAdmin(a);
   const [m] = await q<{ kind: string }>(sql`SELECT kind FROM model_versions WHERE version = ${version}`);
   if (!m) throw new NotFoundError("Model version not found");
   if (m.kind === "REVENUE") {

@@ -203,6 +203,12 @@ export function DsarForm({ labels, types, defaultType }: { labels: Labels; types
         <input id="demail" name="email" type="email" required className={field} />
       </div>
       <div>
+        <Label htmlFor="dlinkedin" optional="optional">
+          {labels.linkedin}
+        </Label>
+        <input id="dlinkedin" name="linkedinUrl" type="url" placeholder="https://www.linkedin.com/in/…" className={field} />
+      </div>
+      <div>
         <Label htmlFor="ddetails" optional="optional">
           {labels.details}
         </Label>

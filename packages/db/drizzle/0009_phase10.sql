@@ -51,6 +51,18 @@ CREATE TABLE "scim_users" (
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
+CREATE TABLE "signal_reviews" (
+	"id" text PRIMARY KEY NOT NULL,
+	"kind" text NOT NULL,
+	"signal_id" text NOT NULL,
+	"verdict" text NOT NULL,
+	"original_label" text,
+	"corrected_label" text,
+	"note" text,
+	"reviewer" text NOT NULL,
+	"at" timestamp with time zone DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
 CREATE TABLE "sso_provider" (
 	"id" text PRIMARY KEY NOT NULL,
 	"issuer" text NOT NULL,
@@ -64,6 +76,18 @@ CREATE TABLE "sso_provider" (
 	"created_at" timestamp with time zone DEFAULT now(),
 	"updated_at" timestamp with time zone DEFAULT now(),
 	CONSTRAINT "sso_provider_provider_id_unique" UNIQUE("provider_id")
+);
+--> statement-breakpoint
+CREATE TABLE "status_incidents" (
+	"id" text PRIMARY KEY NOT NULL,
+	"title" text NOT NULL,
+	"status" text NOT NULL,
+	"impact" text NOT NULL,
+	"components" text[] DEFAULT '{}'::text[] NOT NULL,
+	"updates" jsonb DEFAULT '[]'::jsonb NOT NULL,
+	"created_by" text NOT NULL,
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"resolved_at" timestamp with time zone
 );
 --> statement-breakpoint
 CREATE TABLE "stripe_events" (
@@ -136,6 +160,9 @@ CREATE INDEX "scim_tokens_org_idx" ON "scim_tokens" USING btree ("org_id");--> s
 CREATE UNIQUE INDEX "scim_users_org_user_uq" ON "scim_users" USING btree ("org_id","user_id");--> statement-breakpoint
 CREATE UNIQUE INDEX "scim_users_org_username_uq" ON "scim_users" USING btree ("org_id","user_name");--> statement-breakpoint
 CREATE UNIQUE INDEX "scim_users_org_external_uq" ON "scim_users" USING btree ("org_id","external_id");--> statement-breakpoint
+CREATE UNIQUE INDEX "signal_reviews_kind_signal_uq" ON "signal_reviews" USING btree ("kind","signal_id");--> statement-breakpoint
+CREATE INDEX "signal_reviews_kind_at_idx" ON "signal_reviews" USING btree ("kind","at");--> statement-breakpoint
+CREATE INDEX "status_incidents_created_idx" ON "status_incidents" USING btree ("created_at");--> statement-breakpoint
 CREATE UNIQUE INDEX "suppression_kind_hash_uq" ON "suppression_list" USING btree ("kind","value_hash");--> statement-breakpoint
 CREATE INDEX "two_factor_user_idx" ON "two_factor" USING btree ("user_id");--> statement-breakpoint
 CREATE INDEX "two_factor_secret_idx" ON "two_factor" USING btree ("secret");--> statement-breakpoint
@@ -179,6 +206,25 @@ BEGIN
 END $$;
 --> statement-breakpoint
 CREATE TRIGGER person_emails_suppression_guard BEFORE INSERT ON person_emails FOR EACH ROW EXECUTE FUNCTION suppression_guard_person_emails();
+--> statement-breakpoint
+-- Rows keyed to a suppressed person id (history, roles, signals, changes) are dropped too.
+CREATE OR REPLACE FUNCTION suppression_guard_person_rows() RETURNS trigger LANGUAGE plpgsql AS $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM suppression_list s WHERE s.kind = 'person_id' AND s.value_hash = founders_sha256(NEW.person_id)) THEN
+    RETURN NULL;
+  END IF;
+  RETURN NEW;
+END $$;
+--> statement-breakpoint
+CREATE TRIGGER person_experience_suppression_guard BEFORE INSERT ON person_experience FOR EACH ROW EXECUTE FUNCTION suppression_guard_person_rows();
+--> statement-breakpoint
+CREATE TRIGGER company_people_suppression_guard BEFORE INSERT ON company_people FOR EACH ROW EXECUTE FUNCTION suppression_guard_person_rows();
+--> statement-breakpoint
+CREATE TRIGGER talent_signals_suppression_guard BEFORE INSERT ON talent_signals FOR EACH ROW EXECUTE FUNCTION suppression_guard_person_rows();
+--> statement-breakpoint
+CREATE TRIGGER person_changes_suppression_guard BEFORE INSERT ON person_changes FOR EACH ROW EXECUTE FUNCTION suppression_guard_person_rows();
+--> statement-breakpoint
+CREATE TRIGGER person_education_suppression_guard BEFORE INSERT ON person_education FOR EACH ROW EXECUTE FUNCTION suppression_guard_person_rows();
 --> statement-breakpoint
 -- Audit log is append-only (plan 14.4). Retention jobs and the demo reseed set founders.audit_maintenance = on.
 CREATE OR REPLACE FUNCTION audit_log_immutable() RETURNS trigger LANGUAGE plpgsql AS $$

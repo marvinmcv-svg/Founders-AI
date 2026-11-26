@@ -1775,3 +1775,41 @@ export const scimUsers = pgTable(
     uniqueIndex("scim_users_org_external_uq").on(t.orgId, t.externalId),
   ],
 );
+
+/**
+ * Signal & classifier QA (plan 7.14): an operator's verdict on one talent signal (type) or news
+ * signal (category). Corrections are applied to the signal; the verdicts form the human-labelled
+ * sample used for precision reporting (H15).
+ */
+export const signalReviews = pgTable(
+  "signal_reviews",
+  {
+    id: text("id").primaryKey(),
+    kind: text("kind").notNull(), // TALENT | NEWS
+    signalId: text("signal_id").notNull(),
+    verdict: text("verdict").notNull(), // CORRECT | WRONG
+    originalLabel: text("original_label"),
+    correctedLabel: text("corrected_label"),
+    note: text("note"),
+    reviewer: text("reviewer").notNull(),
+    at: ts("at").notNull().defaultNow(),
+  },
+  (t) => [uniqueIndex("signal_reviews_kind_signal_uq").on(t.kind, t.signalId), index("signal_reviews_kind_at_idx").on(t.kind, t.at)],
+);
+
+/** Status page incidents (plan 15 Phase 10). Component health itself is computed live. */
+export const statusIncidents = pgTable(
+  "status_incidents",
+  {
+    id: text("id").primaryKey(),
+    title: text("title").notNull(),
+    status: text("status").notNull(), // investigating | identified | monitoring | resolved
+    impact: text("impact").notNull(), // minor | major | critical
+    components: text("components").array().notNull().default(sql`'{}'::text[]`),
+    updates: jsonb("updates").$type<{ at: string; status: string; body: string }[]>().notNull().default(sql`'[]'::jsonb`),
+    createdBy: text("created_by").notNull(),
+    createdAt: createdAt(),
+    resolvedAt: ts("resolved_at"),
+  },
+  (t) => [index("status_incidents_created_idx").on(t.createdAt)],
+);

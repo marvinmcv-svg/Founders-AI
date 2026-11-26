@@ -16,3 +16,5 @@ export * from "./flags";
 export * from "./interest";
 export * from "./audit";
 export * from "./billing";
+export * from "./privacy";
+export * from "./admin-console";

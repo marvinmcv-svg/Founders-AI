@@ -3,6 +3,12 @@ import { expect, test, type Page } from "@playwright/test";
 
 const SCREENS = "../docs/progress/screens";
 
+/** Navigate and wait for the app shell to hydrate (forms submit natively before that). */
+async function go(page: Page, url: string) {
+  await page.goto(url);
+  await page.locator("[data-hydrated=true]").first().waitFor({ state: "attached", timeout: 60000 });
+}
+
 async function login(page: Page) {
   await page.goto("/login");
   await page.click("form button");
@@ -61,4 +67,81 @@ test("stripe webhook rejects unsigned and forged events", async ({ request }) =>
   expect(unsigned.status()).toBe(400);
   const forged = await request.post("/api/stripe/webhook", { data: body, headers: { "content-type": "application/json", "stripe-signature": `t=${Math.floor(Date.now() / 1000)},v1=${"ab".repeat(32)}` } });
   expect(forged.status()).toBe(400);
+});
+
+const WWW = process.env.WWW_URL ?? "http://localhost:3000";
+
+test("privacy: public request → admin verifies, links the profile, completes; export downloads", async ({ page }) => {
+  test.setTimeout(180_000);
+  await login(page);
+  // Pick a real profile to ask about.
+  await page.goto("/people");
+  const first = page.locator("a[href^='/people/per_']").first();
+  await first.waitFor();
+  const name = ((await first.textContent()) ?? "").trim();
+  expect(name.length).toBeGreaterThan(2);
+
+  await page.goto(`${WWW}/privacy-rights?type=ACCESS`);
+  await page.getByLabel("Full name").fill(name);
+  await page.getByLabel("Email").fill(`e2e-${Date.now()}@example.org`);
+  await page.getByLabel(/LinkedIn profile URL/).fill("");
+  await page.getByRole("button", { name: "Submit request" }).click();
+  await expect(page.getByText(/Request received/)).toBeVisible();
+  await page.goto(`${WWW}/api/dsar/verify?id=dsr_nope&token=xxxxxxxxxxxxxxxx`);
+  await expect(page.getByText(/not valid/)).toBeVisible();
+
+  await go(page, "/admin?tab=dsar");
+  await page.getByRole("link", { name }).first().click();
+  await expect(page.getByText("1. Identity")).toBeVisible();
+  await page.locator("[data-hydrated=true]").first().waitFor({ state: "attached" });
+  await page.getByLabel("How identity was verified").fill("Replied from the address on file (e2e)");
+  await page.getByRole("button", { name: "Mark verified" }).click();
+  await expect(page.getByText(/^Verified /)).toBeVisible({ timeout: 30000 });
+  await page.locator("label", { hasText: name }).first().locator("input[type=checkbox]").check();
+  await page.getByRole("button", { name: /Link 1 profile/ }).click();
+  await expect(page.getByText("1 profile(s) linked.")).toBeVisible({ timeout: 30000 });
+  await page.screenshot({ path: `${SCREENS}/phase-10-admin-dsar.png`, fullPage: true });
+  await page.getByRole("button", { name: "Complete access" }).click();
+  await expect(page.getByText(/^Closed /)).toBeVisible({ timeout: 30000 });
+  const dl = page.getByRole("link", { name: "Download the export (JSON)" });
+  const res = await page.request.get((await dl.getAttribute("href"))!);
+  expect(res.status()).toBe(200);
+  const body = (await res.json()) as { profiles: { profile: { full_name: string } }[] };
+  expect(body.profiles[0]!.profile.full_name).toBe(name);
+
+  // Self-service export of the signed-in user's own data.
+  const mine = await page.request.get("/api/privacy/export");
+  expect(mine.status()).toBe(200);
+  expect(((await mine.json()) as { user: { email: string } }).user.email).toBe("demo@foundersscz.com");
+  await page.goto("/settings#privacy");
+  await expect(page.getByRole("link", { name: "Download JSON" })).toBeVisible();
+});
+
+test("admin console: accounts & credits, key queue, entities, taxonomy, signal QA", async ({ page }) => {
+  test.setTimeout(180_000);
+  await login(page);
+  await go(page, "/admin?tab=accounts");
+  await page.getByRole("link", { name: "Founders SCZ (Demo)" }).first().click();
+  await expect(page.getByText("Contract terms")).toBeVisible();
+  await page.locator("[data-hydrated=true]").first().waitFor({ state: "attached" });
+  await page.getByLabel("Credits (+/−)").fill("5");
+  await page.getByLabel("Note (contract, goodwill…)").fill("e2e goodwill");
+  await page.getByRole("button", { name: "Adjust" }).click();
+  await expect(page.getByText("Balance updated.")).toBeVisible({ timeout: 30000 });
+  await page.screenshot({ path: `${SCREENS}/phase-10-admin-account.png`, fullPage: true });
+
+  await go(page, "/admin?tab=keys");
+  await expect(page.getByText(/No keys waiting|Approve/).first()).toBeVisible();
+
+  await go(page, "/admin?tab=entities");
+  await expect(page.getByText("Merge duplicates")).toBeVisible();
+  await page.screenshot({ path: `${SCREENS}/phase-10-admin-entities.png` });
+
+  await go(page, "/admin?tab=taxonomy&kind=SECTOR");
+  await expect(page.getByText(/companies$/).first()).toBeVisible();
+
+  await go(page, "/admin?tab=qa&kind=NEWS");
+  await page.getByRole("button", { name: "Correct" }).first().click();
+  await expect(page.getByText(/news · /).first()).toBeVisible({ timeout: 30000 });
+  await page.screenshot({ path: `${SCREENS}/phase-10-admin-qa.png` });
 });

@@ -905,9 +905,12 @@
       },
       "name": "Full name",
       "email": "Email",
+      "linkedin": "LinkedIn profile URL",
       "details": "Anything that helps us find your profile (e.g. company, profile URL)",
       "submit": "Submit request",
-      "success": "Request received. We'll verify your identity by email and reply within 30 days."
+      "success": "Request received. We'll verify your identity by email and reply within 30 days.",
+      "verified": "Thanks, your request is confirmed. We'll reply within 30 days.",
+      "verifyFailed": "That confirmation link is not valid or has already been used. If you still need help, submit the form again."
     }
   },
   "comingSoon": {

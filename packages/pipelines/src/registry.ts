@@ -8,6 +8,7 @@ import { webhooksJob } from "./jobs/webhooks";
 import { agentSchedulesJob } from "./jobs/agent";
 import { bulkJob, crmSyncJob, networkJob } from "./jobs/integrations";
 import { interestJob } from "./jobs/interest";
+import { billingUsageJob, privacySlaJob } from "./jobs/compliance";
 import type { JobDef } from "./runner";
 
 export const JOBS: Record<string, JobDef> = {
@@ -24,10 +25,12 @@ export const JOBS: Record<string, JobDef> = {
   [networkJob.name]: networkJob,
   [bulkJob.name]: bulkJob,
   [interestJob.name]: interestJob,
+  [billingUsageJob.name]: billingUsageJob,
+  [privacySlaJob.name]: privacySlaJob,
 };
 
 /** Order for `pnpm pipelines daily` (plan 9.8 freshness: signals < 24h, deltas daily). */
-export const DAILY: string[] = ["talent", "news", "highlights", "alerts", "webhooks", "digests", "agent-schedules", "interest", "crm-sync", "network", "bulk"];
+export const DAILY: string[] = ["talent", "news", "highlights", "alerts", "webhooks", "digests", "agent-schedules", "interest", "crm-sync", "network", "bulk", "billing-usage", "privacy-sla"];
 
 /** Weekly (plan 9.7: competitors recomputed weekly). */
 export const WEEKLY: string[] = ["competitors"];
