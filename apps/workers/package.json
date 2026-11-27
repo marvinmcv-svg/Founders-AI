@@ -1,0 +1,25 @@
+{
+  "name": "@founders/workers",
+  "version": "0.1.0",
+  "private": true,
+  "description": "BullMQ workers (plan 0A/3): repeatable schedules that run the pipelines' jobs on a worker host.",
+  "type": "module",
+  "scripts": {
+    "start": "tsx src/main.ts",
+    "enqueue": "tsx src/cli.ts",
+    "typecheck": "tsc -p tsconfig.json",
+    "lint": "eslint src",
+    "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "@founders/db": "workspace:*",
+    "@founders/pipelines": "workspace:*",
+    "bullmq": "5.81.5",
+    "tsx": "^4.23.15"
+  },
+  "devDependencies": {
+    "@types/node": "^22.18.0",
+    "dotenv": "^17.4.2",
+    "vitest": "^3.2.4"
+  }
+}

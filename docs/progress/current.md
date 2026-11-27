@@ -34,7 +34,9 @@
 
 **OpenSearch backend + outbox indexer (R1 carry-over) — done 2026-11-27 (D-075):** `packages/core/src/search` (registry-derived mappings, DSL compiler with SQL parity tests, Postgres-hydrated results, fallback), jobs `search-index` / `search-reindex`, migration **0012**. Turn on with `OPENSEARCH_URL` + `pnpm pipelines search-reindex`, then `SEARCH_BACKEND=opensearch` (H2: managed OpenSearch).
 
-**Open R1 carry-overs** (not blocking R2 work): BullMQ workers (H2: Redis), 10M-row load test, Fumadocs console, Storybook, Lighthouse/axe, Turnstile (H3).
+**BullMQ workers (R1 carry-over) — done 2026-11-27 (D-076):** `apps/workers` (schedules from the pipelines registry, realtime + batch queues, `/health`, Dockerfile, `enqueue` CLI); tested live on Redis 7 + Postgres. Deploying needs a worker host + Redis (H2). Runbook: `docs/runbooks/pipelines.md`.
+
+**Open R1 carry-overs** (not blocking R2 work): 10M-row load test, Fumadocs console, Storybook, Lighthouse/axe, Turnstile (H3).
 
 **Cloud demo, still to do** (needs the owner or a host that can reach Postgres, D-020):
 1. Set `PLATFORM_ADMIN_EMAILS` on `founders-ai-app` (owner's choice of admin emails) to open `/admin`.
