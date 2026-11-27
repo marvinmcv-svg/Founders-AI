@@ -1,0 +1,2 @@
+ALTER TABLE "outbox_events" ADD COLUMN "search_indexed_at" timestamp with time zone;--> statement-breakpoint
+CREATE INDEX "outbox_search_pending_idx" ON "outbox_events" USING btree ("id") WHERE search_indexed_at IS NULL;

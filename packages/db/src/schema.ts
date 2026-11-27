@@ -1017,8 +1017,13 @@ export const outboxEvents = pgTable(
     kind: text("kind").notNull(), // CREATED | UPDATED
     at: ts("at").notNull().defaultNow(),
     alertsProcessedAt: ts("alerts_processed_at"),
+    /** Set by the OpenSearch indexer (D-075); NULL = not yet reflected in the index. */
+    searchIndexedAt: ts("search_indexed_at"),
   },
-  (t) => [index("outbox_alerts_pending_idx").on(t.id).where(sql`alerts_processed_at IS NULL`)],
+  (t) => [
+    index("outbox_alerts_pending_idx").on(t.id).where(sql`alerts_processed_at IS NULL`),
+    index("outbox_search_pending_idx").on(t.id).where(sql`search_indexed_at IS NULL`),
+  ],
 );
 
 /** Highlight history so `new_highlights` = highlights added in the last 30 days (plan 7.4). */

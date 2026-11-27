@@ -2,6 +2,7 @@
  * Read access to the shared (non-org) datasets. Postgres-only in Phase 3a; the search adapter
  * switches to OpenSearch in Phase 3b without changing these signatures.
  */
+import { getSearchClient, searchBackendEnabled, searchIds } from "../search";
 import { canonicalDomain, canonicalLinkedIn } from "../resolution";
 import { getDb } from "@founders/db";
 import { sql, type SQL } from "drizzle-orm";
@@ -68,6 +69,8 @@ function fromClause(product: Product): SQL {
 export async function searchEntities(product: Product, p: SearchParams = {}): Promise<SearchResult> {
   // Interest signals exist only for orgs with the flag (legal sign-off H8); everyone else sees nothing.
   if (product === "interest_signals" && !(await isFlagOn("interest_signals", p.orgId))) return { rows: [], total: 0, totalCapped: false };
+  const viaIndex = await searchViaOpenSearch(product, p);
+  if (viaIndex) return viaIndex;
   const filter = compileFilter(product, p.filter ?? emptyFilter(), { orgId: p.orgId });
   const text = p.ids ? sql`${compileQuery(product, p.q)} AND t.id IN (${p.ids.length ? inList(p.ids) : sql`NULL`})` : compileQuery(product, p.q);
   const order = compileSort(product, p.sort);
@@ -82,6 +85,34 @@ export async function searchEntities(product: Product, p: SearchParams = {}): Pr
   const n = count[0]?.n ?? 0;
   if (!p.idsOnly) await decorate(product, rows);
   return { rows, total: Math.min(n, EXACT_COUNT_CAP), totalCapped: n > EXACT_COUNT_CAP };
+}
+
+/**
+ * OpenSearch path (D-075): ids + total from the index, rows from Postgres in that order. Null when
+ * the backend is off or this request must go to Postgres; any index error falls back too.
+ */
+async function searchViaOpenSearch(product: Product, p: SearchParams): Promise<SearchResult | null> {
+  if (!searchBackendEnabled()) return null;
+  const client = getSearchClient();
+  if (!client) return null;
+  const limit = Math.max(1, Math.min(p.limit ?? 100, 5000));
+  const offset = Math.max(0, p.offset ?? 0);
+  try {
+    const hit = await searchIds(client, product, { filter: p.filter, q: p.q, sort: p.sort, limit, offset, orgId: p.orgId, ids: p.ids, totalCap: EXACT_COUNT_CAP });
+    if (!hit) return null;
+    let rows: Row[] = [];
+    if (hit.ids.length) {
+      const cols = sql.raw(p.idsOnly ? "t.id" : SELECT[product]);
+      const found = await q(sql`SELECT ${cols} ${fromClause(product)} AND t.id IN (${inList(hit.ids)})`);
+      const byId = new Map(found.map((r) => [String(r.id), r]));
+      rows = hit.ids.map((id) => byId.get(id)).filter((r): r is Row => !!r); // a row deleted since indexing is skipped
+    }
+    if (!p.idsOnly) await decorate(product, rows);
+    return { rows, total: Math.min(hit.total, EXACT_COUNT_CAP), totalCapped: hit.total > EXACT_COUNT_CAP };
+  } catch (e) {
+    console.warn(`[search] OpenSearch failed for ${product}, using Postgres:`, e instanceof Error ? e.message : String(e));
+    return null;
+  }
 }
 
 /** Add founders (companies) / investors (rounds) to a page of rows. */

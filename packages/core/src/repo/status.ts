@@ -2,6 +2,7 @@
  * Status page + health (plan 15 Phase 10). Component health is computed live from the database;
  * incidents are posted by platform admins. Nothing here is customer data, so it is public.
  */
+import { searchBackendEnabled, searchIndexLagSeconds } from "../search";
 import { sql } from "drizzle-orm";
 import { newId } from "../ids";
 import { assertPlatformAdmin, type AdminContext } from "./admin";
@@ -42,11 +43,17 @@ async function checks(): Promise<Record<string, { state: ComponentState; detail:
   const staleH = lastOk ? (Date.now() - lastOk.getTime()) / 3_600_000 : Infinity;
   const data: { state: ComponentState; detail: string } =
     (runs?.failed ?? 0) > 0 ? { state: "degraded", detail: `${runs!.failed} job(s) failed in the last 26 h` } : staleH > 36 ? { state: "degraded", detail: lastOk ? `last successful run ${Math.round(staleH)} h ago` : "no recent runs" } : { state: "operational", detail: `last run ${Math.round(staleH)} h ago` };
+  // Search index freshness (D-075): only when grids are served from OpenSearch.
+  let dataState = data;
+  if (searchBackendEnabled()) {
+    const lag = await searchIndexLagSeconds().catch(() => 0);
+    if (lag > 600 && dataState.state === "operational") dataState = { state: "degraded", detail: `search index ${Math.round(lag / 60)} min behind` };
+  }
   const [wh] = await q<{ backlog: number }>(sql`SELECT count(*)::int AS backlog FROM webhook_deliveries WHERE status = 'PENDING' AND created_at < now() - interval '1 hour'`).catch(() => [{ backlog: 0 }]);
   const webhooks: { state: ComponentState; detail: string } = (wh?.backlog ?? 0) > 500 ? { state: "degraded", detail: `${wh!.backlog} deliveries waiting > 1 h` } : { state: "operational", detail: `${wh?.backlog ?? 0} deliveries waiting > 1 h` };
   const [st] = await q<{ errors: number }>(sql`SELECT count(*)::int AS errors FROM stripe_events WHERE error IS NOT NULL AND processed_at IS NULL AND received_at > now() - interval '24 hours'`);
   const billing: { state: ComponentState; detail: string } = (st?.errors ?? 0) > 0 ? { state: "degraded", detail: `${st!.errors} payment event(s) failed to apply` } : { state: "operational", detail: "events applied" };
-  return { app: db, api: db, mcp: db, data, webhooks, billing };
+  return { app: db, api: db, mcp: db, data: dataState, webhooks, billing };
 }
 
 export function activeIncidents() {

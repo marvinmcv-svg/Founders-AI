@@ -11,6 +11,7 @@ import { interestJob } from "./jobs/interest";
 import { billingUsageJob, privacySlaJob } from "./jobs/compliance";
 import { resolutionJob } from "./jobs/resolution";
 import { secFormDJob } from "./jobs/sec-formd";
+import { searchIndexJob, searchReindexJob } from "./jobs/search";
 import type { JobDef } from "./runner";
 
 export const JOBS: Record<string, JobDef> = {
@@ -31,16 +32,21 @@ export const JOBS: Record<string, JobDef> = {
   [privacySlaJob.name]: privacySlaJob,
   [resolutionJob.name]: resolutionJob,
   [secFormDJob.name]: secFormDJob,
+  [searchIndexJob.name]: searchIndexJob,
+  [searchReindexJob.name]: searchReindexJob,
 };
 
 /** Order for `pnpm pipelines daily` (plan 9.8 freshness: signals < 24h, deltas daily). */
-export const DAILY: string[] = ["talent", "news", "highlights", "alerts", "webhooks", "digests", "agent-schedules", "interest", "crm-sync", "network", "bulk", "billing-usage", "privacy-sla"];
+export const DAILY: string[] = ["talent", "news", "highlights", "alerts", "webhooks", "digests", "agent-schedules", "interest", "crm-sync", "network", "bulk", "billing-usage", "privacy-sla", "search-index"];
 
 /**
  * Daily on a worker host (D-073): `sec-formd` fetches ~300 filings at 8 req/s, too long for the
  * shared serverless cron run, so it is scheduled by the worker (or run from the CLI) — not in DAILY.
  */
 export const DAILY_WORKER: string[] = ["sec-formd"];
+
+/** Every minute on the worker (plan 15: OpenSearch sync lag < 5 min). */
+export const MINUTELY_WORKER: string[] = ["search-index"];
 
 /** Weekly (plan 9.7: competitors recomputed weekly). */
 export const WEEKLY: string[] = ["resolution", "competitors"];

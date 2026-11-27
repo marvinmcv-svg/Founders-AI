@@ -24,7 +24,7 @@
 
 - **Phase 9 — Remaining marketing pages & content:** done except human-only items. Plan and evidence in `docs/progress/phase-9.md`. Talent, News, Revenue & Valuation, Agents, API, MCP pages; blog (Markdown, RSS, authors), Insights, Careers, comparison template (H17), OG images, sitemap, JSON-LD, consent-gated analytics, link checker, copy-similarity check.
 
-**Next:** owner review and acceptance of R3 (plan 0B gate; nothing after R3 starts without it). Then: sign the launch checklist (Eng, Legal, Security, Marketing), H13 Stripe setup, H14 pen test. Cloud: apply migrations 0007–0011 (as `founders_app`) before deploying Phases 8–10; set `PLATFORM_ADMIN_EMAILS`; keep `BILLING_SIMULATOR` unset in production.
+**Next:** owner review and acceptance of R3 (plan 0B gate; nothing after R3 starts without it). Then: sign the launch checklist (Eng, Legal, Security, Marketing), H13 Stripe setup, H14 pen test. Cloud: apply migrations 0007–0012 (as `founders_app`) before deploying Phases 8–10; set `PLATFORM_ADMIN_EMAILS`; keep `BILLING_SIMULATOR` unset in production.
 
 **Entity resolution (R1 carry-over) — done 2026-11-27 (D-072):** `packages/core/src/resolution.ts` (keys + scoring), `repo/resolution.ts` (blocking, queue, auto-merge), weekly job `pnpm pipelines resolution [--dryRun] [--kind=company|person]`, `/admin` → Entities → *Duplicate review queue*, `resolve` endpoint now matches any spelling of a domain/alias or LinkedIn URL. Migration **0010** (`entity_match_candidates`). Seed dry run (scale 0.1): companies 1,607 pairs → 1 queued in 3 s; people 100 pairs → 35 auto / 65 queued in 0.4 s.
 
@@ -32,7 +32,9 @@
 
 **TypeScript SDK (R1 carry-over) — done 2026-11-27 (D-074):** `packages/sdk` (typed from OpenAPI, retries, idempotency, typed errors, pagination, webhooks); end-to-end tests against the in-process API. Fixed a dangling `$ref` in `/api/v1/openapi.json`.
 
-**Open R1 carry-overs** (not blocking R2 work): OpenSearch + indexer (outbox is ready), BullMQ workers (H2: Redis), 10M-row load test, Fumadocs console, Storybook, Lighthouse/axe, Turnstile (H3).
+**OpenSearch backend + outbox indexer (R1 carry-over) — done 2026-11-27 (D-075):** `packages/core/src/search` (registry-derived mappings, DSL compiler with SQL parity tests, Postgres-hydrated results, fallback), jobs `search-index` / `search-reindex`, migration **0012**. Turn on with `OPENSEARCH_URL` + `pnpm pipelines search-reindex`, then `SEARCH_BACKEND=opensearch` (H2: managed OpenSearch).
+
+**Open R1 carry-overs** (not blocking R2 work): BullMQ workers (H2: Redis), 10M-row load test, Fumadocs console, Storybook, Lighthouse/axe, Turnstile (H3).
 
 **Cloud demo, still to do** (needs the owner or a host that can reach Postgres, D-020):
 1. Set `PLATFORM_ADMIN_EMAILS` on `founders-ai-app` (owner's choice of admin emails) to open `/admin`.
