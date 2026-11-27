@@ -935,6 +935,34 @@ export const companyMetricsDaily = pgTable(
 /* ------------------------------------------------------------------ */
 
 /** One row per pipeline job execution (plan 9.2: counts/errors per run). */
+/**
+ * Entity resolution (plan 9.1, D-072): scored duplicate pairs. `pending` pairs wait in /admin;
+ * `rejected` pairs never resurface; `merged` / `auto_merged` record who merged what.
+ * left_id < right_id, so each pair is stored once.
+ */
+export const entityMatchCandidates = pgTable(
+  "entity_match_candidates",
+  {
+    id: text("id").primaryKey(),
+    kind: text("kind").notNull(), // company | person
+    leftId: text("left_id").notNull(),
+    rightId: text("right_id").notNull(),
+    probability: real("probability").notNull(),
+    weight: real("weight").notNull(),
+    reason: text("reason").notNull(),
+    comparisons: jsonb("comparisons").$type<{ field: string; level: string; weight: number }[]>().notNull(),
+    status: text("status").notNull().default("pending"), // pending | merged | auto_merged | rejected
+    decidedBy: text("decided_by"),
+    decidedAt: ts("decided_at"),
+    createdAt: createdAt(),
+    updatedAt: ts("updated_at").notNull().defaultNow(),
+  },
+  (t) => [
+    uniqueIndex("entity_match_pair_uq").on(t.kind, t.leftId, t.rightId),
+    index("entity_match_status_idx").on(t.status, t.probability),
+  ],
+);
+
 export const pipelineRuns = pgTable(
   "pipeline_runs",
   {

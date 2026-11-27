@@ -2,6 +2,7 @@
  * Read access to the shared (non-org) datasets. Postgres-only in Phase 3a; the search adapter
  * switches to OpenSearch in Phase 3b without changing these signatures.
  */
+import { canonicalDomain, canonicalLinkedIn } from "../resolution";
 import { getDb } from "@founders/db";
 import { sql, type SQL } from "drizzle-orm";
 import { emptyFilter, type Group, type Product } from "../filters/ast";
@@ -120,7 +121,8 @@ export async function getCompany(id: string): Promise<Row | null> {
 }
 
 export async function getCompanyByDomain(domain: string): Promise<Row | null> {
-  const d = domain.toLowerCase().replace(/^https?:\/\//, "").replace(/^www\./, "").split("/")[0] ?? "";
+  const d = canonicalDomain(domain);
+  if (!d) return null;
   const [c] = await q(sql`SELECT id FROM companies WHERE (domain = ${d} OR ${d} = ANY(domain_aliases)) AND deleted_at IS NULL LIMIT 1`);
   return c ? getCompany(String(c.id)) : null;
 }
@@ -325,8 +327,15 @@ export async function resolvePeople(inputs: ResolveInput[]): Promise<{ input: Re
   return Promise.all(
     inputs.map(async (input) => {
       if (input.linkedin_url) {
-        const [m] = await q<{ id: string }>(sql`SELECT id FROM people WHERE linkedin_url = ${input.linkedin_url} LIMIT 1`);
+        const [m] = await q<{ id: string }>(sql`SELECT id FROM people WHERE linkedin_url = ${input.linkedin_url} AND deleted_at IS NULL LIMIT 1`);
         if (m) return { input, person_id: m.id, confidence: 1 };
+        // Same profile written differently (www./country subdomain, trailing slash, query string).
+        const canon = canonicalLinkedIn(input.linkedin_url);
+        if (canon) {
+          const [c] = await q<{ id: string }>(sql`SELECT id FROM people WHERE deleted_at IS NULL
+            AND rtrim(split_part(regexp_replace(lower(linkedin_url), '^[a-z]+://(www[.]|[a-z]{2,3}[.])?', ''), '?', 1), '/') = ${canon} LIMIT 1`);
+          if (c) return { input, person_id: c.id, confidence: 1 };
+        }
       }
       if (input.email) {
         const [m] = await q<{ person_id: string }>(sql`SELECT person_id FROM person_emails WHERE lower(email) = lower(${input.email}) LIMIT 1`);

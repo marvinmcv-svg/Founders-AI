@@ -51,6 +51,7 @@ export const ID_PREFIX = {
   scimUser: "scu",
   usageReport: "urp",
   ssoProvider: "sso",
+  matchCandidate: "emc",
 } as const;
 
 export type IdKind = keyof typeof ID_PREFIX;

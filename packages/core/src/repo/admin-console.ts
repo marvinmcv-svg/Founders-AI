@@ -200,6 +200,14 @@ async function moveRefs(table: string, col: string, from: string, to: string) {
  */
 export async function mergeEntities(a: AdminContext, keepId: string, dropId: string) {
   assertPlatformAdmin(a);
+  return mergeEntityRecords({ actor: a.email, actorType: "platform_admin" }, keepId, dropId);
+}
+
+/**
+ * The merge itself, for a platform admin or the resolution job (actor `system:resolution`).
+ * Callers authorise; this only validates the pair.
+ */
+export async function mergeEntityRecords(by: { actor: string; actorType: "platform_admin" | "system" }, keepId: string, dropId: string) {
   if (keepId === dropId) throw new Error("Pick two different records");
   const kind = keepId.slice(0, 4);
   if (kind !== dropId.slice(0, 4) || !["com_", "per_"].includes(kind)) throw new Error("Both ids must be companies (com_) or both people (per_)");
@@ -221,7 +229,11 @@ export async function mergeEntities(a: AdminContext, keepId: string, dropId: str
     await q(sql`UPDATE people SET deleted_at = now() WHERE id = ${dropId}`);
   }
   await q(sql`INSERT INTO outbox_events (product, entity_id, kind) VALUES (${table}, ${keepId}, 'UPDATED'), (${table}, ${dropId}, 'DELETED')`);
-  await audit(a, "entity.merge", keepId, { merged: dropId, moved: Object.fromEntries(Object.entries(moved).filter(([, n]) => n > 0)) });
+  // The pair is settled; other pending pairs with the dropped record are re-found against the survivor next run.
+  await q(sql`UPDATE entity_match_candidates SET status = 'merged', decided_by = ${by.actor}, decided_at = now(), updated_at = now()
+    WHERE status = 'pending' AND ((left_id = ${keepId} AND right_id = ${dropId}) OR (left_id = ${dropId} AND right_id = ${keepId}))`);
+  await q(sql`DELETE FROM entity_match_candidates WHERE status = 'pending' AND (left_id = ${dropId} OR right_id = ${dropId})`);
+  await recordAudit({ orgId: PLATFORM_ORG, actor: by.actor, actorType: by.actorType, action: "entity.merge", target: keepId, metadata: { merged: dropId, moved: Object.fromEntries(Object.entries(moved).filter(([, n]) => n > 0)) } });
   return moved;
 }
 

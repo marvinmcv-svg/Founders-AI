@@ -102,6 +102,16 @@ export async function mergeEntitiesAction(v: Values) {
     return `Merged: ${Object.values(moved).reduce((s, n) => s + n, 0)} references moved.`;
   });
 }
+export async function decideMatchAction(id: string, verdict: "keep-left" | "keep-right" | "reject", leftId: string, rightId: string) {
+  return run(async (a) => {
+    if (verdict === "reject") {
+      await repo.decideMatchCandidate(a, id, { merge: false });
+      return "Marked as not a duplicate; this pair won't be suggested again.";
+    }
+    const r = await repo.decideMatchCandidate(a, id, { merge: true, keepId: verdict === "keep-left" ? leftId : rightId });
+    return `Merged: ${r.merged ? Object.values(r.moved).reduce((s, n) => s + n, 0) : 0} references moved.`;
+  });
+}
 export async function renameTaxonomyAction(id: string, v: Values) {
   return run(async (a) => repo.renameTaxonomyNode(a, id, v.name ?? ""));
 }

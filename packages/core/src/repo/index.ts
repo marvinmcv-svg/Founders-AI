@@ -21,3 +21,4 @@ export * from "./admin-console";
 export * from "./security";
 export * from "./scim";
 export * from "./status";
+export * from "./resolution";

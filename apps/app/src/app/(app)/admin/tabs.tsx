@@ -5,7 +5,7 @@ import { Badge, Card } from "@founders/ui";
 import { Empty } from "@/components/profile/bits";
 import { ActionButton, ActionForm, MatchPicker } from "./AdminActions";
 import {
-  addSuppressionAction, adjustCreditsAction, dsarCompleteAction, dsarMatchAction, dsarRejectAction, dsarVerifyAction, mergeEntitiesAction,
+  addSuppressionAction, adjustCreditsAction, dsarCompleteAction, dsarMatchAction, dsarRejectAction, dsarVerifyAction, mergeEntitiesAction, decideMatchAction,
   renameTaxonomyAction, reviewKeyAction, reviewSignalAction, updateAccountAction, updateEntityAction, verifySsoDomainAction, createIncidentAction, updateIncidentAction,
 } from "./actions";
 
@@ -266,9 +266,34 @@ export async function EntitiesTab({ a, id }: { a: repo.AdminContext; id?: string
       err = e instanceof Error ? e.message : "Not found";
     }
   }
-  const dupes = await repo.duplicateCandidates(a, 20);
+  const [dupes, matches, counts] = await Promise.all([repo.duplicateCandidates(a, 20), repo.listMatchCandidates(a, 25), repo.matchQueueCounts(a)]);
+  const href = (kind: string, id: string) => `/${kind === "company" ? "companies" : "people"}/${id}`;
   return (
     <div className="grid gap-4 xl:grid-cols-2">
+      <Card className="flex flex-col gap-3 p-4 xl:col-span-2">
+        <p className="text-[13px] text-ink">Duplicate review queue</p>
+        <p className="text-[12px] text-muted">
+          Found by the weekly resolution job (<code>pnpm pipelines resolution</code>). Sure matches with a shared domain, LinkedIn page or e-mail merge automatically;
+          these are likely but not certain. {counts.pending ?? 0} pending · {counts.auto_merged ?? 0} merged automatically · {counts.merged ?? 0} merged by an admin · {counts.rejected ?? 0} rejected.
+        </p>
+        <div className="divide-y divide-line text-[12px]">
+          {matches.map((m) => (
+            <div key={m.id} className="flex flex-wrap items-center gap-2 py-2">
+              <Badge tone="neutral">{m.kind}</Badge>
+              <Link href={href(m.kind, m.left_id)} className="text-ink hover:text-accent">{m.left_name}</Link><span className="text-faint">{m.left_id}</span>
+              <span className="text-muted">↔</span>
+              <Link href={href(m.kind, m.right_id)} className="text-ink hover:text-accent">{m.right_name}</Link><span className="text-faint">{m.right_id}</span>
+              <span className="text-muted">{(Math.floor(m.probability * 1000) / 10).toFixed(1)}% · {m.reason}</span>
+              <span className="ml-auto flex gap-2">
+                <ActionButton action={decideMatchAction.bind(null, m.id, "keep-left", m.left_id, m.right_id)} label="Keep left" variant="danger" confirm={`Merge ${m.right_name} into ${m.left_name}? This cannot be undone.`} />
+                <ActionButton action={decideMatchAction.bind(null, m.id, "keep-right", m.left_id, m.right_id)} label="Keep right" variant="danger" confirm={`Merge ${m.left_name} into ${m.right_name}? This cannot be undone.`} />
+                <ActionButton action={decideMatchAction.bind(null, m.id, "reject", m.left_id, m.right_id)} label="Not a duplicate" />
+              </span>
+            </div>
+          ))}
+          {!matches.length ? <p className="py-2 text-muted">Nothing to review.</p> : null}
+        </div>
+      </Card>
       <Card className="flex flex-col gap-3 p-4">
         <p className="text-[13px] text-ink">Edit a record</p>
         <form action="/admin" className="flex gap-2">
