@@ -407,30 +407,30 @@ export type PlatformStats = {
   refreshed_at: string;
 };
 
+/**
+ * Reads the single platform_stats row; null when the view is empty. Errors propagate so the caller
+ * can log the real cause (the marketing site falls back to words, never invented numbers).
+ */
 export async function getPlatformStats(): Promise<PlatformStats | null> {
-  try {
-    const [row] = await q<Record<string, unknown>>(sql`SELECT * FROM platform_stats LIMIT 1`);
-    if (!row) return null;
-    const num = (k: string) => Number(row[k] ?? 0);
-    return {
-      companies: num("companies"),
-      people: num("people"),
-      investors: num("investors"),
-      transactions: num("transactions"),
-      funding_rounds: num("funding_rounds"),
-      talent_signals: num("talent_signals"),
-      talent_signals_7d: num("talent_signals_7d"),
-      rounds_30d: num("rounds_30d"),
-      news_signals: num("news_signals"),
-      news_sources: num("news_sources"),
-      revenue_disclosures: num("revenue_disclosures"),
-      latam_companies: num("latam_companies"),
-      countries: num("countries"),
-      refreshed_at: String(row.refreshed_at ?? ""),
-    };
-  } catch {
-    return null;
-  }
+  const [row] = await q<Record<string, unknown>>(sql`SELECT * FROM platform_stats LIMIT 1`);
+  if (!row) return null;
+  const num = (k: string) => Number(row[k] ?? 0);
+  return {
+    companies: num("companies"),
+    people: num("people"),
+    investors: num("investors"),
+    transactions: num("transactions"),
+    funding_rounds: num("funding_rounds"),
+    talent_signals: num("talent_signals"),
+    talent_signals_7d: num("talent_signals_7d"),
+    rounds_30d: num("rounds_30d"),
+    news_signals: num("news_signals"),
+    news_sources: num("news_sources"),
+    revenue_disclosures: num("revenue_disclosures"),
+    latam_companies: num("latam_companies"),
+    countries: num("countries"),
+    refreshed_at: String(row.refreshed_at ?? ""),
+  };
 }
 
 export async function getEntityNames(ids: string[]): Promise<Record<string, string>> {
