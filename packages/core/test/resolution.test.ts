@@ -13,6 +13,7 @@ describe("canonical keys", () => {
     expect(canonicalDomain("https://linkedin.com/company/acme")).toBeNull();
     expect(canonicalDomain("not a domain")).toBeNull();
     expect(canonicalDomain("")).toBeNull();
+    expect(canonicalDomain("cik2166745.sec.invalid")).toBeNull();
   });
   it("finds the registrable label across country suffixes", () => {
     expect(registrableLabel("acme.com.bo")).toBe("acme");

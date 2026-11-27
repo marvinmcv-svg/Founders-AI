@@ -3,13 +3,13 @@
  * OpenAPI document; auth, rate limit, credits headers, misses not charged, idempotency, webhooks,
  * extraction and R3 placeholders behave as specified. DB-backed cases skip when no seeded DB.
  */
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it, beforeEach } from "vitest";
 import { sql } from "drizzle-orm";
 import { getSql } from "@founders/db";
 import * as repo from "@founders/core/repo";
 import { API_ENDPOINT_COUNT, API_RATE_LIMIT_RPS } from "@founders/core/limits";
 import { app, ENDPOINTS } from "../src/app";
-import { openApiDocument } from "../src/kit";
+import { openApiDocument, resetRateLimits } from "../src/kit";
 import { SPEC_ROUTES } from "./spec";
 
 /** Beyond the table: lists of investors get the same results/update routes as companies and people. */
@@ -65,6 +65,8 @@ async function call(path: string, init: RequestInit & { key?: string } = {}) {
   }
   return { status: res.status, headers: res.headers, body };
 }
+
+beforeEach(() => resetRateLimits());
 
 beforeAll(async () => {
   try {

@@ -963,6 +963,32 @@ export const entityMatchCandidates = pgTable(
   ],
 );
 
+/**
+ * SEC Form D filings ingested by the public pipeline (plan 9.1, D-073). One row per accession
+ * number (idempotent re-runs); amendments find their round through cik + date_of_first_sale.
+ */
+export const secFilings = pgTable(
+  "sec_filings",
+  {
+    accession: text("accession").primaryKey(),
+    cik: text("cik").notNull(),
+    formType: text("form_type").notNull(), // D | D/A
+    filedDate: date("filed_date").notNull(),
+    issuerName: text("issuer_name").notNull(),
+    outcome: text("outcome").notNull(), // company | fund | skip
+    skipReason: text("skip_reason"),
+    companyId: text("company_id"),
+    investorId: text("investor_id"),
+    roundId: text("round_id"),
+    dateOfFirstSale: date("date_of_first_sale"),
+    amountSoldUsd: usd("amount_sold_usd"),
+    previousAccession: text("previous_accession"),
+    parsed: jsonb("parsed").$type<Record<string, unknown>>().notNull(),
+    ingestedAt: ts("ingested_at").notNull().defaultNow(),
+  },
+  (t) => [index("sec_filings_cik_idx").on(t.cik, t.dateOfFirstSale), index("sec_filings_filed_idx").on(t.filedDate)],
+);
+
 export const pipelineRuns = pgTable(
   "pipeline_runs",
   {

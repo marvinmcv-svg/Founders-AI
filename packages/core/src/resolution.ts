@@ -46,6 +46,8 @@ export function canonicalDomain(input: string | null | undefined): string | null
   s = s.replace(/^(www\d?|m)\./, "");
   if (!/^[a-z0-9-]+(\.[a-z0-9-]+)+$/.test(s)) return null;
   if (PLATFORM_HOSTS.has(s)) return null;
+  // RFC 2606 reserved TLD: placeholders such as `cik123.sec.invalid` carry no evidence.
+  if (s.endsWith(".invalid")) return null;
   return s;
 }
 

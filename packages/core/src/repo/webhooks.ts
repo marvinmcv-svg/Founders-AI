@@ -153,7 +153,10 @@ export async function deliverDueWebhooks(opts: { post?: WebhookPoster; now?: Dat
   const now = opts.now ?? new Date();
   const due = await q<DueRow>(sql`SELECT d.id, d.webhook_id, d.event, d.payload, d.attempts, d.created_at, w.url, w.secret, w.failing_since
     FROM webhook_deliveries d JOIN webhooks w ON w.id = d.webhook_id
-    WHERE d.status = 'PENDING' AND w.status = 'ACTIVE' AND d.next_attempt_at <= ${now.toISOString()}
+    WHERE d.status = 'PENDING' AND w.status = 'ACTIVE'
+      -- A JS Date has millisecond precision; next_attempt_at has microseconds. Compare at the precision we were given,
+      -- or on the database clock, so a row enqueued in the same millisecond is already due.
+      AND ${opts.now ? sql`date_trunc('milliseconds', d.next_attempt_at) <= ${opts.now.toISOString()}::timestamptz` : sql`d.next_attempt_at <= now()`}
     ORDER BY d.next_attempt_at LIMIT ${opts.batch ?? 500}`);
   const counts = { due: due.length, delivered: 0, retrying: 0, failed: 0, disabled: 0 };
   const disabled = new Set<string>();

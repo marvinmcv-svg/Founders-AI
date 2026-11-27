@@ -35,6 +35,11 @@ export const orgCtx = (c: Ctx): OrgContext => {
 /* ---------------- auth + rate limit ---------------- */
 
 const buckets = new Map<string, { tokens: number; at: number }>();
+
+/** Test hook: start every key with a full bucket (tests share one key and run faster than 15 req/s). */
+export function resetRateLimits(): void {
+  buckets.clear();
+}
 /** Token bucket per key: API_RATE_LIMIT_RPS sustained, same burst. Redis-backed in production (H2). */
 function take(key: string): { ok: boolean; remaining: number; retryAfter: number } {
   const now = Date.now();
