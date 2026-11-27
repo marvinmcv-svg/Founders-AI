@@ -3,6 +3,7 @@
  * cursor pagination and RFC 7807 errors (plan Section 11).
  */
 import type { Context, Hono, MiddlewareHandler } from "hono";
+import { createHash } from "node:crypto";
 import { z } from "zod";
 import { API_MAX_PAGE_SIZE, API_DEFAULT_PAGE_SIZE, API_RATE_LIMIT_RPS } from "@founders/core/limits";
 import { bodyHash, charge, getBalance, getIdempotent, InsufficientCreditsError, storeIdempotent, verifyApiKey, type ApiPrincipal, type OrgContext } from "@founders/core/repo";
@@ -205,13 +206,43 @@ const CREDIT_TEXT: Record<string, string> = {
   per_result: "1 credit per 100 results returned",
 };
 
+type JsonSchema = { $defs?: Record<string, unknown>; $schema?: string; [k: string]: unknown };
+
+/**
+ * zod emits recursive types (the filter AST) as a local `$defs` block with `#/$defs/…` refs, which
+ * break once the schema is embedded inside a path. Hoist each def into components.schemas under a
+ * content-hashed name and rewrite the refs, so the document is valid for every OpenAPI tool.
+ */
+function hoist(schema: JsonSchema, components: Record<string, unknown>): JsonSchema {
+  const { $defs, $schema: _drop, ...rest } = schema;
+  if (!$defs) return rest;
+  const names = Object.fromEntries(
+    Object.entries($defs).map(([k, v]) => [k, `Def_${createHash("sha256").update(JSON.stringify(v)).digest("hex").slice(0, 10)}`]),
+  );
+  const rewrite = (v: unknown): unknown => {
+    if (Array.isArray(v)) return v.map(rewrite);
+    if (v && typeof v === "object") {
+      return Object.fromEntries(
+        Object.entries(v as Record<string, unknown>).map(([k, x]) => {
+          if (k === "$ref" && typeof x === "string" && x.startsWith("#/$defs/")) return [k, `#/components/schemas/${names[x.slice(8)] ?? x}`];
+          return [k, rewrite(x)];
+        }),
+      );
+    }
+    return v;
+  };
+  for (const [k, v] of Object.entries($defs)) components[names[k]!] = rewrite(v);
+  return rewrite(rest) as JsonSchema;
+}
+
 export function openApiDocument(serverUrl: string) {
   const paths: Record<string, Record<string, unknown>> = {};
+  const schemas: Record<string, unknown> = {};
   for (const e of ENDPOINTS) {
     const oaPath = e.path.replace(/:(\w+)/g, "{$1}");
     const params = [...e.path.matchAll(/:(\w+)/g)].map((m) => ({ name: m[1], in: "path", required: true, schema: { type: "string" } }));
     const queryParams = e.query
-      ? Object.entries((z.toJSONSchema(e.query, { io: "input" }) as { properties?: Record<string, { description?: string }>; required?: string[] }).properties ?? {}).map(([name, schema]) => ({
+      ? Object.entries((hoist(z.toJSONSchema(e.query, { io: "input" }) as JsonSchema, schemas) as { properties?: Record<string, { description?: string }>; required?: string[] }).properties ?? {}).map(([name, schema]) => ({
           name,
           in: "query",
           required: false,
@@ -227,7 +258,7 @@ export function openApiDocument(serverUrl: string) {
       "x-credits": e.credit,
       ...(e.release ? { "x-release": e.release } : {}),
       parameters: [...params, ...queryParams],
-      ...(e.body ? { requestBody: { required: true, content: { "application/json": { schema: z.toJSONSchema(e.body, { io: "input" }) } } } } : {}),
+      ...(e.body ? { requestBody: { required: true, content: { "application/json": { schema: hoist(z.toJSONSchema(e.body, { io: "input" }) as JsonSchema, schemas) } } } } : {}),
       responses: {
         "200": { description: "OK" },
         "400": { description: "Invalid request (problem+json)" },
@@ -244,7 +275,7 @@ export function openApiDocument(serverUrl: string) {
     openapi: "3.0.3",
     info: { title: "Founders AI API", version: "1.0.0", description: "Private-markets data: companies, people, investors, transactions, signals, lists and saved searches." },
     servers: [{ url: serverUrl }],
-    components: { securitySchemes: { ApiKey: { type: "apiKey", in: "header", name: "X-API-Key" } } },
+    components: { schemas, securitySchemes: { ApiKey: { type: "apiKey", in: "header", name: "X-API-Key" } } },
     paths,
   };
 }

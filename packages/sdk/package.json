@@ -1,0 +1,27 @@
+{
+  "name": "@founders/sdk",
+  "version": "0.1.0",
+  "private": true,
+  "description": "TypeScript client for the Founders AI API (plan Section 11): typed paths from OpenAPI, retries, idempotency, typed errors, pagination, webhook verification.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./webhooks": "./src/webhooks.ts"
+  },
+  "scripts": {
+    "generate": "tsx scripts/generate.ts",
+    "typecheck": "tsc -p tsconfig.json",
+    "lint": "eslint src",
+    "test": "vitest run --passWithNoTests"
+  },
+  "devDependencies": {
+    "@founders/api": "workspace:*",
+    "@founders/core": "workspace:*",
+    "@founders/db": "workspace:*",
+    "@types/node": "^22.18.0",
+    "dotenv": "^17.4.2",
+    "openapi-typescript": "7.13.0",
+    "tsx": "^4.23.15",
+    "vitest": "^3.2.4"
+  }
+}

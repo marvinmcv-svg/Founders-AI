@@ -30,7 +30,9 @@
 
 **SEC Form D public pipeline (R1 carry-over) — done 2026-11-27 (D-073):** `pnpm pipelines sec-formd [--date=YYYY-MM-DD] [--days=N] [--limit=N] [--fixtures=<dir>]` → companies, funding rounds, VC/PE investors with SEC provenance; migration **0011** (`sec_filings`). Needs `SEC_USER_AGENT` for live fetches (key list at the end of the build); tested on real EDGAR filings from 2026-11-24.
 
-**Open R1 carry-overs** (not blocking R2 work): OpenSearch + indexer (outbox is ready), BullMQ workers (H2: Redis), 10M-row load test, TS SDK, Fumadocs console, Storybook, Lighthouse/axe, Turnstile (H3).
+**TypeScript SDK (R1 carry-over) — done 2026-11-27 (D-074):** `packages/sdk` (typed from OpenAPI, retries, idempotency, typed errors, pagination, webhooks); end-to-end tests against the in-process API. Fixed a dangling `$ref` in `/api/v1/openapi.json`.
+
+**Open R1 carry-overs** (not blocking R2 work): OpenSearch + indexer (outbox is ready), BullMQ workers (H2: Redis), 10M-row load test, Fumadocs console, Storybook, Lighthouse/axe, Turnstile (H3).
 
 **Cloud demo, still to do** (needs the owner or a host that can reach Postgres, D-020):
 1. Set `PLATFORM_ADMIN_EMAILS` on `founders-ai-app` (owner's choice of admin emails) to open `/admin`.

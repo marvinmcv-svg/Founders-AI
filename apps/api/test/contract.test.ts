@@ -39,6 +39,16 @@ describe("route table", () => {
     }
     expect(ENDPOINTS.filter((e) => e.release === "R3").length).toBe(5); // interest signals (H8); network shipped in Phase 8
   });
+
+  it("every $ref in the OpenAPI document resolves (recursive filter schemas are hoisted to components)", () => {
+    const doc = openApiDocument("https://example.invalid/api/v1") as { components: { schemas: Record<string, unknown> } };
+    const refs = [...JSON.stringify(doc).matchAll(/"\$ref":"([^"]+)"/g)].map((m) => m[1]!);
+    expect(refs.length).toBeGreaterThan(0);
+    for (const r of refs) {
+      expect(r.startsWith("#/components/schemas/")).toBe(true);
+      expect(doc.components.schemas[r.slice("#/components/schemas/".length)]).toBeTruthy();
+    }
+  });
 });
 
 /* ---------------- behaviour (needs the seeded DB) ---------------- */

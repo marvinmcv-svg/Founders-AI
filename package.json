@@ -14,7 +14,7 @@
     "build": "turbo run build",
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",
-    "test": "turbo run test",
+    "test": "turbo run test --concurrency=1",
     "verify": "pnpm lint && pnpm typecheck && pnpm test && pnpm copy:check && pnpm copy:similarity && pnpm build",
     "copy:check": "node scripts/copy-check.mjs",
     "db:generate": "pnpm --filter @founders/db generate",
